@@ -94,7 +94,7 @@ export const WhereInBritainRound: React.FC<WhereInBritainProps> = ({ challenge, 
           </aside>
         </div>
       </ApparatusFrame>
-      {isSubmitted && <CommentaryPlaque score={earnedScore} playerName={currentPlayer.name} roundType="WHERE_IN_BRITAIN" questionPrompt={challenge.prompt} explanation={challenge.explanation} source={challenge.source} errorKm={distanceKm ?? undefined} isCorrect={earnedScore>=700} onProceed={()=>onComplete(earnedScore,distanceKm??0)} />}
+      {isSubmitted && <CommentaryPlaque score={earnedScore} playerName={currentPlayer.name} roundType="WHERE_IN_BRITAIN" questionPrompt={challenge.prompt} explanation={challenge.explanation} source={challenge.source} correctAnswer={challenge.targetName} errorKm={distanceKm ?? undefined} history={currentPlayer.stats} isCorrect={earnedScore>=700} onProceed={()=>onComplete(earnedScore,distanceKm??0)} />}
     </div>
   );
 };
