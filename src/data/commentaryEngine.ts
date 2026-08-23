@@ -1,8 +1,8 @@
 /**
  * THE BUREAU COMMENTARY ENGINE
  *
- * The primary rule is simple: use the actual question, answer and factual context
- * before reaching for a generic score joke. Score-only remarks are a fallback.
+ * Use the actual question, submitted answer and verified context first.
+ * Score-only remarks are deliberately the last resort.
  */
 
 export interface BureauPlayerHistory {
@@ -51,6 +51,41 @@ const historyTail = (history?: BureauPlayerHistory): string => {
   if (rate >= 0.8) return ' This is becoming an irritating pattern of competence.';
   if (rate <= 0.3) return ' The Bureau notes that this is no longer an isolated incident.';
   return '';
+};
+
+/** Small curated hooks for famous facts where the mistake itself creates the joke. */
+const subjectAwareAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.isCorrect !== false) return null;
+  const prompt = `${input.questionPrompt ?? ''} ${input.explanation ?? ''}`.toLowerCase();
+  const guess = asFiniteNumber(input.playerAnswer);
+  const correct = asFiniteNumber(input.correctAnswer);
+  if (guess === null || correct === null) return null;
+  const difference = Math.abs(guess - correct);
+
+  if (prompt.includes('victoria') && (prompt.includes('die') || prompt.includes('death'))) {
+    if (guess > correct) return `Queen Victoria died in ${correct}. Your answer of ${guess} keeps her alive for another ${difference} years, creating some exceptionally awkward royal family gatherings.`;
+    return `Queen Victoria died in ${correct}. Your answer of ${guess} removes ${difference} years from her reign, which would require the Victorian era to submit a substantially revised timesheet.`;
+  }
+
+  if (prompt.includes('titanic') && (prompt.includes('sink') || prompt.includes('sank'))) {
+    if (guess > correct) return `Titanic sank in ${correct}. Your answer of ${guess} grants the ship another ${difference} years of entirely undeserved buoyancy.`;
+    return `Titanic sank in ${correct}. Your answer of ${guess} sends her to the bottom ${difference} years before the maiden voyage, which even White Star Line would regard as poor scheduling.`;
+  }
+
+  if (prompt.includes('ben nevis') && (prompt.includes('high') || prompt.includes('height') || prompt.includes('metre'))) {
+    if (guess < correct) return `Ben Nevis reaches ${correct.toLocaleString()}. At ${guess.toLocaleString()} you've found a perfectly respectable Scottish hill; unfortunately the mountain continues upwards for another ${difference.toLocaleString()}.`;
+    return `Ben Nevis reaches ${correct.toLocaleString()}. Your ${guess.toLocaleString()} adds another ${difference.toLocaleString()} to the summit, apparently because Scotland was not mountainous enough already.`;
+  }
+
+  if (prompt.includes('battle of hastings') || (prompt.includes('hastings') && prompt.includes('battle'))) {
+    return `The Battle of Hastings was in ${correct}. Your answer of ${guess} misses by ${difference} years, leaving William the Conqueror waiting on the beach for history to catch up.`;
+  }
+
+  if (prompt.includes('magna carta')) {
+    return `Magna Carta was sealed in ${correct}. Your answer of ${guess} moves one of England's most famous constitutional documents by ${difference} years; the barons have lodged an objection.`;
+  }
+
+  return null;
 };
 
 const mapAssessment = (input: ScoreCommentaryInput): string | null => {
@@ -108,9 +143,7 @@ const stopScoreAssessment = (input: ScoreCommentaryInput): string | null => {
 
 const imageAssessment = (input: ScoreCommentaryInput): string | null => {
   if (input.roundType !== 'IMAGE_REVEAL' || input.playerAnswer === undefined || input.correctAnswer === undefined) return null;
-  if (input.isCorrect) {
-    return `You identified ${String(input.correctAnswer)} while ${input.score} points were still available. The optical department was hoping to keep the shutters closed a little longer.`;
-  }
+  if (input.isCorrect) return `You identified ${String(input.correctAnswer)} while ${input.score} points were still available. The optical department was hoping to keep the shutters closed a little longer.`;
   return `You identified the image as “${String(input.playerAnswer)}”. It was ${String(input.correctAnswer)}. The apparatus can improve focus; it cannot negotiate with the conclusion you reached.`;
 };
 
@@ -150,6 +183,7 @@ const topTenAssessment = (input: ScoreCommentaryInput): string | null => {
 };
 
 const contextualAssessment = (input: ScoreCommentaryInput): string | null =>
+  subjectAwareAssessment(input) ??
   mapAssessment(input) ??
   estimateAssessment(input) ??
   stopScoreAssessment(input) ??
@@ -161,9 +195,7 @@ const contextualAssessment = (input: ScoreCommentaryInput): string | null =>
 
 const scoreFallback = (input: ScoreCommentaryInput): string => {
   const { score, isCorrect } = input;
-  if (isCorrect === false && input.playerAnswer !== undefined && input.correctAnswer !== undefined) {
-    return `You submitted “${String(input.playerAnswer)}”; the certified answer was “${String(input.correctAnswer)}”. The discrepancy has been recorded in ink rather than sympathy.`;
-  }
+  if (isCorrect === false && input.playerAnswer !== undefined && input.correctAnswer !== undefined) return `You submitted “${String(input.playerAnswer)}”; the certified answer was “${String(input.correctAnswer)}”. The discrepancy has been recorded in ink rather than sympathy.`;
   if (score >= 950) return `${score} points. The calculation has been checked twice in the hope of finding an error. None was available.`;
   if (score >= 750) return `${score} points. Strong work. The Bureau has issued a small nod and immediately withdrawn it.`;
   if (score >= 450) return `${score} points. Adequate enough to avoid an inquiry, not impressive enough to cause one.`;
@@ -176,15 +208,7 @@ export function generateBureauAssessment(input: ScoreCommentaryInput): string {
   const fact = firstSentence(input.explanation);
   const tail = historyTail(input.history);
 
-  if (contextual) {
-    // The result dossier already shows the full archival explanation. We only
-    // reuse the first factual sentence when it directly enriches a generic result.
-    return `${contextual}${tail}`;
-  }
-
-  if (fact && input.isCorrect === false && input.correctAnswer === undefined) {
-    return `${fact} ${scoreFallback(input)}${tail}`;
-  }
-
+  if (contextual) return `${contextual}${tail}`;
+  if (fact && input.isCorrect === false && input.correctAnswer === undefined) return `${fact} ${scoreFallback(input)}${tail}`;
   return `${scoreFallback(input)}${tail}`;
 }
