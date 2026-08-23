@@ -39,7 +39,11 @@ export const StopTheScoreRound: React.FC<StopTheScoreProps> = ({ challenge, curr
   useEffect(() => () => { if (reqRef.current) cancelAnimationFrame(reqRef.current); }, []);
   const needleAngle = -90 + (meterValue / 1000) * 180;
 
-  if (phase === 'RESULT') return <CommentaryPlaque score={earnedScore} playerName={currentPlayer.name} roundType="STOP_THE_SCORE" questionPrompt={challenge.prompt} explanation={challenge.explanation} source={challenge.source} isCorrect={selectedOptionIndex===challenge.correctIndex} onProceed={()=>onComplete(earnedScore,selectedOptionIndex===challenge.correctIndex,lockedScore??0)} />;
+  if (phase === 'RESULT') {
+    const submittedAnswer = selectedOptionIndex !== null ? challenge.options[selectedOptionIndex] : undefined;
+    const certifiedAnswer = challenge.options[challenge.correctIndex];
+    return <CommentaryPlaque score={earnedScore} playerName={currentPlayer.name} roundType="STOP_THE_SCORE" questionPrompt={challenge.prompt} explanation={challenge.explanation} source={challenge.source} playerAnswer={submittedAnswer} correctAnswer={certifiedAnswer} riskedValue={lockedScore ?? 0} history={currentPlayer.stats} isCorrect={selectedOptionIndex===challenge.correctIndex} onProceed={()=>onComplete(earnedScore,selectedOptionIndex===challenge.correctIndex,lockedScore??0)} />;
+  }
 
   return (
     <div className="w-full max-w-5xl mx-auto font-['Plus_Jakarta_Sans']">
