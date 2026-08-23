@@ -17,7 +17,20 @@ export const BureauAvatar: React.FC<BureauAvatarProps> = ({ player, avatar, port
   const src = index !== undefined ? PORTRAIT_ART[index % PORTRAIT_ART.length] : undefined;
 
   if (src && !failed) {
-    return <img src={src} alt={player?.name ? `${player.name} portrait` : 'Bureau candidate'} onError={() => setFailed(true)} className={`shrink-0 rounded-xl border-2 border-[#765139] object-cover shadow-sm ${className}`} style={{ width: size, height: size }} />;
+    return (
+      <span
+        className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-[#765139] bg-[#efe0ba] shadow-sm ${className}`}
+        style={{ width: size, height: size }}
+      >
+        <img
+          src={src}
+          alt={player?.name ? `${player.name} portrait` : 'Bureau candidate'}
+          onError={() => setFailed(true)}
+          className="h-full w-full object-contain object-center p-[2px]"
+        />
+      </span>
+    );
   }
+
   return <span className={`inline-flex shrink-0 items-center justify-center ${className}`} style={{ width: size, height: size, fontSize: size * .58 }}>{fallback}</span>;
 };
