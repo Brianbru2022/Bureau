@@ -87,12 +87,13 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ playerCount, onProceed
             </div>
 
             <div className="flex items-center gap-4">
-              <button type="button" onClick={() => handleCycleAvatar(idx)} className="bureau-button w-24 h-24 rounded-2xl bg-[#fff7df] border-[#6f4933] flex items-center justify-center shrink-0 cursor-pointer overflow-hidden" title="Cycle portrait">
-                <BureauAvatar avatar={prof.avatar} portraitIndex={prof.portraitIndex} size={88} className="border-0 rounded-xl" />
+              <button type="button" onClick={() => handleCycleAvatar(idx)} className="bureau-button w-[118px] h-[150px] rounded-[22px] bg-[#fff7df] border-[#6f4933] flex items-center justify-center shrink-0 cursor-pointer overflow-hidden p-1.5" title="Cycle portrait">
+                <BureauAvatar avatar={prof.avatar} portraitIndex={prof.portraitIndex} size={104} variant="card" className="border-0 shadow-none" />
               </button>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <label className="font-['Courier_Prime'] text-[9px] font-black text-[#4d3e30] uppercase tracking-widest block mb-1">Candidate name</label>
                 <input type="text" value={prof.name} onChange={e => handleUpdateName(idx, e.target.value)} className="w-full rounded-xl border-[3px] border-[#6f4933]/55 bg-[#fff7df] px-3 py-2.5 text-[#263238] font-['Cinzel'] font-black text-base outline-none focus:border-[#376d9b] shadow-inner" />
+                <p className="mt-3 font-['Courier_Prime'] text-[9px] leading-relaxed text-[#5f4b39]">Portraits are filed vertically. The Bureau has reluctantly stopped forcing its staff into square apertures.</p>
               </div>
             </div>
 
