@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { WhereInBritainChallenge, Player } from '../../types';
 import { sound } from '../../sound/audioEngine';
 import { MapPin, Navigation, Compass, Crosshair } from 'lucide-react';
@@ -12,9 +14,9 @@ interface WhereInBritainProps { challenge: WhereInBritainChallenge; currentPlaye
 
 export const WhereInBritainRound: React.FC<WhereInBritainProps> = ({ challenge, currentPlayer, onComplete }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<any>(null);
-  const guessMarkerRef = useRef<any>(null);
-  const targetMarkerRef = useRef<any>(null);
+  const mapRef = useRef<maplibregl.Map | null>(null);
+  const guessMarkerRef = useRef<maplibregl.Marker | null>(null);
+  const targetMarkerRef = useRef<maplibregl.Marker | null>(null);
   const submittedRef = useRef(false);
   const [guess, setGuess] = useState<GeoPoint | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
@@ -24,17 +26,13 @@ export const WhereInBritainRound: React.FC<WhereInBritainProps> = ({ challenge, 
   const [earnedScore, setEarnedScore] = useState(0);
 
   useEffect(() => {
-    const maplibregl = (window as any).maplibregl;
-    if (!mapContainerRef.current || !maplibregl) {
-      setMapError('The Atlas Room failed to load its map engine. Refresh the page and try again.');
-      return;
-    }
-    if (typeof maplibregl.supported === 'function' && !maplibregl.supported()) {
+    if (!mapContainerRef.current) return;
+    if (!maplibregl.supported()) {
       setMapError('This browser is not providing the WebGL graphics support required by the Atlas Room.');
       return;
     }
 
-    let map: any;
+    let map: maplibregl.Map;
     try {
       map = new maplibregl.Map({
         container: mapContainerRef.current,
@@ -56,24 +54,24 @@ export const WhereInBritainRound: React.FC<WhereInBritainProps> = ({ challenge, 
     }
 
     mapRef.current = map;
-    map.dragRotate?.disable();
-    map.touchZoomRotate?.disableRotation();
+    map.dragRotate.disable();
+    map.touchZoomRotate.disableRotation();
     map.addControl(new maplibregl.NavigationControl({ showCompass: false, visualizePitch: false }), 'top-right');
 
     map.on('load', () => {
       applyBureauMapStyle(map);
       requestAnimationFrame(() => {
-        map.resize?.();
+        map.resize();
         setIsMapReady(true);
       });
     });
 
-    map.on('error', (event: any) => {
-      console.error('Bureau map error', event?.error ?? event);
-      if (!map.loaded?.()) setMapError('The Atlas Room could not retrieve its map tiles. Check the connection and reload.');
+    map.on('error', (event) => {
+      console.error('Bureau map error', event.error ?? event);
+      if (!map.loaded()) setMapError('The Atlas Room could not retrieve its map tiles. Check the connection and reload.');
     });
 
-    map.on('click', (event: any) => {
+    map.on('click', (event) => {
       if (submittedRef.current) return;
       const nextGuess = { lat: event.lngLat.lat, lng: event.lngLat.lng };
       setGuess(nextGuess);
@@ -82,13 +80,14 @@ export const WhereInBritainRound: React.FC<WhereInBritainProps> = ({ challenge, 
       guessMarkerRef.current = new maplibregl.Marker({ color: '#e65b4b' }).setLngLat([nextGuess.lng, nextGuess.lat]).addTo(map);
     });
 
-    const resizeMap = () => map.resize?.();
-    window.addEventListener('orientationchange', resizeMap);
-    window.addEventListener('resize', resizeMap);
+    const resizeMap = () => map.resize();
+    const delayedResize = () => window.setTimeout(resizeMap, 180);
+    window.addEventListener('orientationchange', delayedResize);
+    window.addEventListener('resize', delayedResize);
 
     return () => {
-      window.removeEventListener('orientationchange', resizeMap);
-      window.removeEventListener('resize', resizeMap);
+      window.removeEventListener('orientationchange', delayedResize);
+      window.removeEventListener('resize', delayedResize);
       guessMarkerRef.current?.remove();
       targetMarkerRef.current?.remove();
       map.remove();
@@ -97,13 +96,12 @@ export const WhereInBritainRound: React.FC<WhereInBritainProps> = ({ challenge, 
   }, [challenge.id]);
 
   const revealAnswer = (playerGuess: GeoPoint) => {
-    const maplibregl = (window as any).maplibregl;
     const map = mapRef.current;
-    if (!map || !maplibregl) return;
+    if (!map) return;
     const target: GeoPoint = { lat: challenge.lat, lng: challenge.lng };
     targetMarkerRef.current?.remove();
     targetMarkerRef.current = new maplibregl.Marker({ color: '#168f69' }).setLngLat([target.lng, target.lat]).addTo(map);
-    const lineData = { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[playerGuess.lng, playerGuess.lat], [target.lng, target.lat]] } };
+    const lineData: GeoJSON.Feature<GeoJSON.LineString> = { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[playerGuess.lng, playerGuess.lat], [target.lng, target.lat]] } };
     if (map.getLayer('bureau-answer-line')) map.removeLayer('bureau-answer-line');
     if (map.getSource('bureau-answer-line')) map.removeSource('bureau-answer-line');
     map.addSource('bureau-answer-line', { type: 'geojson', data: lineData });
