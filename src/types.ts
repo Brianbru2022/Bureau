@@ -13,6 +13,26 @@ export type RoundParticipationMode =
   | 'SHARED_ROTATION'
   | 'HIDDEN_SEQUENTIAL';
 
+export interface PlayerStats {
+  roundsPlayed: number;
+  correctAnswers: number;
+  totalAnswers: number;
+  bestScore: number;
+  worstScore: number;
+  mapDistancesKm: number[];
+  estimateErrorsPercent: number[];
+  risksTaken: number;
+  successfulRisks: number;
+  highestBankedList: number;
+  categoriesAttempted: Set<string>;
+  interceptCount: number;
+  challengeScores: number[];
+  mapScores: number[];
+  successfulListBanks: number[];
+  categoryScores: Record<string, number[]>;
+  assetsUsed: string[];
+}
+
 export interface Player {
   id: string;
   name: string;
@@ -22,20 +42,7 @@ export interface Player {
   score: number;
   assets: BureauAssetKey[];
   secretDirective: SecretDirective;
-  stats: {
-    roundsPlayed: number;
-    correctAnswers: number;
-    totalAnswers: number;
-    bestScore: number;
-    worstScore: number;
-    mapDistancesKm: number[];
-    estimateErrorsPercent: number[];
-    risksTaken: number;
-    successfulRisks: number;
-    highestBankedList: number;
-    categoriesAttempted: Set<string>;
-    interceptCount: number;
-  };
+  stats: PlayerStats;
 }
 
 export type BureauAssetKey = 
