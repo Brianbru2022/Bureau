@@ -18,23 +18,17 @@ const BRITISH_DEPARTMENTS = [
   'Ministry of Sarcastic Oversight',
   'Crown Archive of Questionable Claims'
 ];
-const STARTER_ASSETS: BureauAssetKey[] = [
-  'SECOND_OPINION',
-  'REFILE',
-  'DOUBLE_ENTRY',
-  'INTERCEPT',
-  'INSURANCE',
-  'PRIORITY_ACCESS'
-];
+const STARTER_ASSETS: BureauAssetKey[] = ['SECOND_OPINION', 'REFILE', 'INSURANCE'];
+const CARD_COLORS = ['#67c4c1', '#e0a83f', '#d9644f', '#7ca66f'];
 
 export const SetupScreen: React.FC<SetupScreenProps> = ({ playerCount, onProceedToDirectives }) => {
-  const [profiles, setProfiles] = useState<Array<{ name: string; avatar: string; department: string }>>(() => {
-    return Array.from({ length: playerCount }).map((_, i) => ({
+  const [profiles, setProfiles] = useState<Array<{ name: string; avatar: string; department: string }>>(() =>
+    Array.from({ length: playerCount }).map((_, i) => ({
       name: `Candidate ${i + 1}`,
       avatar: DEFAULT_AVATARS[i % DEFAULT_AVATARS.length],
       department: BRITISH_DEPARTMENTS[i % BRITISH_DEPARTMENTS.length]
-    }));
-  });
+    }))
+  );
 
   const handleUpdateName = (index: number, name: string) => {
     const next = [...profiles];
@@ -80,43 +74,48 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ playerCount, onProceed
         successfulListBanks: [],
         categoryScores: {},
         assetsUsed: []
-      } as Player['stats']
+      }
     }));
     onProceedToDirectives(createdPlayers);
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto py-6 px-4 font-['Plus_Jakarta_Sans']">
-      <div className="text-center mb-6">
-        <span className="font-['Courier_Prime'] text-xs font-bold text-[#e6c875] uppercase tracking-widest block mb-1">Registry Registration Protocol</span>
-        <h2 className="font-['Cinzel'] font-black text-2xl sm:text-3xl text-white">Candidate Enrolment Dossiers</h2>
-        <p className="font-['Fraunces'] text-xs sm:text-sm text-slate-300 italic mt-1">Provide your candidate credentials before the Bureau commences the assessment.</p>
+    <div className="flex-1 flex flex-col items-center justify-center max-w-5xl mx-auto py-5 px-4">
+      <div className="text-center mb-6 bureau-paper rounded-[24px] border-[3px] border-[#7e5c24] px-8 py-5 max-w-3xl w-full">
+        <span className="font-['Courier_Prime'] text-[10px] font-black text-[#a9443d] uppercase tracking-[0.2em] block mb-1">Candidate Registration</span>
+        <h2 className="font-['Cinzel'] font-black text-3xl sm:text-4xl text-[#244b55]">Issue the Bureau ID Cards</h2>
+        <p className="font-['Fraunces'] text-sm text-[#6f543f] italic mt-2">Names are compulsory. Competence remains optional.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full mb-7">
         {profiles.map((prof, idx) => (
-          <div key={idx} className="bg-[#121c2c] border-2 border-[#d4af37]/60 rounded-xl p-5 shadow-xl flex flex-col gap-3">
-            <div className="flex items-center justify-between border-b border-slate-700 pb-2">
-              <span className="font-['Courier_Prime'] font-bold text-[10px] text-[#ffd700] uppercase tracking-wider">Candidate #{idx + 1} Dossier</span>
-              <span className="text-[10px] text-slate-400 font-['Courier_Prime']">Clearance: Level 1</span>
+          <div key={idx} className="relative rounded-[24px] border-[4px] border-[#6f4933] p-5 bureau-enamel overflow-hidden" style={{ backgroundColor: CARD_COLORS[idx % CARD_COLORS.length] }}>
+            <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/20" />
+            <div className="flex items-center justify-between border-b-2 border-[#6f4933]/30 pb-3 mb-4">
+              <span className="font-['Courier_Prime'] font-black text-[10px] text-[#423424] uppercase tracking-wider">Bureau ID #{String(idx + 1).padStart(2, '0')}</span>
+              <span className="rounded-full bg-[#fff7df]/80 border border-[#6f4933]/40 px-2 py-0.5 text-[9px] text-[#6d533e] font-['Courier_Prime'] font-bold uppercase">Provisional</span>
             </div>
-            <div className="flex items-center gap-3">
-              <button type="button" onClick={() => handleCycleAvatar(idx)} className="w-14 h-14 rounded-lg bg-[#1a293e] border border-[#d4af37] flex items-center justify-center text-3xl shadow hover:brightness-125 transition-all shrink-0 cursor-pointer" title="Click to cycle candidate insignia">{prof.avatar}</button>
-              <div className="flex-1 flex flex-col gap-1">
-                <label className="font-['Cinzel'] text-xs font-bold text-slate-300 uppercase">Candidate Name</label>
-                <input type="text" value={prof.name} onChange={e => handleUpdateName(idx, e.target.value)} placeholder={`Candidate ${idx + 1}`} className="w-full px-3 py-1.5 rounded bg-[#0a111a] border border-[#d4af37]/50 text-white text-sm font-['Plus_Jakarta_Sans'] focus:outline-none focus:border-[#ffd700]" />
+
+            <div className="flex items-center gap-4">
+              <button type="button" onClick={() => handleCycleAvatar(idx)} className="bureau-button w-20 h-20 rounded-2xl bg-[#fff7df] border-[#6f4933] flex items-center justify-center text-4xl shrink-0 cursor-pointer" title="Cycle portrait">
+                {prof.avatar}
+              </button>
+              <div className="flex-1">
+                <label className="font-['Courier_Prime'] text-[9px] font-black text-[#4d3e30] uppercase tracking-widest block mb-1">Candidate name</label>
+                <input type="text" value={prof.name} onChange={e => handleUpdateName(idx, e.target.value)} className="w-full rounded-xl border-[3px] border-[#6f4933]/55 bg-[#fff7df] px-3 py-2.5 text-[#263238] font-['Cinzel'] font-black text-base outline-none focus:border-[#376d9b] shadow-inner" />
               </div>
             </div>
-            <div className="bg-[#0b1320] p-2.5 rounded border border-slate-800 flex items-center justify-between text-xs">
-              <span className="font-['Courier_Prime'] text-[10px] text-slate-400 truncate">{prof.department}</span>
-              <span className="text-[#ffd700] text-[9px] font-bold font-['Courier_Prime'] uppercase shrink-0 pl-2">ASSIGNED</span>
+
+            <div className="mt-4 rounded-xl border-2 border-[#6f4933]/35 bg-[#fff7df]/75 px-3 py-2.5 flex items-center justify-between gap-2">
+              <span className="font-['Courier_Prime'] text-[10px] font-bold text-[#674f3b] truncate">{prof.department}</span>
+              <span className="text-[#a9443d] text-[9px] font-black font-['Courier_Prime'] uppercase shrink-0">Assigned</span>
             </div>
           </div>
         ))}
       </div>
 
-      <button onClick={handleProceed} className="px-10 py-4 rounded bg-gradient-to-r from-[#d4af37] to-[#ffd700] hover:brightness-110 text-[#0a101d] font-['Cinzel'] font-black text-sm uppercase tracking-widest shadow-2xl flex items-center gap-3 border-2 border-amber-300 transform active:scale-95 transition-all cursor-pointer">
-        <span>Authorize Credentials &amp; Receive Directives</span><ArrowRight size={18} />
+      <button onClick={handleProceed} className="bureau-button px-9 py-4 rounded-2xl bg-[#376d9b] text-[#fff7df] font-['Cinzel'] font-black text-sm uppercase tracking-widest flex items-center gap-3 cursor-pointer">
+        Issue Cards &amp; Receive Directives <ArrowRight size={18} />
       </button>
     </div>
   );
