@@ -19,6 +19,7 @@ import { sound } from './sound/audioEngine';
 import { allChallenges } from './data/questions';
 import { FINAL_CASES } from './data/finalCases';
 import { selectSecretCommendations, type ScoreSnapshot } from './data/commendations';
+import { MINI_GAME_TYPES, type MiniGameType } from './data/miniGames';
 import { BureauRoomBackdrop } from './components/common/BureauRoomBackdrop';
 import { Header } from './components/common/Header';
 import { AssetDrawer } from './components/common/AssetDrawer';
@@ -27,6 +28,7 @@ import { SetupScreen } from './components/screens/SetupScreen';
 import { SecretDirectivesScreen } from './components/screens/SecretDirectivesScreen';
 import { RoomTransition } from './components/screens/RoomTransition';
 import { AwardsPodium } from './components/screens/AwardsPodium';
+import { InterstitialMiniGame, type MiniGameEffect } from './components/screens/InterstitialMiniGame';
 import { BureauReviewModal } from './components/rounds/BureauReviewModal';
 import { WhereInBritainRound } from './components/rounds/WhereInBritainRound';
 import { Top10Round } from './components/rounds/Top10Round';
@@ -49,6 +51,7 @@ const ROUND_DEFINITIONS: Array<Omit<RoundConfig, 'roundNumber' | 'challenge'>> =
   { type: 'STOP_THE_SCORE', participationMode: 'EVERYONE_TAKES_A_TURN', name: 'Stop The Score', roomName: 'Confidence & Risk Chamber', roomTheme: 'Choose exactly how expensive your confidence is about to become.' }
 ];
 
+const MINI_GAME_BOUNDARIES = new Set([2, 5]);
 const clampPlayerCount = (count: number) => Math.max(1, Math.min(4, Math.round(count)));
 
 type ExtendedStats = Player['stats'] & {
@@ -78,6 +81,8 @@ export default function App() {
   const [hiddenCommendations, setHiddenCommendations] = useState<HiddenCommendation[]>([]);
   const [scoreHistory, setScoreHistory] = useState<ScoreSnapshot[]>([]);
   const [currentChallenge, setCurrentChallenge] = useState<Challenge | null>(null);
+  const [miniGameType, setMiniGameType] = useState<MiniGameType | null>(null);
+  const [miniGamesPlayed, setMiniGamesPlayed] = useState<MiniGameType[]>([]);
 
   const currentRoundDefinition = ROUND_DEFINITIONS[currentRoundIndex % ROUND_DEFINITIONS.length];
   const activePlayerIndex = players.length > 0 ? (roundStarterIndex + playersCompletedThisRound) % players.length : 0;
@@ -96,6 +101,8 @@ export default function App() {
     setArmedAssets({});
     setBureauReviewUsed(false);
     setPriorityStarterPlayerId(null);
+    setMiniGameType(null);
+    setMiniGamesPlayed([]);
     setPhase('DIRECTIVES');
   };
 
@@ -105,6 +112,12 @@ export default function App() {
     const unused = matching.filter(q => !excludedIds.includes(q.id));
     const pool = unused.length > 0 ? unused : matching;
     return pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : allChallenges[0];
+  };
+
+  const pickMiniGame = (): MiniGameType => {
+    const unused = MINI_GAME_TYPES.filter(type => !miniGamesPlayed.includes(type));
+    const pool = unused.length > 0 ? unused : MINI_GAME_TYPES;
+    return pool[Math.floor(Math.random() * pool.length)];
   };
 
   const handleDirectivesComplete = () => {
@@ -268,6 +281,16 @@ export default function App() {
     setScoreHistory(prev => [...prev, { roundNumber: currentRoundIndex + 1, scores: Object.fromEntries(updatedPlayers.map(player => [player.id, player.score])) }]);
   };
 
+  const startMiniGameIfDue = (updatedPlayers: Player[]): boolean => {
+    const completedRoundNumber = currentRoundIndex + 1;
+    if (!MINI_GAME_BOUNDARIES.has(completedRoundNumber) || miniGamesPlayed.length >= 2) return false;
+    const selected = pickMiniGame();
+    setPlayers(updatedPlayers);
+    setMiniGameType(selected);
+    setPhase('MINI_GAME');
+    return true;
+  };
+
   const completeFullRound = (updatedPlayers: Player[]) => {
     recordRoundSnapshot(updatedPlayers);
     const scores = updatedPlayers.map(player => player.score);
@@ -275,8 +298,12 @@ export default function App() {
     const minScore = Math.min(...scores, 0);
     const trailing = updatedPlayers.find(player => player.score === minScore);
 
-    if (!bureauReviewUsed && updatedPlayers.length > 1 && currentRoundIndex >= 2 && (maxScore - minScore) >= 1200 && trailing) setReviewEligiblePlayer(trailing);
-    else advanceToNextRound(updatedPlayers);
+    if (!bureauReviewUsed && updatedPlayers.length > 1 && currentRoundIndex >= 2 && (maxScore - minScore) >= 1200 && trailing) {
+      setReviewEligiblePlayer(trailing);
+      return;
+    }
+
+    if (!startMiniGameIfDue(updatedPlayers)) advanceToNextRound(updatedPlayers);
   };
 
   const handleRoundComplete = (scoreOrScores: number | Record<string, number>, extraData?: Record<string, unknown>) => {
@@ -315,6 +342,27 @@ export default function App() {
     setBureauReviewUsed(true);
     setReviewEligiblePlayer(null);
     setScoreHistory(prev => [...prev, { roundNumber: currentRoundIndex + 1.5, scores: Object.fromEntries(updated.map(player => [player.id, player.score])) }]);
+    advanceToNextRound(updated);
+  };
+
+  const handleMiniGameComplete = (effects: MiniGameEffect[]) => {
+    let priorityWinner: string | null = null;
+    const updated = players.map(player => {
+      const effect = effects.find(item => item.playerId === player.id);
+      if (!effect) return player;
+      if (effect.priorityNextRound) priorityWinner = player.id;
+      return {
+        ...player,
+        score: Math.max(0, player.score + (effect.pointsDelta ?? 0)),
+        assets: effect.asset ? [...player.assets, effect.asset] : player.assets
+      };
+    });
+
+    if (priorityWinner) setPriorityStarterPlayerId(priorityWinner);
+    if (miniGameType) setMiniGamesPlayed(prev => [...prev, miniGameType]);
+    setPlayers(updated);
+    setScoreHistory(prev => [...prev, { roundNumber: currentRoundIndex + 1.75, scores: Object.fromEntries(updated.map(player => [player.id, player.score])) }]);
+    setMiniGameType(null);
     advanceToNextRound(updated);
   };
 
@@ -366,6 +414,8 @@ export default function App() {
     setArmedAssets({});
     setPriorityStarterPlayerId(null);
     setAssetNotice(null);
+    setMiniGameType(null);
+    setMiniGamesPlayed([]);
   };
 
   const currentRoundConfig: RoundConfig = {
@@ -378,12 +428,23 @@ export default function App() {
   };
 
   const roundInstanceKey = currentChallenge ? `${currentRoundIndex}-${activePlayer?.id ?? 'shared'}-${currentChallenge.id}` : `${currentRoundIndex}-empty`;
+  const showRoundHeader = !['TITLE', 'SETUP', 'MINI_GAME'].includes(phase);
 
   return (
-    <BureauRoomBackdrop roomName={currentRoundConfig.roomName}>
-      <Header roundConfig={phase === 'TITLE' || phase === 'SETUP' ? undefined : currentRoundConfig} totalRounds={ROUND_DEFINITIONS.length} players={players} currentPlayerIndex={activePlayerIndex} onOpenAssets={() => setIsAssetDrawerOpen(true)} canReview={!!reviewEligiblePlayer} onTriggerReview={() => {}} />
+    <BureauRoomBackdrop roomName={phase === 'MINI_GAME' ? 'Unscheduled Bureau Annex' : currentRoundConfig.roomName}>
+      <Header
+        roundConfig={showRoundHeader ? currentRoundConfig : undefined}
+        totalRounds={ROUND_DEFINITIONS.length}
+        players={players}
+        currentPlayerIndex={activePlayerIndex}
+        onOpenAssets={() => setIsAssetDrawerOpen(true)}
+        canReview={!!reviewEligiblePlayer}
+        onTriggerReview={() => {}}
+      />
 
-      {assetNotice && phase === 'PLAYING_ROUND' && <div className="mx-auto mb-2 max-w-3xl rounded-lg border border-[#4fd1c5]/50 bg-[#0d2530] px-4 py-2 text-center font-['Courier_Prime'] text-xs text-[#a7f3e8]">{assetNotice}</div>}
+      {assetNotice && phase === 'PLAYING_ROUND' && (
+        <div className="mx-auto mb-2 max-w-3xl rounded-lg border border-[#4fd1c5]/50 bg-[#0d2530] px-4 py-2 text-center font-['Courier_Prime'] text-xs text-[#a7f3e8]">{assetNotice}</div>
+      )}
 
       <main className="w-full flex-1 flex flex-col justify-center py-4 px-2 sm:px-4">
         {phase === 'TITLE' && <TitleScreen onStartGame={handleStartGame} />}
@@ -404,13 +465,24 @@ export default function App() {
           </div>
         )}
 
+        {phase === 'MINI_GAME' && miniGameType && <InterstitialMiniGame key={`${currentRoundIndex}-${miniGameType}`} type={miniGameType} players={players} onComplete={handleMiniGameComplete} />}
         {phase === 'FINAL_CASE' && <FinalCaseRound finalCase={FINAL_CASES[0]} players={players} onCompleteCase={handleFinalCaseComplete} />}
         {phase === 'PODIUM' && <AwardsPodium players={players} hiddenCommendations={hiddenCommendations} scoreHistory={scoreHistory} onPlayAgain={handlePlayAgain} />}
       </main>
 
-      {activePlayer && <AssetDrawer isOpen={isAssetDrawerOpen} activePlayer={activePlayer} onClose={() => setIsAssetDrawerOpen(false)} onUseAsset={handleUseAsset} />}
+      {activePlayer && phase === 'PLAYING_ROUND' && <AssetDrawer isOpen={isAssetDrawerOpen} activePlayer={activePlayer} onClose={() => setIsAssetDrawerOpen(false)} onUseAsset={handleUseAsset} />}
 
-      {reviewEligiblePlayer && <BureauReviewModal trailingPlayer={reviewEligiblePlayer} onSelectOption={handleResolveBureauReview} onClose={() => { setBureauReviewUsed(true); setReviewEligiblePlayer(null); advanceToNextRound(players); }} />}
+      {reviewEligiblePlayer && (
+        <BureauReviewModal
+          trailingPlayer={reviewEligiblePlayer}
+          onSelectOption={handleResolveBureauReview}
+          onClose={() => {
+            setBureauReviewUsed(true);
+            setReviewEligiblePlayer(null);
+            advanceToNextRound(players);
+          }}
+        />
+      )}
     </BureauRoomBackdrop>
   );
 }
