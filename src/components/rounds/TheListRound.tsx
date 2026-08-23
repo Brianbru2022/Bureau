@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { TheListChallenge, Player } from '../../types';
 import { sound } from '../../sound/audioEngine';
-import { ListFilter, ShieldCheck, Flame, Send, AlertTriangle } from 'lucide-react';
+import { ListFilter, ShieldCheck, Flame, Send } from 'lucide-react';
 import { CommentaryPlaque } from '../common/CommentaryPlaque';
+import { scoreListProgress } from '../../game/scoring';
 
 interface TheListProps {
   challenge: TheListChallenge;
@@ -20,9 +21,6 @@ export const TheListRound: React.FC<TheListProps> = ({
   const [currentValue, setCurrentValue] = useState(0);
   const [status, setStatus] = useState<'PLAYING' | 'DECIDING' | 'BANKED' | 'BUST'>('PLAYING');
   const [feedback, setFeedback] = useState<string | null>(null);
-
-  // Growth curve for correct answers: 1st=120, 2nd=260, 3rd=420, 4th=600, 5th=780, 6th=920, 7th=1000
-  const valueCurve = [120, 260, 420, 600, 780, 920, 1000];
 
   const handleAnswerSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -44,14 +42,13 @@ export const TheListRound: React.FC<TheListProps> = ({
     if (match) {
       sound.playBrassChime();
       const updated = [...givenAnswers, match.name];
+      const nextVal = scoreListProgress(updated.length, challenge.validAnswers.length);
+
       setGivenAnswers(updated);
       setInputValue('');
-
-      const nextVal = valueCurve[Math.min(valueCurve.length - 1, updated.length - 1)] || (updated.length * 150);
       setCurrentValue(nextVal);
       setFeedback(`Verified: ${match.name}. Current unbanked value: ${nextVal} pts.`);
 
-      // If finished entire list
       if (updated.length >= challenge.validAnswers.length) {
         sound.playVictoryFanfare();
         setStatus('BANKED');
@@ -59,7 +56,6 @@ export const TheListRound: React.FC<TheListProps> = ({
         setStatus('DECIDING');
       }
     } else {
-      // BUST!
       sound.playDisapproval();
       setFeedback(`Fatal error: "${inputValue}" is invalid. All unbanked points forfeited.`);
       setCurrentValue(0);
@@ -81,7 +77,6 @@ export const TheListRound: React.FC<TheListProps> = ({
 
   return (
     <div className="w-full flex flex-col items-center max-w-4xl mx-auto font-['Plus_Jakarta_Sans']">
-      {/* Title */}
       <div className="w-full bg-[#162235] border-2 border-[#d4af37] rounded-lg p-4 mb-4 shadow-xl text-center">
         <div className="flex items-center justify-center gap-2 mb-1">
           <ListFilter className="text-[#ffd700]" size={20} />
@@ -99,7 +94,6 @@ export const TheListRound: React.FC<TheListProps> = ({
 
       {(status === 'PLAYING' || status === 'DECIDING') && (
         <div className="w-full bg-[#0e1724] border-2 border-[#d4af37]/80 rounded-lg p-6 flex flex-col items-center gap-5 shadow-2xl">
-          {/* Pressure Value Meter */}
           <div className="w-full max-w-md bg-[#16253a] border-2 border-[#ffd700] rounded-lg p-4 text-center shadow-lg">
             <span className="font-['Courier_Prime'] text-xs text-amber-300 font-bold uppercase tracking-wider block">
               Current Accumulated Vault Value
@@ -117,7 +111,6 @@ export const TheListRound: React.FC<TheListProps> = ({
             </span>
           </div>
 
-          {/* Given answers pills */}
           {givenAnswers.length > 0 && (
             <div className="flex flex-wrap gap-2 justify-center max-w-lg">
               {givenAnswers.map((a, i) => (
@@ -135,14 +128,13 @@ export const TheListRound: React.FC<TheListProps> = ({
           )}
 
           {status === 'DECIDING' ? (
-            /* Decision Controls: BANK vs CONTINUE */
             <div className="w-full max-w-md flex flex-col gap-3 animate-in fade-in zoom-in-95 duration-200">
               <div className="p-3 bg-amber-950/40 border border-amber-500/50 rounded text-center">
                 <span className="font-['Cinzel'] font-bold text-xs text-amber-300 block mb-0.5">
                   DECISION REQUIRED
                 </span>
                 <p className="font-['Courier_Prime'] text-xs text-slate-200">
-                  Bank {currentValue} points now, or risk total forfeit for the next tier?
+                  Bank {currentValue} points now, or risk total forfeit by continuing?
                 </p>
               </div>
 
@@ -165,7 +157,6 @@ export const TheListRound: React.FC<TheListProps> = ({
               </div>
             </div>
           ) : (
-            /* Input Form */
             <form onSubmit={handleAnswerSubmit} className="w-full max-w-md flex flex-col gap-3">
               <input
                 type="text"
