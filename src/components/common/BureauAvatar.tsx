@@ -26,8 +26,8 @@ export const BureauAvatar: React.FC<BureauAvatarProps> = ({ player, avatar, port
           src={src}
           alt={player?.name ? `${player.name} portrait` : 'Bureau candidate'}
           onError={() => setFailed(true)}
-          className="h-full w-full object-cover"
-          style={{ objectPosition: '50% 28%', transform: 'scale(1.22)' }}
+          className="block h-full w-full object-cover"
+          style={{ objectPosition: '50% 18%' }}
         />
       </span>
     );
