@@ -3,27 +3,19 @@ import { WhereInBritainChallenge, Player } from '../../types';
 import { sound } from '../../sound/audioEngine';
 import { MapPin, Navigation, Compass, Crosshair } from 'lucide-react';
 import { CommentaryPlaque } from '../common/CommentaryPlaque';
+import { ApparatusFrame } from '../common/ApparatusFrame';
 import { haversineDistanceKm, type GeoPoint } from '../../game/geo';
 import { applyBureauMapStyle, getMapStyleUrl, UK_MAP_BOUNDS, UK_MAP_CENTER } from '../../game/mapConfig';
 import { scoreMapDistance } from '../../game/scoring';
 
-interface WhereInBritainProps {
-  challenge: WhereInBritainChallenge;
-  currentPlayer: Player;
-  onComplete: (score: number, errorKm: number) => void;
-}
+interface WhereInBritainProps { challenge: WhereInBritainChallenge; currentPlayer: Player; onComplete: (score: number, errorKm: number) => void; }
 
-export const WhereInBritainRound: React.FC<WhereInBritainProps> = ({
-  challenge,
-  currentPlayer,
-  onComplete
-}) => {
+export const WhereInBritainRound: React.FC<WhereInBritainProps> = ({ challenge, currentPlayer, onComplete }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const guessMarkerRef = useRef<any>(null);
   const targetMarkerRef = useRef<any>(null);
   const submittedRef = useRef(false);
-
   const [guess, setGuess] = useState<GeoPoint | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
@@ -33,236 +25,76 @@ export const WhereInBritainRound: React.FC<WhereInBritainProps> = ({
 
   useEffect(() => {
     const maplibregl = (window as any).maplibregl;
-    if (!mapContainerRef.current || !maplibregl) {
-      setMapError('The Bureau map renderer failed to load. Reload the assessment and try again.');
-      return;
-    }
-
-    const map = new maplibregl.Map({
-      container: mapContainerRef.current,
-      style: getMapStyleUrl(),
-      center: UK_MAP_CENTER,
-      zoom: 4.8,
-      minZoom: 4.2,
-      maxZoom: 9,
-      maxBounds: UK_MAP_BOUNDS,
-      attributionControl: true,
-      dragRotate: false,
-      pitchWithRotate: false
-    });
-
+    if (!mapContainerRef.current || !maplibregl) { setMapError('The Atlas Room failed to illuminate. Reload and try again.'); return; }
+    const map = new maplibregl.Map({ container: mapContainerRef.current, style: getMapStyleUrl(), center: UK_MAP_CENTER, zoom: 4.8, minZoom: 4.2, maxZoom: 9, maxBounds: UK_MAP_BOUNDS, attributionControl: true, dragRotate: false, pitchWithRotate: false });
     mapRef.current = map;
     map.dragRotate?.disable();
     map.touchZoomRotate?.disableRotation();
     map.addControl(new maplibregl.NavigationControl({ showCompass: false, visualizePitch: false }), 'top-right');
-
-    map.on('load', () => {
-      applyBureauMapStyle(map);
-      setIsMapReady(true);
-    });
-
+    map.on('load', () => { applyBureauMapStyle(map); setIsMapReady(true); });
     map.on('click', (event: any) => {
       if (submittedRef.current) return;
-
       const nextGuess = { lat: event.lngLat.lat, lng: event.lngLat.lng };
-      setGuess(nextGuess);
-      sound.playClick();
-
-      guessMarkerRef.current?.remove();
-      guessMarkerRef.current = new maplibregl.Marker({ color: '#e7553c' })
-        .setLngLat([nextGuess.lng, nextGuess.lat])
-        .addTo(map);
+      setGuess(nextGuess); sound.playClick(); guessMarkerRef.current?.remove();
+      guessMarkerRef.current = new maplibregl.Marker({ color: '#e65b4b' }).setLngLat([nextGuess.lng, nextGuess.lat]).addTo(map);
     });
-
-    return () => {
-      guessMarkerRef.current?.remove();
-      targetMarkerRef.current?.remove();
-      map.remove();
-      mapRef.current = null;
-    };
+    return () => { guessMarkerRef.current?.remove(); targetMarkerRef.current?.remove(); map.remove(); mapRef.current = null; };
   }, [challenge.id]);
 
   const revealAnswer = (playerGuess: GeoPoint) => {
-    const maplibregl = (window as any).maplibregl;
-    const map = mapRef.current;
-    if (!map || !maplibregl) return;
-
+    const maplibregl = (window as any).maplibregl; const map = mapRef.current; if (!map || !maplibregl) return;
     const target: GeoPoint = { lat: challenge.lat, lng: challenge.lng };
-
     targetMarkerRef.current?.remove();
-    targetMarkerRef.current = new maplibregl.Marker({ color: '#168f69' })
-      .setLngLat([target.lng, target.lat])
-      .addTo(map);
-
-    const lineData = {
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'LineString',
-        coordinates: [
-          [playerGuess.lng, playerGuess.lat],
-          [target.lng, target.lat]
-        ]
-      }
-    };
-
+    targetMarkerRef.current = new maplibregl.Marker({ color: '#168f69' }).setLngLat([target.lng, target.lat]).addTo(map);
+    const lineData = { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[playerGuess.lng, playerGuess.lat], [target.lng, target.lat]] } };
     if (map.getLayer('bureau-answer-line')) map.removeLayer('bureau-answer-line');
     if (map.getSource('bureau-answer-line')) map.removeSource('bureau-answer-line');
-
     map.addSource('bureau-answer-line', { type: 'geojson', data: lineData });
-    map.addLayer({
-      id: 'bureau-answer-line',
-      type: 'line',
-      source: 'bureau-answer-line',
-      paint: {
-        'line-color': '#7c4c92',
-        'line-width': 4,
-        'line-dasharray': [1.5, 1.5]
-      }
-    });
-
-    const bounds = new maplibregl.LngLatBounds();
-    bounds.extend([playerGuess.lng, playerGuess.lat]);
-    bounds.extend([target.lng, target.lat]);
-    map.fitBounds(bounds, { padding: 90, maxZoom: 7.3, duration: 800 });
+    map.addLayer({ id: 'bureau-answer-line', type: 'line', source: 'bureau-answer-line', paint: { 'line-color': '#7c4c92', 'line-width': 4, 'line-dasharray': [1.5, 1.5] } });
+    const bounds = new maplibregl.LngLatBounds(); bounds.extend([playerGuess.lng, playerGuess.lat]); bounds.extend([target.lng, target.lat]); map.fitBounds(bounds, { padding: 90, maxZoom: 7.3, duration: 800 });
   };
 
   const handleConfirmPin = () => {
     if (!guess || !isMapReady) return;
-
-    sound.playStamp();
-    submittedRef.current = true;
-
-    const target = { lat: challenge.lat, lng: challenge.lng };
-    const dist = haversineDistanceKm(guess, target);
-    const score = scoreMapDistance(dist);
-
-    setDistanceKm(dist);
-    setEarnedScore(score);
-    setIsSubmitted(true);
-    revealAnswer(guess);
+    sound.playStamp(); submittedRef.current = true;
+    const dist = haversineDistanceKm(guess, { lat: challenge.lat, lng: challenge.lng });
+    const score = scoreMapDistance(dist); setDistanceKm(dist); setEarnedScore(score); setIsSubmitted(true); revealAnswer(guess);
   };
 
   return (
-    <div className="w-full flex flex-col items-center max-w-6xl mx-auto font-['Plus_Jakarta_Sans']">
-      <div className="w-full bg-[#162235] border-2 border-[#d4af37] rounded-lg p-4 mb-4 shadow-xl text-center">
-        <div className="flex items-center justify-center gap-2 mb-1">
-          <Compass className="text-[#ffd700]" size={20} />
-          <span className="font-['Courier_Prime'] text-xs font-bold text-[#e6c875] tracking-widest uppercase">
-            Cartographical Assessment • Where in the UK?
-          </span>
-        </div>
-        <h2 className="font-['Cinzel'] font-black text-xl sm:text-2xl text-white tracking-wide">
-          {challenge.prompt}
-        </h2>
-        <p className="font-['Courier_Prime'] text-xs text-slate-300 mt-1">
-          <strong className="text-[#ffd700]">{currentPlayer.name}</strong>, place the pin. The map has been stripped of labels because this is an assessment, not assisted shopping.
-        </p>
-      </div>
-
-      <div className="w-full grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_310px] gap-4 items-start">
-        <div className="relative w-full h-[540px] sm:h-[620px] overflow-hidden rounded-xl border-4 border-[#d4af37] bg-[#dfe7df] shadow-[0_18px_45px_rgba(0,0,0,0.55)]">
-          <div ref={mapContainerRef} className="absolute inset-0" aria-label="Interactive unlabelled map of the United Kingdom" />
-
-          {!isMapReady && !mapError && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#102034]/85 text-[#f5deb3] font-['Cinzel'] font-bold tracking-wider">
-              Opening the Atlas Room…
+    <div className="w-full max-w-6xl mx-auto font-['Plus_Jakarta_Sans'] space-y-5">
+      <ApparatusFrame eyebrow="Atlas Room • Illuminated Ordnance Table" title={challenge.prompt} subtitle={<><strong>{currentPlayer.name}</strong>, place the plotting pin. All names have been removed by people who would quite like you to know this yourself.</>} icon={<Compass size={28}/>} accent="#2fa8ae" instrumentLabel="MAP TABLE">
+        <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_310px] gap-5 items-start">
+          <div className="relative rounded-[24px] border-[5px] border-[#68462d] bg-[#1d7277] p-3 shadow-[inset_0_0_0_5px_#84d2ce,0_10px_0_#68462d]">
+            <div className="absolute -top-3 left-8 right-8 h-5 rounded-full border-2 border-[#68462d] bg-[#f0cd61] shadow-[0_3px_0_#68462d]" />
+            <div className="relative h-[540px] sm:h-[620px] overflow-hidden rounded-2xl border-[3px] border-[#68462d] bg-[#dfe7df] shadow-inner">
+              <div ref={mapContainerRef} className="absolute inset-0" aria-label="Interactive unlabelled map of the United Kingdom" />
+              {!isMapReady && !mapError && <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#d8eadc]/90 font-['Cinzel'] font-black text-[#31515a]">Illuminating survey table…</div>}
+              {mapError && <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#f2d1c7]/95 p-8 text-center font-['Fraunces'] text-[#733d37]">{mapError}</div>}
+              <div className="absolute bottom-8 left-3 z-10 rounded-lg border-2 border-[#765139] bg-[#fff0bf]/90 px-3 py-1.5 font-['Courier_Prime'] text-[9px] font-black uppercase tracking-wider text-[#60442d] shadow">names removed • geography remains</div>
             </div>
-          )}
-
-          {mapError && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#2b1414]/95 p-8 text-center text-rose-100 font-['Fraunces']">
-              {mapError}
-            </div>
-          )}
-
-          <div className="absolute left-3 bottom-8 z-10 rounded-md border border-[#744f32]/40 bg-[#f4e8ca]/90 px-3 py-1.5 text-[10px] font-['Courier_Prime'] font-bold uppercase tracking-wider text-[#5a432f] shadow">
-            Labels &amp; POI names suppressed by Bureau order
+            <div className="mt-3 grid grid-cols-5 gap-2">{['COAST','RIVERS','ROADS','RELIEF','NERVE'].map((label,i)=><div key={label} className={`rounded-md border-2 border-[#68462d] px-1 py-2 text-center font-['Courier_Prime'] text-[8px] font-black ${i===4?'bg-[#e75e4f] text-white':'bg-[#f4d36d] text-[#65452e]'}`}>{label}</div>)}</div>
           </div>
-        </div>
 
-        <div className="w-full bg-[#121c2c] border-2 border-[#d4af37]/60 rounded-xl p-5 flex flex-col gap-4 shadow-xl">
-          {!isSubmitted ? (
-            <>
-              <div>
-                <span className="font-['Courier_Prime'] text-[10px] text-[#ffd700] uppercase tracking-widest font-bold">
-                  Target File
-                </span>
-                <h3 className="font-['Cinzel'] font-black text-xl text-white mt-1">{challenge.targetName}</h3>
-                <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                  Tap anywhere on the map to place your marker. You can move it as often as you like before locking the answer.
-                </p>
-              </div>
-
-              <div className="rounded-lg border border-slate-700 bg-[#0b1320] p-3">
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Crosshair size={16} className={guess ? 'text-[#ffd700]' : 'text-slate-500'} />
-                  <span className="font-['Courier_Prime'] text-xs">
-                    {guess ? 'Candidate marker positioned' : 'Awaiting candidate marker'}
-                  </span>
-                </div>
-              </div>
-
-              <button
-                disabled={!guess || !isMapReady}
-                onClick={handleConfirmPin}
-                className={`w-full py-3.5 rounded-lg font-['Cinzel'] font-black text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2 ${
-                  guess && isMapReady
-                    ? 'bg-gradient-to-r from-[#d4af37] to-[#f5deb3] text-[#0a101d] hover:brightness-110 cursor-pointer'
-                    : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
-                }`}
-              >
-                <Navigation size={17} />
-                Lock Location
-              </button>
-            </>
-          ) : (
-            <>
-              <div className="border-b border-[#d4af37]/30 pb-3">
-                <span className="font-['Courier_Prime'] text-[10px] text-emerald-300 uppercase tracking-widest font-bold">
-                  Official Location Revealed
-                </span>
-                <h3 className="font-['Cinzel'] font-black text-xl text-white mt-1">{challenge.targetName}</h3>
-              </div>
-
+          <aside className="rounded-2xl border-[4px] border-[#68462d] bg-[#fff5d8] p-5 shadow-[0_7px_0_#68462d]">
+            <div className="mb-4 rounded-xl border-2 border-[#68462d] bg-[#e75e4f] p-4 text-white shadow-[0_4px_0_#68462d]">
+              <div className="font-['Courier_Prime'] text-[9px] font-black uppercase tracking-widest">Target file</div>
+              <h3 className="font-['Cinzel'] text-lg font-black">{challenge.targetName}</h3>
+            </div>
+            {!isSubmitted ? <>
+              <div className="mb-4 flex items-center gap-2 rounded-xl border-2 border-[#9e8258] bg-[#efe0ba] p-3 text-[#5a4a38]"><Crosshair size={18} className={guess?'text-[#e65b4b]':'text-[#927e64]'}/><span className="font-['Courier_Prime'] text-xs font-bold">{guess?'Plotting pin positioned':'Tap the map to place the plotting pin'}</span></div>
+              <button disabled={!guess || !isMapReady} onClick={handleConfirmPin} className="flex w-full items-center justify-center gap-2 rounded-xl border-[3px] border-[#68462d] bg-[#e65d4e] py-4 font-['Cinzel'] text-xs font-black uppercase tracking-widest text-white shadow-[0_5px_0_#68462d] active:translate-y-1 active:shadow-none disabled:opacity-40"><Navigation size={18}/> Lock Coordinates</button>
+            </> : <>
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-lg border border-[#d4af37]/40 bg-[#0b1320] p-3 text-center">
-                  <span className="text-[9px] font-['Courier_Prime'] text-slate-400 uppercase block">Distance out</span>
-                  <strong className="font-['Space_Mono'] text-xl text-[#f5deb3]">
-                    {distanceKm !== null ? `${distanceKm.toFixed(distanceKm < 10 ? 1 : 0)} km` : '—'}
-                  </strong>
-                </div>
-                <div className="rounded-lg border border-[#d4af37] bg-[#16253b] p-3 text-center">
-                  <span className="text-[9px] font-['Courier_Prime'] text-slate-400 uppercase block">Bureau score</span>
-                  <strong className="font-['Space_Mono'] text-2xl text-[#ffd700]">{earnedScore}</strong>
-                </div>
+                <div className="rounded-xl border-[3px] border-[#68462d] bg-[#f3d66f] p-3 text-center shadow-[0_4px_0_#68462d]"><span className="font-['Courier_Prime'] text-[9px] font-black uppercase text-[#715139]">Distance out</span><strong className="block font-['Space_Mono'] text-xl text-[#374c52]">{distanceKm!==null?`${distanceKm.toFixed(distanceKm<10?1:0)} km`:'—'}</strong></div>
+                <div className="rounded-xl border-[3px] border-[#68462d] bg-[#53b9b4] p-3 text-center text-white shadow-[0_4px_0_#68462d]"><span className="font-['Courier_Prime'] text-[9px] font-black uppercase">Bureau score</span><strong className="block font-['Space_Mono'] text-2xl">{earnedScore}</strong></div>
               </div>
-
-              <div className="flex items-center gap-2 text-[11px] font-['Courier_Prime'] text-slate-400">
-                <MapPin size={14} className="text-[#e7553c]" /> Your pin
-                <span className="mx-1">•</span>
-                <MapPin size={14} className="text-[#168f69]" /> Correct location
-              </div>
-            </>
-          )}
+              <div className="mt-4 rounded-xl border-2 border-[#9e8258] bg-[#efe0ba] p-3 font-['Courier_Prime'] text-[10px] text-[#654a34]"><div className="flex items-center gap-2"><MapPin size={15} className="text-[#e65b4b]"/>Your pin</div><div className="mt-1 flex items-center gap-2"><MapPin size={15} className="text-[#168f69]"/>Correct location</div></div>
+            </>}
+          </aside>
         </div>
-      </div>
-
-      {isSubmitted && (
-        <div className="w-full max-w-4xl mt-4">
-          <CommentaryPlaque
-            score={earnedScore}
-            playerName={currentPlayer.name}
-            roundType="WHERE_IN_BRITAIN"
-            questionPrompt={challenge.prompt}
-            explanation={challenge.explanation}
-            source={challenge.source}
-            errorKm={distanceKm ?? undefined}
-            isCorrect={earnedScore >= 700}
-            onProceed={() => onComplete(earnedScore, distanceKm ?? 0)}
-          />
-        </div>
-      )}
+      </ApparatusFrame>
+      {isSubmitted && <CommentaryPlaque score={earnedScore} playerName={currentPlayer.name} roundType="WHERE_IN_BRITAIN" questionPrompt={challenge.prompt} explanation={challenge.explanation} source={challenge.source} errorKm={distanceKm ?? undefined} isCorrect={earnedScore>=700} onProceed={()=>onComplete(earnedScore,distanceKm??0)} />}
     </div>
   );
 };
