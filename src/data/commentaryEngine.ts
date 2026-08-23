@@ -1,109 +1,190 @@
 /**
  * THE BUREAU COMMENTARY ENGINE
- * Generates dry, merciless, context-specific British assessment remarks.
+ *
+ * The primary rule is simple: use the actual question, answer and factual context
+ * before reaching for a generic score joke. Score-only remarks are a fallback.
  */
 
-interface ScoreCommentaryInput {
+export interface BureauPlayerHistory {
+  roundsPlayed?: number;
+  correctAnswers?: number;
+  totalAnswers?: number;
+  bestScore?: number;
+  worstScore?: number;
+}
+
+export interface ScoreCommentaryInput {
   score: number;
   playerName: string;
   roundType: string;
   questionPrompt?: string;
+  playerAnswer?: string | number;
+  correctAnswer?: string | number;
+  explanation?: string;
   errorKm?: number;
   errorPercent?: number;
+  riskedValue?: number;
   isCorrect?: boolean;
+  history?: BureauPlayerHistory;
 }
 
+const firstSentence = (text?: string): string => {
+  if (!text) return '';
+  const match = text.trim().match(/^.*?[.!?](?:\s|$)/);
+  return (match?.[0] ?? text.trim()).trim();
+};
+
+const asFiniteNumber = (value: unknown): number | null => {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value === 'string') {
+    const parsed = Number(value.replace(/,/g, '').replace(/[^0-9.+-]/g, ''));
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
+};
+
+const historyTail = (history?: BureauPlayerHistory): string => {
+  if (!history || (history.totalAnswers ?? 0) < 4) return '';
+  const total = history.totalAnswers ?? 0;
+  const correct = history.correctAnswers ?? 0;
+  const rate = total > 0 ? correct / total : 0;
+  if (rate >= 0.8) return ' This is becoming an irritating pattern of competence.';
+  if (rate <= 0.3) return ' The Bureau notes that this is no longer an isolated incident.';
+  return '';
+};
+
+const mapAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'WHERE_IN_BRITAIN' || input.errorKm === undefined) return null;
+  const target = input.correctAnswer ? String(input.correctAnswer) : 'the target';
+  const km = input.errorKm;
+  if (km < 8) return `${km.toFixed(1)} km from ${target}. That is uncomfortably accurate. The Atlas Room has checked the pin twice and, disappointingly, cannot find grounds for an appeal.`;
+  if (km < 25) return `${km.toFixed(1)} km from ${target}. Close enough that a determined taxi driver could repair the mistake, though probably not without commenting on it.`;
+  if (km < 70) return `${km.toFixed(0)} km from ${target}. You have the right part of the country, which the Bureau is prepared to record as progress rather than triumph.`;
+  if (km < 160) return `${km.toFixed(0)} km from ${target}. That is no longer a local misunderstanding; you have moved the place into a noticeably different part of the country.`;
+  if (km < 320) return `${km.toFixed(0)} km from ${target}. At this distance the relocation requires paperwork, new road signs and several extremely confused residents.`;
+  return `${km.toFixed(0)} km from ${target}. You did not so much locate it as propose an alternative Britain in which geography has become optional.`;
+};
+
+const estimateAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'CLOSEST_WINS' || input.errorPercent === undefined) return null;
+  const guess = asFiniteNumber(input.playerAnswer);
+  const correct = asFiniteNumber(input.correctAnswer);
+  const error = input.errorPercent;
+
+  if (guess !== null && correct !== null) {
+    const difference = Math.abs(guess - correct);
+    const direction = guess > correct ? 'high' : guess < correct ? 'low' : 'exactly right';
+    if (difference === 0) return `${guess.toLocaleString()} is exactly correct. The measuring apparatus has been opened to check for tampering.`;
+    if (error < 5) return `You said ${guess.toLocaleString()}; the certified figure is ${correct.toLocaleString()}. Only ${error.toFixed(1)}% ${direction}. Annoyingly precise.`;
+    if (error < 20) return `You said ${guess.toLocaleString()}; reality says ${correct.toLocaleString()}. That's ${error.toFixed(1)}% ${direction}—respectable, although the Statistics Office will not be naming a wing after you.`;
+    if (error < 60) return `You said ${guess.toLocaleString()}; the answer is ${correct.toLocaleString()}, a difference of ${difference.toLocaleString()}. At ${error.toFixed(0)}% ${direction}, this has crossed from estimation into creative accounting.`;
+    return `You said ${guess.toLocaleString()}; the certified answer is ${correct.toLocaleString()}. An error of ${error.toFixed(0)}% suggests the figure was derived from instinct, weather and possibly a dream.`;
+  }
+
+  if (error < 5) return `Only ${error.toFixed(1)}% out. The Bureau dislikes how little there is to criticise here.`;
+  if (error < 20) return `${error.toFixed(1)}% out. Perfectly serviceable estimation, which is bureaucratic language for “do not become pleased with yourself.”`;
+  if (error < 60) return `${error.toFixed(0)}% out. A confident approximation of a number that reality had already settled.`;
+  return `${error.toFixed(0)}% out. The Statistics Office has classified this as numerical fiction.`;
+};
+
+const stopScoreAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'STOP_THE_SCORE') return null;
+  const risked = input.riskedValue ?? input.score;
+  const answer = input.playerAnswer !== undefined ? `“${String(input.playerAnswer)}”` : 'your answer';
+  const correct = input.correctAnswer !== undefined ? `“${String(input.correctAnswer)}”` : 'the correct answer';
+
+  if (input.isCorrect) {
+    if (risked >= 850) return `You risked ${risked} points on ${answer}, and it was correct. The confidence was outrageous; more irritatingly, it was justified.`;
+    if (risked <= 300) return `${answer} was correct, but you only trusted it with ${risked} points. Excellent knowledge accompanied by the financial courage of a damp envelope.`;
+    return `${answer} was correct and you banked ${risked}. Sensible confidence: competent enough to score, restrained enough to deny us a spectacular failure.`;
+  }
+
+  if (input.correctAnswer !== undefined) {
+    if (risked >= 800) return `You staked ${risked} points on ${answer}. The answer was ${correct}. This is the rare administrative achievement of being both extremely confident and entirely wrong.`;
+    return `You backed ${answer} for ${risked} points. The certified answer was ${correct}; the gauge has therefore converted your confidence into zero with admirable efficiency.`;
+  }
+  return `You risked ${risked} points and were wrong. The machine has returned the full amount to the Bureau, where it will be better looked after.`;
+};
+
+const imageAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'IMAGE_REVEAL' || input.playerAnswer === undefined || input.correctAnswer === undefined) return null;
+  if (input.isCorrect) {
+    return `You identified ${String(input.correctAnswer)} while ${input.score} points were still available. The optical department was hoping to keep the shutters closed a little longer.`;
+  }
+  return `You identified the image as “${String(input.playerAnswer)}”. It was ${String(input.correctAnswer)}. The apparatus can improve focus; it cannot negotiate with the conclusion you reached.`;
+};
+
+const listAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'THE_LIST') return null;
+  const answer = input.playerAnswer !== undefined ? String(input.playerAnswer) : '';
+  if (input.isCorrect && input.score >= 900) return `${answer || 'The run'} survived to ${input.score} points. The filing cabinet is nearly empty and, against expectation, you are not.`;
+  if (input.isCorrect && input.score > 0) return `${answer || 'The run'} was banked for ${input.score}. Prudence has defeated greed, which is not the result the entertainment department was hoping for.`;
+  if (!input.isCorrect && answer) return `The run ended on “${answer}”. Everything accumulated before it has been converted into an educational memory worth precisely zero points.`;
+  if (!input.isCorrect) return `The list collapsed before anything could be banked. An impressively efficient route from knowledge to nothing.`;
+  return null;
+};
+
+const bidAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'PUT_UP_OR_SHUT_UP') return null;
+  if (input.isCorrect) return `The claim was fulfilled and ${input.score} points have been awarded. Unfortunately, the bidding confidence now has documentary evidence behind it.`;
+  if (input.playerAnswer !== undefined) return `The contract collapsed on “${String(input.playerAnswer)}”. One invalid entry was all it took to transform public confidence into a very official zero.`;
+  return `The contract was not fulfilled. The Bureau appreciates the ambition; reality has declined to countersign it.`;
+};
+
+const rankAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'RANK_IT') return null;
+  if (input.score >= 900) return `${input.score} points. The sequence is almost entirely where history, geography or physics left it. Disturbingly orderly.`;
+  if (input.score >= 650) return `${input.score} points. Most relationships survived your rearrangement, though several items have filed formal complaints about their new positions.`;
+  if (input.score >= 350) return `${input.score} points. There is recognisable structure here, in much the same way that a dropped filing cabinet still contains files.`;
+  return `${input.score} points. The sorting rail has requested a full recount and a quiet moment alone.`;
+};
+
+const topTenAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'TOP_10') return null;
+  if (input.playerAnswer !== undefined) {
+    const text = String(input.playerAnswer);
+    if (input.isCorrect) return `${text}. The Records Office is reluctantly impressed by how much of the board you managed to expose.`;
+    return `${text}. The remaining shutters will now be opened by staff with access to the answer key.`;
+  }
+  return null;
+};
+
+const contextualAssessment = (input: ScoreCommentaryInput): string | null =>
+  mapAssessment(input) ??
+  estimateAssessment(input) ??
+  stopScoreAssessment(input) ??
+  imageAssessment(input) ??
+  listAssessment(input) ??
+  bidAssessment(input) ??
+  rankAssessment(input) ??
+  topTenAssessment(input);
+
+const scoreFallback = (input: ScoreCommentaryInput): string => {
+  const { score, isCorrect } = input;
+  if (isCorrect === false && input.playerAnswer !== undefined && input.correctAnswer !== undefined) {
+    return `You submitted “${String(input.playerAnswer)}”; the certified answer was “${String(input.correctAnswer)}”. The discrepancy has been recorded in ink rather than sympathy.`;
+  }
+  if (score >= 950) return `${score} points. The calculation has been checked twice in the hope of finding an error. None was available.`;
+  if (score >= 750) return `${score} points. Strong work. The Bureau has issued a small nod and immediately withdrawn it.`;
+  if (score >= 450) return `${score} points. Adequate enough to avoid an inquiry, not impressive enough to cause one.`;
+  if (score > 0) return `${score} points. They are legally yours, even if nobody is entirely proud of the circumstances.`;
+  return 'Zero points. A remarkably uncluttered contribution to the scoreboard.';
+};
+
 export function generateBureauAssessment(input: ScoreCommentaryInput): string {
-  const { score, playerName, roundType, errorKm, errorPercent, isCorrect } = input;
+  const contextual = contextualAssessment(input);
+  const fact = firstSentence(input.explanation);
+  const tail = historyTail(input.history);
 
-  // 1. Specific Map Distance Commentary
-  if (roundType === 'WHERE_IN_BRITAIN' && errorKm !== undefined) {
-    if (errorKm < 15) {
-      return `A distance error of just ${errorKm.toFixed(1)} km. An unnervingly competent drop. The Bureau suspects either formal cartographic training or deeply suspicious local espionage.`;
-    }
-    if (errorKm < 45) {
-      return `Missed by ${errorKm.toFixed(1)} km. You have landed in the adjacent parish. A respectable effort, though the locals would almost certainly pelt you with turnip tops for claiming they are the same county.`;
-    }
-    if (errorKm < 120) {
-      return `An error of ${errorKm.toFixed(0)} km. You have confounded two entirely distinct cultural regions of Great Britain. The Department of Boundary Disputes has logged this insult.`;
-    }
-    if (errorKm < 300) {
-      return `Missed by ${errorKm.toFixed(0)} km. That is not merely wrong; that is an entirely different dialect, tax code, and geopolitical climate.`;
-    }
-    return `An astounding ${errorKm.toFixed(0)} km wide of the mark. You appear to have aimed for the North Sea or a remote Celtic sea-trough. The Bureau will dispatch lifeboats on your behalf.`;
+  if (contextual) {
+    // The result dossier already shows the full archival explanation. We only
+    // reuse the first factual sentence when it directly enriches a generic result.
+    return `${contextual}${tail}`;
   }
 
-  // 2. Specific Numerical Estimate Commentary
-  if (roundType === 'CLOSEST_WINS' && errorPercent !== undefined) {
-    if (errorPercent < 5) {
-      return `An estimate error of only ${errorPercent.toFixed(1)}%. Mathematically offensive in its accuracy. The calculation has been logged with profound reluctance.`;
-    }
-    if (errorPercent < 20) {
-      return `An inaccuracy margin of ${errorPercent.toFixed(1)}%. Tolerable. You would survive a minor civil engineering contract, though the bridge might squeak.`;
-    }
-    if (errorPercent < 60) {
-      return `Out by ${errorPercent.toFixed(0)}%. A courageous display of pure fiction. You appear to have calculated this value using emotional resonance rather than arithmetic.`;
-    }
-    return `An inaccuracy of ${errorPercent.toFixed(0)}%. Spectacular. You have vastly reorganised the laws of physics and demographic reality to accommodate your guess.`;
+  if (fact && input.isCorrect === false && input.correctAnswer === undefined) {
+    return `${fact} ${scoreFallback(input)}${tail}`;
   }
 
-  // 3. Stop The Score / Confidence Commentary
-  if (roundType === 'STOP_THE_SCORE') {
-    if (isCorrect && score > 850) {
-      return `You stopped the dial at ${score} and answered correctly. We applaud your unmitigated audacity, while quietly regretting having to award the points.`;
-    }
-    if (isCorrect && score < 400) {
-      return `You answered correctly but banked a pathetic ${score} points. The Bureau commends your factual recall while mourning your complete lack of moral backbone.`;
-    }
-    if (!isCorrect && score > 800) {
-      return `Risked ${score} points on an erroneous answer and walked away with precisely zero. The Treasury thanks you for your fiscal donation.`;
-    }
-    if (!isCorrect) {
-      return `Incorrect. The gauge resets to zero. Your profound silence on the matter is warmly appreciated.`;
-    }
-  }
-
-  // 4. Score Bracket Commentary
-  if (score >= 950) {
-    const highRemarks = [
-      `You scored ${score}. The Bureau has reviewed the calculation three times in the hope of finding a clerical error. None was found.`,
-      `You scored ${score}. A triumph of disturbing proportion. Please do not let this foster unwarranted self-esteem.`,
-      `You scored ${score}. Flawless execution. Your assessment supervisor has been reprimanded for making the prompt too accessible.`
-    ];
-    return highRemarks[Math.floor(Math.random() * highRemarks.length)];
-  }
-
-  if (score >= 700) {
-    const goodRemarks = [
-      `You scored ${score}. A thoroughly sound performance. A polite nod from Whitehall, though nobody is standing to applaud.`,
-      `You scored ${score}. Above standard civil service baseline. You may continue to operate the machinery without immediate supervision.`,
-      `You scored ${score}. Reasonably adequate. Her Majesty's inspectors are neither delighted nor reaching for the disciplinary files.`
-    ];
-    return goodRemarks[Math.floor(Math.random() * goodRemarks.length)];
-  }
-
-  if (score >= 400) {
-    const midRemarks = [
-      `You scored ${score}. The mathematical median of mediocrity. Not a catastrophe, but certainly not going on the celebratory letterhead.`,
-      `You scored ${score}. You have achieved what the committee describes as "technically present in the room".`,
-      `You scored ${score}. An outcome devoid of both triumph and dramatic tragedy. Simply a bureaucratic blur.`
-    ];
-    return midRemarks[Math.floor(Math.random() * midRemarks.length)];
-  }
-
-  if (score > 0) {
-    const lowRemarks = [
-      `You scored ${score}. The Bureau has awarded these points purely out of administrative pity. Do not spend them all in one parish.`,
-      `You scored ${score}. We have rounded down where possible. Your appeal against this decision will be filed in the shredder.`,
-      `You scored ${score}. A token gesture. The Treasury has recorded this transaction with visible grimacing.`
-    ];
-    return lowRemarks[Math.floor(Math.random() * lowRemarks.length)];
-  }
-
-  const zeroRemarks = [
-    `Zero points awarded. An unblemished record of complete failure. The Bureau admires your total commitment to nothingness.`,
-    `Zero. A score so pristine and devoid of merit that it qualifies for preservation in the National Archives.`,
-    `Zero points. The committee sat in silence for forty seconds before deciding not to console you.`
-  ];
-  return zeroRemarks[Math.floor(Math.random() * zeroRemarks.length)];
+  return `${scoreFallback(input)}${tail}`;
 }
