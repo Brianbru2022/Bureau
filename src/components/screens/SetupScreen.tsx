@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Player } from '../../types';
+import { Player, BureauAssetKey } from '../../types';
 import { sound } from '../../sound/audioEngine';
 import { assignSecretDirectives } from '../../data/secretDirectives';
-import { ArrowRight, UserCheck, Shuffle } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface SetupScreenProps {
   playerCount: number;
@@ -18,6 +18,7 @@ const BRITISH_DEPARTMENTS = [
   'Ministry of Sarcastic Oversight',
   'Crown Archive of Questionable Claims'
 ];
+const STARTER_ASSETS: BureauAssetKey[] = ['SECOND_OPINION', 'REFILE', 'INSURANCE'];
 
 export const SetupScreen: React.FC<SetupScreenProps> = ({
   playerCount,
@@ -56,7 +57,7 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({
       color: ['#4fd1c5', '#f6ad55', '#d6bcfa', '#feb2b2'][i % 4],
       department: p.department,
       score: 0,
-      assets: ['SECOND_OPINION', 'DOUBLE_ENTRY'], // Start with 2 Bureau credentials
+      assets: [STARTER_ASSETS[Math.floor(Math.random() * STARTER_ASSETS.length)]],
       secretDirective: directives[i],
       stats: {
         roundsPlayed: 0,
@@ -70,8 +71,13 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({
         successfulRisks: 0,
         highestBankedList: 0,
         categoriesAttempted: new Set<string>(),
-        interceptCount: 0
-      }
+        interceptCount: 0,
+        challengeScores: [],
+        mapScores: [],
+        successfulListBanks: [],
+        categoryScores: {},
+        assetsUsed: []
+      } as Player['stats']
     }));
 
     onProceedToDirectives(createdPlayers);
@@ -87,7 +93,7 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({
           Candidate Enrolment Dossiers
         </h2>
         <p className="font-['Fraunces'] text-xs sm:text-sm text-slate-300 italic mt-1">
-          Provide your candidate credentials before Her Majesty's inspectors commence the assessment.
+          Provide your candidate credentials before the Bureau commences the assessment.
         </p>
       </div>
 
@@ -107,7 +113,6 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Avatar Selector Button */}
               <button
                 type="button"
                 onClick={() => handleCycleAvatar(idx)}
@@ -131,7 +136,6 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({
               </div>
             </div>
 
-            {/* Department Moniker */}
             <div className="bg-[#0b1320] p-2.5 rounded border border-slate-800 flex items-center justify-between text-xs">
               <span className="font-['Courier_Prime'] text-[10px] text-slate-400 truncate">
                 {prof.department}
