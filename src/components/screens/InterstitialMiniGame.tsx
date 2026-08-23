@@ -3,7 +3,6 @@ import { Archive, ArrowRight, CircleDot, FileArchive, Gauge, ShieldQuestion } fr
 import type { BureauAssetKey, Player } from '../../types';
 import {
   HIGHER_LOWER_PROMPTS,
-  MINI_GAME_ASSET_POOL,
   randomAsset,
   type MiniGameType
 } from '../../data/miniGames';
@@ -13,7 +12,6 @@ export interface MiniGameEffect {
   playerId: string;
   pointsDelta?: number;
   asset?: BureauAssetKey;
-  priorityNextRound?: boolean;
   note: string;
 }
 
@@ -26,7 +24,6 @@ interface InterstitialMiniGameProps {
 type ChoiceOutcome = {
   pointsDelta?: number;
   asset?: BureauAssetKey;
-  priorityNextRound?: boolean;
   label: string;
 };
 
@@ -34,22 +31,20 @@ const shuffle = <T,>(items: T[]): T[] => [...items].sort(() => Math.random() - 0
 
 const buildChoiceOutcomes = (type: MiniGameType, count: number): ChoiceOutcome[] => {
   if (type === 'RED_BUTTON') {
-    const pool: ChoiceOutcome[] = shuffle([
+    return shuffle([
       { pointsDelta: 318, label: '+318 points. A suspiciously productive button.' },
       { pointsDelta: 173, label: '+173 points. Administrative excitement remains limited.' },
       { asset: randomAsset(), label: 'A Bureau Asset has dropped out of the machinery.' },
       { pointsDelta: -91, label: '−91 points. The red button was red for a reason.' }
-    ]);
-    return pool.slice(0, count);
+    ]).slice(0, count);
   }
 
-  const pool: ChoiceOutcome[] = shuffle([
+  return shuffle([
     { asset: randomAsset(), label: 'The drawer contains a Bureau Asset.' },
     { pointsDelta: 264, label: '+264 points were filed here for reasons nobody can explain.' },
     { pointsDelta: 121, label: '+121 points. A modest but legally defensible discovery.' },
-    { priorityNextRound: true, label: 'Priority Access: you will start the next round.' }
-  ]);
-  return pool.slice(0, count);
+    { asset: 'PRIORITY_ACCESS' as BureauAssetKey, label: 'Priority Access clearance. Keep it until you decide a queue no longer applies to you.' }
+  ]).slice(0, count);
 };
 
 export const InterstitialMiniGame: React.FC<InterstitialMiniGameProps> = ({ type, players, onComplete }) => {
@@ -92,7 +87,6 @@ export const InterstitialMiniGame: React.FC<InterstitialMiniGameProps> = ({ type
       playerId: currentPlayer.id,
       pointsDelta: outcome.pointsDelta,
       asset: outcome.asset,
-      priorityNextRound: outcome.priorityNextRound,
       note: outcome.label
     });
   };
