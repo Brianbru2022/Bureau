@@ -1,0 +1,55 @@
+{
+  "rooms": [
+    "grand-hall",
+    "atlas-room",
+    "hall-of-records",
+    "visual-gallery",
+    "statistics-office",
+    "risk-chamber",
+    "archive",
+    "final-chamber",
+    "red-button-office",
+    "file-cabinet",
+    "three-files",
+    "awards-hall"
+  ],
+  "portraits": 8,
+  "assets": [
+    "second-opinion",
+    "refile",
+    "double-entry",
+    "intercept",
+    "insurance",
+    "priority-access"
+  ],
+  "directives": [
+    "gambler",
+    "cartographer",
+    "opportunist",
+    "generalist",
+    "specialist",
+    "survivor"
+  ],
+  "commendations": [
+    "human-sat-nav",
+    "walking-encyclopaedia",
+    "confidently-incorrect",
+    "spectacular-recovery",
+    "bureaucratic-survivor",
+    "unpleasantly-well-rounded",
+    "disturbingly-specific"
+  ],
+  "review": [
+    "safe",
+    "risky",
+    "deeply-questionable"
+  ],
+  "stamps": [
+    "passed",
+    "failed",
+    "certified",
+    "rejected",
+    "classified",
+    "intercepted"
+  ]
+}
