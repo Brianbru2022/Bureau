@@ -1,7 +1,7 @@
 import React from 'react';
 import { BureauInsignia } from '../common/BureauInsignia';
 import { sound } from '../../sound/audioEngine';
-import { Play, Users, BookOpen, Shield, Award, HelpCircle } from 'lucide-react';
+import { ArrowRight, Users } from 'lucide-react';
 
 interface TitleScreenProps {
   onStartGame: (playerCount: number) => void;
@@ -9,36 +9,30 @@ interface TitleScreenProps {
 
 export const TitleScreen: React.FC<TitleScreenProps> = ({ onStartGame }) => {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center text-center max-w-4xl mx-auto py-6 sm:py-10 px-4 font-['Plus_Jakarta_Sans']">
-      {/* Grand Insignia */}
-      <div className="mb-4 transform hover:scale-105 transition-transform duration-500">
-        <BureauInsignia size={110} />
+    <div className="flex-1 flex flex-col items-center justify-center text-center max-w-5xl mx-auto py-4 sm:py-8 px-3">
+      <div className="bureau-float mb-3 rounded-[28px] border-[4px] border-[#7e5c24] bg-[#fff7df] px-7 py-4 shadow-[0_8px_0_#7b4f32,0_18px_32px_rgba(76,52,33,.2)]">
+        <BureauInsignia size={104} />
       </div>
 
-      {/* Royal / Institutional Moniker */}
-      <div className="mb-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1b263b]/80 border border-[#d4af37]/40 shadow-inner">
-        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-        <span className="font-['Courier_Prime'] text-[10px] sm:text-xs font-bold tracking-[0.25em] text-[#e6c875] uppercase">
-          Department of Assessment &amp; Cataloguing
-        </span>
+      <div className="relative max-w-3xl bureau-paper rounded-[28px] border-[4px] border-[#7e5c24] px-7 sm:px-12 py-6 sm:py-8 mb-6">
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full border-2 border-[#7e5c24] bg-[#2f8f95] px-5 py-1.5 text-[#fff7df] font-['Courier_Prime'] text-[10px] font-bold uppercase tracking-[0.25em] shadow-[0_4px_0_#7b4f32]">
+          Crown Bureau of Assessment &amp; Cataloguing
+        </div>
+        <h1 className="font-['Cinzel'] font-black text-5xl sm:text-7xl md:text-8xl text-[#244b55] tracking-[0.04em] uppercase leading-none drop-shadow-[0_3px_0_rgba(255,255,255,.7)]">
+          The Bureau
+        </h1>
+        <p className="font-['Fraunces'] text-base sm:text-xl text-[#6b4f3a] max-w-2xl mx-auto leading-relaxed mt-4 italic">
+          Britain's most overqualified institution for testing knowledge, judgement, nerve and your ability to be confidently wrong in public.
+        </p>
       </div>
 
-      {/* Main Title Typography */}
-      <h1 className="font-['Cinzel'] font-black text-4xl sm:text-6xl md:text-7xl text-white tracking-wider uppercase mb-2 drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
-        The Bureau
-      </h1>
+      <div className="w-full max-w-2xl rounded-[26px] border-[4px] border-[#6c4931] bg-[#67c4c1] p-5 sm:p-7 bureau-enamel">
+        <div className="flex items-center justify-center gap-2 mb-4 text-[#244b55]">
+          <Users size={19} />
+          <span className="font-['Cinzel'] font-black text-sm uppercase tracking-[0.13em]">How many candidates survived the journey here?</span>
+        </div>
 
-      <p className="font-['Fraunces'] text-base sm:text-xl text-[#f5deb3] max-w-2xl leading-relaxed mb-8 italic">
-        "Her Majesty's prestigious institution established to test, catalogue, and mercilessly judge human knowledge."
-      </p>
-
-      {/* Player Selection / Enter Bureau Box */}
-      <div className="w-full max-w-lg bg-[#141f30] border-2 border-[#d4af37] rounded-xl p-6 sm:p-8 shadow-[0_12px_45px_rgba(0,0,0,0.85)] flex flex-col items-center gap-5">
-        <span className="font-['Cinzel'] font-bold text-xs sm:text-sm text-[#ffd700] uppercase tracking-[0.2em]">
-          Select Number of Local Candidates (1–4)
-        </span>
-
-        <div className="grid grid-cols-4 gap-3 w-full">
+        <div className="grid grid-cols-4 gap-3">
           {[1, 2, 3, 4].map(num => (
             <button
               key={num}
@@ -46,50 +40,20 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({ onStartGame }) => {
                 sound.playStamp();
                 onStartGame(num);
               }}
-              className="py-4 rounded-lg bg-gradient-to-b from-[#1b2f48] to-[#122236] hover:from-[#243f60] hover:to-[#1a314d] border border-[#d4af37]/60 hover:border-[#ffd700] text-white font-['Space_Mono'] font-extrabold text-xl sm:text-2xl shadow-lg transition-all transform hover:-translate-y-1 active:translate-y-0 cursor-pointer flex flex-col items-center gap-1 group"
+              className="bureau-button rounded-2xl bg-[#fff7df] px-2 py-4 text-[#244b55] flex flex-col items-center gap-1 cursor-pointer"
             >
-              <span className="group-hover:text-[#ffd700] transition-colors">{num}</span>
-              <span className="font-['Courier_Prime'] text-[9px] text-slate-400 font-normal uppercase">
+              <span className="font-['Space_Mono'] font-black text-3xl">{num}</span>
+              <span className="font-['Courier_Prime'] text-[9px] font-bold uppercase tracking-wider text-[#765c47]">
                 {num === 1 ? 'Solo' : `${num} Players`}
               </span>
             </button>
           ))}
         </div>
 
-        <p className="font-['Courier_Prime'] text-[11px] text-slate-400">
-          Shared on 1 screen / tablet • No rapid timers during handovers • 100% British Institutional Severity
-        </p>
-      </div>
-
-      {/* Feature Highlights Bento Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-3xl mt-8">
-        <div className="p-3.5 bg-[#0f1726]/80 rounded-lg border border-[#d4af37]/20 text-left">
-          <div className="flex items-center gap-2 text-[#ffd700] mb-1 font-['Cinzel'] font-bold text-xs uppercase">
-            <Shield size={14} />
-            <span>Mathematical Rigour</span>
-          </div>
-          <p className="font-['Plus_Jakarta_Sans'] text-xs text-slate-400">
-            0–1000 continuous score curve calculated directly from geographical &amp; numerical error.
-          </p>
-        </div>
-
-        <div className="p-3.5 bg-[#0f1726]/80 rounded-lg border border-[#d4af37]/20 text-left">
-          <div className="flex items-center gap-2 text-[#ffd700] mb-1 font-['Cinzel'] font-bold text-xs uppercase">
-            <Users size={14} />
-            <span>Party Mechanics</span>
-          </div>
-          <p className="font-['Plus_Jakarta_Sans'] text-xs text-slate-400">
-            Secret Directives, Bureau Assets, Underdog Reviews, and the Grand Chamber Final Case.
-          </p>
-        </div>
-
-        <div className="p-3.5 bg-[#0f1726]/80 rounded-lg border border-[#d4af37]/20 text-left">
-          <div className="flex items-center gap-2 text-[#ffd700] mb-1 font-['Cinzel'] font-bold text-xs uppercase">
-            <Award size={14} />
-            <span>Merciless Voice</span>
-          </div>
-          <p className="font-['Plus_Jakarta_Sans'] text-xs text-slate-400">
-            Context-specific dry British wit evaluating triumphs, mediocre attempts, and total collapses.
+        <div className="mt-5 flex items-center justify-center gap-2 rounded-xl border-2 border-[#7e5c24]/40 bg-[#2f8f95] px-4 py-2.5 text-[#fff7df] shadow-inner">
+          <ArrowRight size={15} />
+          <p className="font-['Courier_Prime'] text-[10px] sm:text-xs font-bold uppercase tracking-wider">
+            One shared screen. No frantic handovers. Institutional mercy unavailable.
           </p>
         </div>
       </div>
