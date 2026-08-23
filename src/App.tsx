@@ -418,9 +418,7 @@ export default function App() {
       />
 
       {assetNotice && phase === 'PLAYING_ROUND' && (
-        <div className="mx-auto mb-2 max-w-3xl rounded-lg border border-[#4fd1c5]/50 bg-[#0d2530] px-4 py-2 text-center font-['Courier_Prime'] text-xs text-[#a7f3e8]">
-          {assetNotice}
-        </div>
+        <div className="mx-auto mb-2 max-w-3xl rounded-lg border border-[#4fd1c5]/50 bg-[#0d2530] px-4 py-2 text-center font-['Courier_Prime'] text-xs text-[#a7f3e8]">{assetNotice}</div>
       )}
 
       <main className="w-full flex-1 flex flex-col justify-center py-4 px-2 sm:px-4">
@@ -438,7 +436,7 @@ export default function App() {
             {currentChallenge.roundType === 'CLOSEST_WINS' && <ClosestWinsRound key={`${currentRoundIndex}-${currentChallenge.id}`} challenge={currentChallenge as ClosestWinsChallenge} players={players} onCompleteRound={(scores, errors) => handleRoundComplete(scores, { errors })} />}
             {currentChallenge.roundType === 'RANK_IT' && <RankItRound key={roundInstanceKey} challenge={currentChallenge as RankItChallenge} currentPlayer={activePlayer} onComplete={score => handleRoundComplete(score)} />}
             {currentChallenge.roundType === 'IMAGE_REVEAL' && <ImageRevealRound key={roundInstanceKey} challenge={currentChallenge as ImageRevealChallenge} currentPlayer={activePlayer} onComplete={score => handleRoundComplete(score)} />}
-            {currentChallenge.roundType === 'STOP_THE_SCORE' && <StopTheScoreRound key={roundInstanceKey} challenge={currentChallenge as StopTheScoreChallenge} currentPlayer={activePlayer} onComplete={(score, correct) => handleRoundComplete(score, { correct, riskedValue: correct ? score : undefined })} />}
+            {currentChallenge.roundType === 'STOP_THE_SCORE' && <StopTheScoreRound key={roundInstanceKey} challenge={currentChallenge as StopTheScoreChallenge} currentPlayer={activePlayer} onComplete={(score, correct, riskedValue) => handleRoundComplete(score, { correct, riskedValue })} />}
           </div>
         )}
 
