@@ -5,6 +5,7 @@ import {
   RoundConfig,
   Challenge,
   BureauAssetKey,
+  HiddenCommendation,
   WhereInBritainChallenge,
   Top10Challenge,
   PutUpOrShutUpChallenge,
@@ -14,28 +15,19 @@ import {
   ImageRevealChallenge,
   StopTheScoreChallenge
 } from './types';
-
-// Audio
 import { sound } from './sound/audioEngine';
-
-// Data
 import { allChallenges } from './data/questions';
 import { FINAL_CASES } from './data/finalCases';
-
-// Components
+import { selectSecretCommendations, type ScoreSnapshot } from './data/commendations';
 import { BureauRoomBackdrop } from './components/common/BureauRoomBackdrop';
 import { Header } from './components/common/Header';
 import { AssetDrawer } from './components/common/AssetDrawer';
-
-// Screens
 import { TitleScreen } from './components/screens/TitleScreen';
 import { SetupScreen } from './components/screens/SetupScreen';
 import { SecretDirectivesScreen } from './components/screens/SecretDirectivesScreen';
 import { RoomTransition } from './components/screens/RoomTransition';
 import { AwardsPodium } from './components/screens/AwardsPodium';
 import { BureauReviewModal } from './components/rounds/BureauReviewModal';
-
-// Round Components
 import { WhereInBritainRound } from './components/rounds/WhereInBritainRound';
 import { Top10Round } from './components/rounds/Top10Round';
 import { PutUpOrShutUpRound } from './components/rounds/PutUpOrShutUpRound';
@@ -46,67 +38,28 @@ import { ImageRevealRound } from './components/rounds/ImageRevealRound';
 import { StopTheScoreRound } from './components/rounds/StopTheScoreRound';
 import { FinalCaseRound } from './components/rounds/FinalCaseRound';
 
-// Each round explicitly declares how local players participate on one shared device.
 const ROUND_DEFINITIONS: Array<Omit<RoundConfig, 'roundNumber' | 'challenge'>> = [
-  {
-    type: 'WHERE_IN_BRITAIN',
-    participationMode: 'EVERYONE_TAKES_A_TURN',
-    name: 'Where in Britain',
-    roomName: 'Department of Ordnance & Cartography',
-    roomTheme: 'Her Majesty’s land survey. Drop your pins with nautical and topographical precision.'
-  },
-  {
-    type: 'TOP_10',
-    participationMode: 'SHARED_ROTATION',
-    name: 'Hall of Records: Top 10',
-    roomName: 'Central Archival Repository',
-    roomTheme: 'Name items from the official records. Rare entries award maximum merit.'
-  },
-  {
-    type: 'PUT_UP_OR_SHUT_UP',
-    participationMode: 'SHARED_ROTATION',
-    name: 'Put Up or Shut Up',
-    roomName: 'The High Bidding Chamber',
-    roomTheme: 'Stake a claim on your capacity. Overreach will be met with immediate voiding of contract.'
-  },
-  {
-    type: 'THE_LIST',
-    participationMode: 'EVERYONE_TAKES_A_TURN',
-    name: 'The List: Vault of Escalation',
-    roomName: 'The Imperial Escalation Vault',
-    roomTheme: 'Name items in succession. Bank points safely or risk complete forfeit for the next tier.'
-  },
-  {
-    type: 'CLOSEST_WINS',
-    participationMode: 'HIDDEN_SEQUENTIAL',
-    name: 'Closest Wins',
-    roomName: 'His Majesty’s Statistics Office',
-    roomTheme: 'Confidential numerical estimates. Closeness to certified metric determines merit.'
-  },
-  {
-    type: 'RANK_IT',
-    participationMode: 'EVERYONE_TAKES_A_TURN',
-    name: 'Rank It',
-    roomName: 'Sequential Registry Division',
-    roomTheme: 'Order the items according to historical, physical, or bureaucratic progression.'
-  },
-  {
-    type: 'IMAGE_REVEAL',
-    participationMode: 'EVERYONE_TAKES_A_TURN',
-    name: 'Image Reveal',
-    roomName: 'Visual Reconnaissance Ward',
-    roomTheme: 'Identify the visual subject through the mechanical aperture before full clarification.'
-  },
-  {
-    type: 'STOP_THE_SCORE',
-    participationMode: 'EVERYONE_TAKES_A_TURN',
-    name: 'Stop The Score',
-    roomName: 'Confidence & Risk Chamber',
-    roomTheme: 'Engage the volatile score machine, halt the needle on a high stake, and confirm your answer.'
-  }
+  { type: 'WHERE_IN_BRITAIN', participationMode: 'EVERYONE_TAKES_A_TURN', name: 'Where in the UK?', roomName: 'Department of Ordnance & Cartography', roomTheme: 'Real geography. No labels. No excuses.' },
+  { type: 'TOP_10', participationMode: 'SHARED_ROTATION', name: 'Hall of Records: Top 10', roomName: 'Central Archival Repository', roomTheme: 'Name entries from the official records. Obscurity is financially rewarded.' },
+  { type: 'PUT_UP_OR_SHUT_UP', participationMode: 'SHARED_ROTATION', name: 'Put Up or Shut Up', roomName: 'The High Bidding Chamber', roomTheme: 'Make a claim, then discover whether confidence was justified.' },
+  { type: 'THE_LIST', participationMode: 'EVERYONE_TAKES_A_TURN', name: 'The List', roomName: 'The Escalation Vault', roomTheme: 'Bank safely or continue until knowledge runs out before nerve does.' },
+  { type: 'CLOSEST_WINS', participationMode: 'HIDDEN_SEQUENTIAL', name: 'Closest Wins', roomName: 'The Statistics Office', roomTheme: 'Confidential estimates. Reality will eventually be consulted.' },
+  { type: 'RANK_IT', participationMode: 'EVERYONE_TAKES_A_TURN', name: 'Rank It', roomName: 'Sequential Registry Division', roomTheme: 'Put things in the correct order, which is apparently harder than it sounds.' },
+  { type: 'IMAGE_REVEAL', participationMode: 'EVERYONE_TAKES_A_TURN', name: 'Image Reveal', roomName: 'Visual Reconnaissance Ward', roomTheme: 'Identify the subject before the machine has to make it embarrassingly obvious.' },
+  { type: 'STOP_THE_SCORE', participationMode: 'EVERYONE_TAKES_A_TURN', name: 'Stop The Score', roomName: 'Confidence & Risk Chamber', roomTheme: 'Choose exactly how expensive your confidence is about to become.' }
 ];
 
 const clampPlayerCount = (count: number) => Math.max(1, Math.min(4, Math.round(count)));
+
+type ExtendedStats = Player['stats'] & {
+  challengeScores?: number[];
+  mapScores?: number[];
+  successfulListBanks?: number[];
+  categoryScores?: Record<string, number[]>;
+  assetsUsed?: string[];
+};
+
+type ArmedAssetState = Record<string, BureauAssetKey[]>;
 
 export default function App() {
   const [phase, setPhase] = useState<GamePhase>('TITLE');
@@ -117,45 +70,43 @@ export default function App() {
   const [playersCompletedThisRound, setPlayersCompletedThisRound] = useState(0);
   const [usedChallengeIdsThisRound, setUsedChallengeIdsThisRound] = useState<string[]>([]);
   const [isAssetDrawerOpen, setIsAssetDrawerOpen] = useState(false);
-
-  // Underdog Bureau Review State
+  const [armedAssets, setArmedAssets] = useState<ArmedAssetState>({});
+  const [priorityStarterPlayerId, setPriorityStarterPlayerId] = useState<string | null>(null);
+  const [assetNotice, setAssetNotice] = useState<string | null>(null);
   const [reviewEligiblePlayer, setReviewEligiblePlayer] = useState<Player | null>(null);
-
-  // Active Challenge Cache
+  const [bureauReviewUsed, setBureauReviewUsed] = useState(false);
+  const [hiddenCommendations, setHiddenCommendations] = useState<HiddenCommendation[]>([]);
+  const [scoreHistory, setScoreHistory] = useState<ScoreSnapshot[]>([]);
   const [currentChallenge, setCurrentChallenge] = useState<Challenge | null>(null);
 
   const currentRoundDefinition = ROUND_DEFINITIONS[currentRoundIndex % ROUND_DEFINITIONS.length];
-  const activePlayerIndex = players.length > 0
-    ? (roundStarterIndex + playersCompletedThisRound) % players.length
-    : 0;
+  const activePlayerIndex = players.length > 0 ? (roundStarterIndex + playersCompletedThisRound) % players.length : 0;
   const activePlayer = players[activePlayerIndex] || players[0];
 
-  // 1. Start Game from Title
   const handleStartGame = (playerCount: number) => {
     sound.playStamp();
     setSelectedPlayerCount(clampPlayerCount(playerCount));
     setPhase('SETUP');
   };
 
-  // 2. Complete Setup -> Directives
   const handleSetupComplete = (createdPlayers: Player[]) => {
     setPlayers(createdPlayers);
+    setHiddenCommendations(createdPlayers.length > 1 ? selectSecretCommendations(2) : []);
+    setScoreHistory([]);
+    setArmedAssets({});
+    setBureauReviewUsed(false);
+    setPriorityStarterPlayerId(null);
     setPhase('DIRECTIVES');
   };
 
-  // Pick a question matching round type. Individual-turn rounds avoid repeating a
-  // challenge within that round when the question bank contains enough choices.
   const pickRoundChallenge = (roundIdx: number, excludedIds: string[] = []): Challenge => {
     const roundDef = ROUND_DEFINITIONS[roundIdx % ROUND_DEFINITIONS.length];
-    const matchingQuestions = allChallenges.filter(q => q.roundType === roundDef.type);
-    const unusedQuestions = matchingQuestions.filter(q => !excludedIds.includes(q.id));
-    const pool = unusedQuestions.length > 0 ? unusedQuestions : matchingQuestions;
-
-    if (pool.length === 0) return allChallenges[0];
-    return pool[Math.floor(Math.random() * pool.length)];
+    const matching = allChallenges.filter(q => q.roundType === roundDef.type);
+    const unused = matching.filter(q => !excludedIds.includes(q.id));
+    const pool = unused.length > 0 ? unused : matching;
+    return pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : allChallenges[0];
   };
 
-  // 3. Complete Directives -> Round 1 Transition
   const handleDirectivesComplete = () => {
     const firstChallenge = pickRoundChallenge(0);
     setCurrentRoundIndex(0);
@@ -166,25 +117,112 @@ export default function App() {
     setPhase('ROOM_TRANSITION');
   };
 
-  // 4. Enter Room from Transition
-  const handleEnterRoom = () => {
-    setPhase('PLAYING_ROUND');
+  const handleEnterRoom = () => setPhase('PLAYING_ROUND');
+
+  const removeOwnedAsset = (playerId: string, assetType: BureauAssetKey) => {
+    setPlayers(prev => prev.map(player => {
+      if (player.id !== playerId) return player;
+      const removedIndex = player.assets.indexOf(assetType);
+      const nextAssets = [...player.assets];
+      if (removedIndex >= 0) nextAssets.splice(removedIndex, 1);
+      const stats = player.stats as ExtendedStats;
+      return {
+        ...player,
+        assets: nextAssets,
+        stats: { ...stats, assetsUsed: [...(stats.assetsUsed ?? []), assetType] }
+      };
+    }));
   };
 
-  // Asset Usage. Stage 1 preserves existing behaviour; gameplay effects are a later engine stage.
-  const handleUseAsset = (assetType: BureauAssetKey) => {
-    if (!activePlayer) return;
+  const armAsset = (playerId: string, assetType: BureauAssetKey) => {
+    setArmedAssets(prev => ({ ...prev, [playerId]: [...(prev[playerId] ?? []), assetType] }));
+  };
 
-    sound.playStamp();
-    setPlayers(prev => prev.map(p => {
-      if (p.id === activePlayer.id) {
-        return {
-          ...p,
-          assets: p.assets.filter(a => a !== assetType)
-        };
-      }
-      return p;
+  const clearArmedAsset = (playerId: string, assetType: BureauAssetKey) => {
+    setArmedAssets(prev => ({
+      ...prev,
+      [playerId]: (prev[playerId] ?? []).filter(asset => asset !== assetType)
     }));
+  };
+
+  const handleUseAsset = (assetType: BureauAssetKey) => {
+    if (!activePlayer || phase !== 'PLAYING_ROUND') return;
+    sound.playStamp();
+    setAssetNotice(null);
+
+    if (assetType === 'REFILE') {
+      const replacement = pickRoundChallenge(currentRoundIndex, [...usedChallengeIdsThisRound, currentChallenge?.id ?? '']);
+      removeOwnedAsset(activePlayer.id, assetType);
+      setCurrentChallenge(replacement);
+      setUsedChallengeIdsThisRound(prev => [...prev, replacement.id]);
+      setAssetNotice(`${activePlayer.name} refiled the challenge. The Bureau has reluctantly found another one.`);
+      setIsAssetDrawerOpen(false);
+      return;
+    }
+
+    if (assetType === 'PRIORITY_ACCESS') {
+      removeOwnedAsset(activePlayer.id, assetType);
+      setPriorityStarterPlayerId(activePlayer.id);
+      setAssetNotice(`${activePlayer.name} will start the next round. Bureaucracy has briefly rewarded queue-jumping.`);
+      setIsAssetDrawerOpen(false);
+      return;
+    }
+
+    armAsset(activePlayer.id, assetType);
+    removeOwnedAsset(activePlayer.id, assetType);
+    setAssetNotice(`${activePlayer.name} armed ${assetType.replaceAll('_', ' ')} for the next applicable result.`);
+    setIsAssetDrawerOpen(false);
+  };
+
+  const resolveScoresWithAssets = (
+    scoreOrScores: number | Record<string, number>,
+    extraData?: Record<string, unknown>
+  ) => {
+    const baseScores: Record<string, number> = typeof scoreOrScores === 'number'
+      ? (activePlayer ? { [activePlayer.id]: scoreOrScores } : {})
+      : { ...scoreOrScores };
+    const finalScores = { ...baseScores };
+    const assetBonuses: Record<string, number> = {};
+
+    Object.entries(baseScores).forEach(([playerId, baseScore]) => {
+      const armed = armedAssets[playerId] ?? [];
+      if (baseScore > 0 && armed.includes('SECOND_OPINION')) {
+        const bonus = Math.min(120, Math.round(baseScore * 0.15));
+        finalScores[playerId] += bonus;
+        assetBonuses[playerId] = (assetBonuses[playerId] || 0) + bonus;
+        clearArmedAsset(playerId, 'SECOND_OPINION');
+      }
+      if (baseScore > 0 && armed.includes('DOUBLE_ENTRY')) {
+        const bonus = Math.min(750, Math.round(baseScore * 0.75));
+        finalScores[playerId] += bonus;
+        assetBonuses[playerId] = (assetBonuses[playerId] || 0) + bonus;
+        clearArmedAsset(playerId, 'DOUBLE_ENTRY');
+      }
+      if (baseScore === 0 && armed.includes('INSURANCE')) {
+        const riskedValue = typeof extraData?.riskedValue === 'number' ? extraData.riskedValue : 0;
+        const payout = Math.max(150, Math.round(riskedValue * 0.35));
+        finalScores[playerId] += payout;
+        assetBonuses[playerId] = (assetBonuses[playerId] || 0) + payout;
+        clearArmedAsset(playerId, 'INSURANCE');
+      }
+    });
+
+    if (currentRoundDefinition.participationMode === 'EVERYONE_TAKES_A_TURN') {
+      const scoringOpponent = Object.entries(baseScores).find(([, score]) => score > 0);
+      if (scoringOpponent) {
+        const [victimId, victimBase] = scoringOpponent;
+        const interceptor = players.find(player => player.id !== victimId && (armedAssets[player.id] ?? []).includes('INTERCEPT'));
+        if (interceptor) {
+          const transfer = Math.max(1, Math.round(victimBase * 0.20));
+          finalScores[victimId] = Math.max(0, finalScores[victimId] - transfer);
+          finalScores[interceptor.id] = (finalScores[interceptor.id] || 0) + transfer;
+          assetBonuses[interceptor.id] = (assetBonuses[interceptor.id] || 0) + transfer;
+          clearArmedAsset(interceptor.id, 'INTERCEPT');
+        }
+      }
+    }
+
+    return { baseScores, finalScores, assetBonuses };
   };
 
   const applyRoundResult = (
@@ -192,146 +230,152 @@ export default function App() {
     scoreOrScores: number | Record<string, number>,
     extraData?: Record<string, unknown>
   ): Player[] => {
-    const participantIds = typeof scoreOrScores === 'number'
-      ? new Set(activePlayer ? [activePlayer.id] : [])
-      : new Set(Object.keys(scoreOrScores));
+    const { baseScores, finalScores } = resolveScoresWithAssets(scoreOrScores, extraData);
+    const participantIds = new Set(Object.keys(baseScores));
 
-    return basePlayers.map(p => {
-      if (!participantIds.has(p.id)) return p;
+    return basePlayers.map(player => {
+      const finalEarned = finalScores[player.id] ?? 0;
+      const baseEarned = baseScores[player.id];
+      const interceptedOnly = !participantIds.has(player.id) && finalEarned > 0;
+      if (!participantIds.has(player.id) && !interceptedOnly) return player;
 
-      const earned = typeof scoreOrScores === 'number'
-        ? (activePlayer?.id === p.id ? scoreOrScores : 0)
-        : (scoreOrScores[p.id] ?? 0);
+      const stats = player.stats as ExtendedStats;
+      if (interceptedOnly) {
+        return {
+          ...player,
+          score: player.score + finalEarned,
+          stats: { ...stats, interceptCount: stats.interceptCount + 1 }
+        };
+      }
 
-      const explicitCorrect = typeof extraData?.correct === 'boolean' && activePlayer?.id === p.id
-        ? extraData.correct
-        : undefined;
-      const isSuccess = explicitCorrect ?? earned > 0;
-
-      const mapDistance = currentRoundDefinition.type === 'WHERE_IN_BRITAIN' && activePlayer?.id === p.id && typeof extraData?.km === 'number'
-        ? extraData.km
-        : null;
-      const estimateErrors = currentRoundDefinition.type === 'CLOSEST_WINS' && extraData?.errors && typeof extraData.errors === 'object'
-        ? extraData.errors as Record<string, number>
-        : null;
-      const bankedItems = currentRoundDefinition.type === 'THE_LIST' && activePlayer?.id === p.id && typeof extraData?.banked === 'number'
-        ? extraData.banked
-        : null;
-      const isStopTheScore = currentRoundDefinition.type === 'STOP_THE_SCORE' && activePlayer?.id === p.id;
+      const explicitCorrect = typeof extraData?.correct === 'boolean' && activePlayer?.id === player.id ? extraData.correct : undefined;
+      const isSuccess = explicitCorrect ?? (baseEarned ?? 0) > 0;
+      const mapDistance = currentRoundDefinition.type === 'WHERE_IN_BRITAIN' && activePlayer?.id === player.id && typeof extraData?.km === 'number' ? extraData.km : null;
+      const estimateErrors = currentRoundDefinition.type === 'CLOSEST_WINS' && extraData?.errors && typeof extraData.errors === 'object' ? extraData.errors as Record<string, number> : null;
+      const isList = currentRoundDefinition.type === 'THE_LIST' && activePlayer?.id === player.id;
+      const listBanked = isList && isSuccess ? finalEarned : null;
+      const isStopTheScore = currentRoundDefinition.type === 'STOP_THE_SCORE' && activePlayer?.id === player.id;
+      const category = currentChallenge?.category;
+      const categoryScores = { ...(stats.categoryScores ?? {}) };
+      if (category) categoryScores[category] = [...(categoryScores[category] ?? []), baseEarned ?? 0];
 
       return {
-        ...p,
-        score: p.score + earned,
+        ...player,
+        score: Math.max(0, player.score + finalEarned),
         stats: {
-          ...p.stats,
-          roundsPlayed: p.stats.roundsPlayed + 1,
-          correctAnswers: isSuccess ? p.stats.correctAnswers + 1 : p.stats.correctAnswers,
-          totalAnswers: p.stats.totalAnswers + 1,
-          bestScore: Math.max(p.stats.bestScore, earned),
-          worstScore: Math.min(p.stats.worstScore, earned),
-          mapDistancesKm: mapDistance !== null ? [...p.stats.mapDistancesKm, mapDistance] : p.stats.mapDistancesKm,
-          estimateErrorsPercent: estimateErrors?.[p.id] !== undefined
-            ? [...p.stats.estimateErrorsPercent, estimateErrors[p.id]]
-            : p.stats.estimateErrorsPercent,
-          risksTaken: isStopTheScore ? p.stats.risksTaken + 1 : p.stats.risksTaken,
-          successfulRisks: isStopTheScore && isSuccess ? p.stats.successfulRisks + 1 : p.stats.successfulRisks,
-          highestBankedList: bankedItems !== null ? Math.max(p.stats.highestBankedList, earned) : p.stats.highestBankedList,
-          categoriesAttempted: currentChallenge
-            ? new Set([...p.stats.categoriesAttempted, currentChallenge.category])
-            : p.stats.categoriesAttempted
-        }
+          ...stats,
+          roundsPlayed: stats.roundsPlayed + 1,
+          correctAnswers: isSuccess ? stats.correctAnswers + 1 : stats.correctAnswers,
+          totalAnswers: stats.totalAnswers + 1,
+          bestScore: Math.max(stats.bestScore, baseEarned ?? 0),
+          worstScore: Math.min(stats.worstScore, baseEarned ?? 0),
+          mapDistancesKm: mapDistance !== null ? [...stats.mapDistancesKm, mapDistance] : stats.mapDistancesKm,
+          estimateErrorsPercent: estimateErrors?.[player.id] !== undefined ? [...stats.estimateErrorsPercent, estimateErrors[player.id]] : stats.estimateErrorsPercent,
+          risksTaken: isStopTheScore ? stats.risksTaken + 1 : stats.risksTaken,
+          successfulRisks: isStopTheScore && isSuccess ? stats.successfulRisks + 1 : stats.successfulRisks,
+          highestBankedList: listBanked !== null ? Math.max(stats.highestBankedList, listBanked) : stats.highestBankedList,
+          categoriesAttempted: category ? new Set([...stats.categoriesAttempted, category]) : stats.categoriesAttempted,
+          challengeScores: [...(stats.challengeScores ?? []), baseEarned ?? 0],
+          mapScores: currentRoundDefinition.type === 'WHERE_IN_BRITAIN' ? [...(stats.mapScores ?? []), baseEarned ?? 0] : (stats.mapScores ?? []),
+          successfulListBanks: listBanked !== null ? [...(stats.successfulListBanks ?? []), listBanked] : (stats.successfulListBanks ?? []),
+          categoryScores
+        } as Player['stats']
       };
     });
   };
 
+  const recordRoundSnapshot = (updatedPlayers: Player[]) => {
+    setScoreHistory(prev => [
+      ...prev,
+      { roundNumber: currentRoundIndex + 1, scores: Object.fromEntries(updatedPlayers.map(player => [player.id, player.score])) }
+    ]);
+  };
+
   const completeFullRound = (updatedPlayers: Player[]) => {
-    // Check for Underdog Comeback Review only after the whole round is complete.
-    const scores = updatedPlayers.map(p => p.score);
+    recordRoundSnapshot(updatedPlayers);
+    const scores = updatedPlayers.map(player => player.score);
     const maxScore = Math.max(...scores, 0);
     const minScore = Math.min(...scores, 0);
-    const trailing = updatedPlayers.find(p => p.score === minScore);
+    const trailing = updatedPlayers.find(player => player.score === minScore);
 
-    if (updatedPlayers.length > 1 && currentRoundIndex >= 2 && (maxScore - minScore) >= 1200 && trailing) {
+    if (!bureauReviewUsed && updatedPlayers.length > 1 && currentRoundIndex >= 2 && (maxScore - minScore) >= 1200 && trailing) {
       setReviewEligiblePlayer(trailing);
     } else {
-      advanceToNextRound();
+      advanceToNextRound(updatedPlayers);
     }
   };
 
-  // Round Completion Callback
-  const handleRoundComplete = (
-    scoreOrScores: number | Record<string, number>,
-    extraData?: Record<string, unknown>
-  ) => {
+  const handleRoundComplete = (scoreOrScores: number | Record<string, number>, extraData?: Record<string, unknown>) => {
     sound.playBrassChime();
-
     const updatedPlayers = applyRoundResult(players, scoreOrScores, extraData);
     setPlayers(updatedPlayers);
 
-    // Individual-turn rounds remain in the same room until every player has had
-    // an equivalent attempt. A fresh same-type challenge is selected per player.
-    if (
-      currentRoundDefinition.participationMode === 'EVERYONE_TAKES_A_TURN' &&
-      playersCompletedThisRound + 1 < players.length
-    ) {
-      const nextCompletedCount = playersCompletedThisRound + 1;
+    if (currentRoundDefinition.participationMode === 'EVERYONE_TAKES_A_TURN' && playersCompletedThisRound + 1 < players.length) {
       const nextChallenge = pickRoundChallenge(currentRoundIndex, usedChallengeIdsThisRound);
-
-      setPlayersCompletedThisRound(nextCompletedCount);
+      setPlayersCompletedThisRound(prev => prev + 1);
       setCurrentChallenge(nextChallenge);
-      setUsedChallengeIdsThisRound(prev => nextChallenge ? [...prev, nextChallenge.id] : prev);
+      setUsedChallengeIdsThisRound(prev => [...prev, nextChallenge.id]);
       return;
     }
 
     completeFullRound(updatedPlayers);
   };
 
-  // Bureau Review Resolution
-  const handleResolveBureauReview = (_optionType: 'SAFE' | 'RISKY' | 'QUESTIONABLE', bonus: number) => {
-    if (reviewEligiblePlayer) {
-      setPlayers(prev => prev.map(p => {
-        if (p.id === reviewEligiblePlayer.id) {
-          return {
-            ...p,
-            score: p.score + bonus
-          };
-        }
-        return p;
-      }));
+  const handleResolveBureauReview = (optionType: 'SAFE' | 'RISKY' | 'QUESTIONABLE', delta: number) => {
+    if (!reviewEligiblePlayer) return;
+    let updated = [...players];
+
+    if (optionType === 'QUESTIONABLE' && delta > 0) {
+      const leader = [...updated].sort((a, b) => b.score - a.score).find(player => player.id !== reviewEligiblePlayer.id);
+      const steal = leader ? Math.min(delta, leader.score) : 0;
+      updated = updated.map(player => {
+        if (player.id === reviewEligiblePlayer.id) return { ...player, score: player.score + steal };
+        if (leader && player.id === leader.id) return { ...player, score: Math.max(0, player.score - steal) };
+        return player;
+      });
+    } else {
+      updated = updated.map(player => player.id === reviewEligiblePlayer.id ? { ...player, score: Math.max(0, player.score + delta) } : player);
     }
+
+    setPlayers(updated);
+    setBureauReviewUsed(true);
     setReviewEligiblePlayer(null);
-    advanceToNextRound();
+    setScoreHistory(prev => [...prev, { roundNumber: currentRoundIndex + 1.5, scores: Object.fromEntries(updated.map(player => [player.id, player.score])) }]);
+    advanceToNextRound(updated);
   };
 
-  const advanceToNextRound = () => {
+  const advanceToNextRound = (playerState = players) => {
     const nextRound = currentRoundIndex + 1;
     if (nextRound >= ROUND_DEFINITIONS.length) {
       setPhase('FINAL_CASE');
       return;
     }
 
-    const nextStarter = players.length > 0 ? nextRound % players.length : 0;
-    const nextChallenge = pickRoundChallenge(nextRound);
+    let nextStarter = playerState.length > 0 ? nextRound % playerState.length : 0;
+    if (priorityStarterPlayerId) {
+      const priorityIndex = playerState.findIndex(player => player.id === priorityStarterPlayerId);
+      if (priorityIndex >= 0) nextStarter = priorityIndex;
+      setPriorityStarterPlayerId(null);
+    }
 
+    const nextChallenge = pickRoundChallenge(nextRound);
     setCurrentRoundIndex(nextRound);
     setRoundStarterIndex(nextStarter);
     setPlayersCompletedThisRound(0);
     setCurrentChallenge(nextChallenge);
-    setUsedChallengeIdsThisRound(nextChallenge ? [nextChallenge.id] : []);
+    setUsedChallengeIdsThisRound([nextChallenge.id]);
+    setAssetNotice(null);
     setPhase('ROOM_TRANSITION');
   };
 
-  // Final Case Completion
   const handleFinalCaseComplete = (playerBonuses: Record<string, number>) => {
     sound.playVictoryFanfare();
-    setPlayers(prev => prev.map(p => ({
-      ...p,
-      score: p.score + (playerBonuses[p.id] || 0)
-    })));
+    const updated = players.map(player => ({ ...player, score: player.score + (playerBonuses[player.id] || 0) }));
+    setPlayers(updated);
+    setScoreHistory(prev => [...prev, { roundNumber: ROUND_DEFINITIONS.length + 1, scores: Object.fromEntries(updated.map(player => [player.id, player.score])) }]);
     setPhase('PODIUM');
   };
 
-  // Reset / Play Again
   const handlePlayAgain = () => {
     setPhase('TITLE');
     setSelectedPlayerCount(2);
@@ -342,6 +386,12 @@ export default function App() {
     setUsedChallengeIdsThisRound([]);
     setCurrentChallenge(null);
     setReviewEligiblePlayer(null);
+    setBureauReviewUsed(false);
+    setHiddenCommendations([]);
+    setScoreHistory([]);
+    setArmedAssets({});
+    setPriorityStarterPlayerId(null);
+    setAssetNotice(null);
   };
 
   const currentRoundConfig: RoundConfig = {
@@ -353,13 +403,10 @@ export default function App() {
     roomTheme: currentRoundDefinition.roomTheme
   };
 
-  const roundInstanceKey = currentChallenge
-    ? `${currentRoundIndex}-${activePlayer?.id ?? 'shared'}-${currentChallenge.id}`
-    : `${currentRoundIndex}-empty`;
+  const roundInstanceKey = currentChallenge ? `${currentRoundIndex}-${activePlayer?.id ?? 'shared'}-${currentChallenge.id}` : `${currentRoundIndex}-empty`;
 
   return (
     <BureauRoomBackdrop roomName={currentRoundConfig.roomName}>
-      {/* Top Header Bar */}
       <Header
         roundConfig={phase === 'TITLE' || phase === 'SETUP' ? undefined : currentRoundConfig}
         totalRounds={ROUND_DEFINITIONS.length}
@@ -370,144 +417,45 @@ export default function App() {
         onTriggerReview={() => {}}
       />
 
-      {/* Main Play Area */}
+      {assetNotice && phase === 'PLAYING_ROUND' && (
+        <div className="mx-auto mb-2 max-w-3xl rounded-lg border border-[#4fd1c5]/50 bg-[#0d2530] px-4 py-2 text-center font-['Courier_Prime'] text-xs text-[#a7f3e8]">
+          {assetNotice}
+        </div>
+      )}
+
       <main className="w-full flex-1 flex flex-col justify-center py-4 px-2 sm:px-4">
         {phase === 'TITLE' && <TitleScreen onStartGame={handleStartGame} />}
-
-        {phase === 'SETUP' && (
-          <SetupScreen
-            playerCount={selectedPlayerCount}
-            onProceedToDirectives={handleSetupComplete}
-          />
-        )}
-
-        {phase === 'DIRECTIVES' && (
-          <SecretDirectivesScreen
-            players={players}
-            onFinishDirectives={handleDirectivesComplete}
-          />
-        )}
-
-        {phase === 'ROOM_TRANSITION' && (
-          <RoomTransition
-            roundConfig={currentRoundConfig}
-            totalRounds={ROUND_DEFINITIONS.length}
-            onEnterRoom={handleEnterRoom}
-          />
-        )}
+        {phase === 'SETUP' && <SetupScreen playerCount={selectedPlayerCount} onProceedToDirectives={handleSetupComplete} />}
+        {phase === 'DIRECTIVES' && <SecretDirectivesScreen players={players} onFinishDirectives={handleDirectivesComplete} />}
+        {phase === 'ROOM_TRANSITION' && <RoomTransition roundConfig={currentRoundConfig} totalRounds={ROUND_DEFINITIONS.length} onEnterRoom={handleEnterRoom} />}
 
         {phase === 'PLAYING_ROUND' && currentChallenge && activePlayer && (
           <div className="w-full flex flex-col items-center">
-            {currentChallenge.roundType === 'WHERE_IN_BRITAIN' && (
-              <WhereInBritainRound
-                key={roundInstanceKey}
-                challenge={currentChallenge as WhereInBritainChallenge}
-                currentPlayer={activePlayer}
-                onComplete={(score, km) => handleRoundComplete(score, { km })}
-              />
-            )}
-
-            {currentChallenge.roundType === 'TOP_10' && (
-              <Top10Round
-                key={`${currentRoundIndex}-${currentChallenge.id}`}
-                challenge={currentChallenge as Top10Challenge}
-                players={players}
-                currentPlayerIndex={roundStarterIndex}
-                onCompleteRound={(scores) => handleRoundComplete(scores)}
-              />
-            )}
-
-            {currentChallenge.roundType === 'PUT_UP_OR_SHUT_UP' && (
-              <PutUpOrShutUpRound
-                key={`${currentRoundIndex}-${currentChallenge.id}`}
-                challenge={currentChallenge as PutUpOrShutUpChallenge}
-                players={players}
-                currentPlayerIndex={roundStarterIndex}
-                onComplete={(winnerId, score) => handleRoundComplete({ [winnerId]: score })}
-              />
-            )}
-
-            {currentChallenge.roundType === 'THE_LIST' && (
-              <TheListRound
-                key={roundInstanceKey}
-                challenge={currentChallenge as TheListChallenge}
-                currentPlayer={activePlayer}
-                onComplete={(score, banked) => handleRoundComplete(score, { banked })}
-              />
-            )}
-
-            {currentChallenge.roundType === 'CLOSEST_WINS' && (
-              <ClosestWinsRound
-                key={`${currentRoundIndex}-${currentChallenge.id}`}
-                challenge={currentChallenge as ClosestWinsChallenge}
-                players={players}
-                onCompleteRound={(scores, errors) => handleRoundComplete(scores, { errors })}
-              />
-            )}
-
-            {currentChallenge.roundType === 'RANK_IT' && (
-              <RankItRound
-                key={roundInstanceKey}
-                challenge={currentChallenge as RankItChallenge}
-                currentPlayer={activePlayer}
-                onComplete={(score) => handleRoundComplete(score)}
-              />
-            )}
-
-            {currentChallenge.roundType === 'IMAGE_REVEAL' && (
-              <ImageRevealRound
-                key={roundInstanceKey}
-                challenge={currentChallenge as ImageRevealChallenge}
-                currentPlayer={activePlayer}
-                onComplete={(score) => handleRoundComplete(score)}
-              />
-            )}
-
-            {currentChallenge.roundType === 'STOP_THE_SCORE' && (
-              <StopTheScoreRound
-                key={roundInstanceKey}
-                challenge={currentChallenge as StopTheScoreChallenge}
-                currentPlayer={activePlayer}
-                onComplete={(score, correct) => handleRoundComplete(score, { correct })}
-              />
-            )}
+            {currentChallenge.roundType === 'WHERE_IN_BRITAIN' && <WhereInBritainRound key={roundInstanceKey} challenge={currentChallenge as WhereInBritainChallenge} currentPlayer={activePlayer} onComplete={(score, km) => handleRoundComplete(score, { km })} />}
+            {currentChallenge.roundType === 'TOP_10' && <Top10Round key={`${currentRoundIndex}-${currentChallenge.id}`} challenge={currentChallenge as Top10Challenge} players={players} currentPlayerIndex={roundStarterIndex} onCompleteRound={scores => handleRoundComplete(scores)} />}
+            {currentChallenge.roundType === 'PUT_UP_OR_SHUT_UP' && <PutUpOrShutUpRound key={`${currentRoundIndex}-${currentChallenge.id}`} challenge={currentChallenge as PutUpOrShutUpChallenge} players={players} currentPlayerIndex={roundStarterIndex} onComplete={(winnerId, score) => handleRoundComplete({ [winnerId]: score })} />}
+            {currentChallenge.roundType === 'THE_LIST' && <TheListRound key={roundInstanceKey} challenge={currentChallenge as TheListChallenge} currentPlayer={activePlayer} onComplete={(score, banked) => handleRoundComplete(score, { banked })} />}
+            {currentChallenge.roundType === 'CLOSEST_WINS' && <ClosestWinsRound key={`${currentRoundIndex}-${currentChallenge.id}`} challenge={currentChallenge as ClosestWinsChallenge} players={players} onCompleteRound={(scores, errors) => handleRoundComplete(scores, { errors })} />}
+            {currentChallenge.roundType === 'RANK_IT' && <RankItRound key={roundInstanceKey} challenge={currentChallenge as RankItChallenge} currentPlayer={activePlayer} onComplete={score => handleRoundComplete(score)} />}
+            {currentChallenge.roundType === 'IMAGE_REVEAL' && <ImageRevealRound key={roundInstanceKey} challenge={currentChallenge as ImageRevealChallenge} currentPlayer={activePlayer} onComplete={score => handleRoundComplete(score)} />}
+            {currentChallenge.roundType === 'STOP_THE_SCORE' && <StopTheScoreRound key={roundInstanceKey} challenge={currentChallenge as StopTheScoreChallenge} currentPlayer={activePlayer} onComplete={(score, correct) => handleRoundComplete(score, { correct, riskedValue: correct ? score : undefined })} />}
           </div>
         )}
 
-        {phase === 'FINAL_CASE' && (
-          <FinalCaseRound
-            finalCase={FINAL_CASES[0]}
-            players={players}
-            onCompleteCase={handleFinalCaseComplete}
-          />
-        )}
-
-        {phase === 'PODIUM' && (
-          <AwardsPodium
-            players={players}
-            onPlayAgain={handlePlayAgain}
-          />
-        )}
+        {phase === 'FINAL_CASE' && <FinalCaseRound finalCase={FINAL_CASES[0]} players={players} onCompleteCase={handleFinalCaseComplete} />}
+        {phase === 'PODIUM' && <AwardsPodium players={players} hiddenCommendations={hiddenCommendations} scoreHistory={scoreHistory} onPlayAgain={handlePlayAgain} />}
       </main>
 
-      {/* Bureau Assets Drawer */}
-      {activePlayer && (
-        <AssetDrawer
-          isOpen={isAssetDrawerOpen}
-          activePlayer={activePlayer}
-          onClose={() => setIsAssetDrawerOpen(false)}
-          onUseAsset={handleUseAsset}
-        />
-      )}
+      {activePlayer && <AssetDrawer isOpen={isAssetDrawerOpen} activePlayer={activePlayer} onClose={() => setIsAssetDrawerOpen(false)} onUseAsset={handleUseAsset} />}
 
-      {/* Underdog Bureau Review Modal */}
       {reviewEligiblePlayer && (
         <BureauReviewModal
           trailingPlayer={reviewEligiblePlayer}
           onSelectOption={handleResolveBureauReview}
           onClose={() => {
+            setBureauReviewUsed(true);
             setReviewEligiblePlayer(null);
-            advanceToNextRound();
+            advanceToNextRound(players);
           }}
         />
       )}
