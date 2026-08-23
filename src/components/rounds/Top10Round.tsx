@@ -61,6 +61,9 @@ export const Top10Round: React.FC<Top10RoundProps> = ({ challenge, players, curr
     setTurnIndex(prev => prev + 1);
   };
 
+  const revealedNames = challenge.items.filter(item => revealedRanks.includes(item.rank)).map(item => item.name);
+  const allNames = challenge.items.map(item => item.name);
+
   return (
     <div className="w-full max-w-6xl mx-auto font-['Plus_Jakarta_Sans']">
       {!isRoundOver ? (
@@ -121,7 +124,7 @@ export const Top10Round: React.FC<Top10RoundProps> = ({ challenge, players, curr
           <ApparatusFrame eyebrow="Hall of Records • Board fully opened" title="Complete Registry" subtitle="The Bureau reveals the answers only after they can no longer help you." icon={<Layers size={28}/>} accent="#e28a45" instrumentLabel="ARCHIVE OPEN">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">{challenge.items.map(item => <div key={item.rank} className="flex justify-between rounded-xl border-2 border-[#6a4930] bg-[#fff7dd] px-4 py-3 text-[#314750] shadow-[0_3px_0_#6a4930]"><strong className="font-['Cinzel']">#{item.rank} {item.name}</strong><span className="font-['Space_Mono'] text-sm font-bold text-[#c85348]">{itemScores[item.rank]}</span></div>)}</div>
           </ApparatusFrame>
-          <CommentaryPlaque score={Math.max(0, ...Object.values(playerRoundScores))} playerName="Candidates" roundType="TOP_10" questionPrompt={challenge.prompt} explanation={challenge.explanation} source={challenge.source} isCorrect={revealedRanks.length >= Math.ceil(challenge.items.length / 2)} onProceed={() => onCompleteRound(playerRoundScores)} />
+          <CommentaryPlaque score={Math.max(0, ...Object.values(playerRoundScores))} playerName="Candidates" roundType="TOP_10" questionPrompt={challenge.prompt} explanation={challenge.explanation} source={challenge.source} playerAnswer={`${revealedRanks.length}/${challenge.items.length} found: ${revealedNames.join(', ') || 'none'}`} correctAnswer={allNames.join(', ')} isCorrect={revealedRanks.length >= Math.ceil(challenge.items.length / 2)} onProceed={() => onCompleteRound(playerRoundScores)} />
         </div>
       )}
     </div>
