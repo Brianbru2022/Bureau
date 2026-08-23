@@ -3,133 +3,15 @@ import { RankItChallenge, Player } from '../../types';
 import { sound } from '../../sound/audioEngine';
 import { ArrowUpDown, ChevronUp, ChevronDown, Check } from 'lucide-react';
 import { CommentaryPlaque } from '../common/CommentaryPlaque';
+import { ApparatusFrame } from '../common/ApparatusFrame';
 import { scoreRanking } from '../../game/scoring';
 
-interface RankItProps {
-  challenge: RankItChallenge;
-  currentPlayer: Player;
-  onComplete: (score: number) => void;
-}
+interface RankItProps { challenge: RankItChallenge; currentPlayer: Player; onComplete: (score: number) => void; }
 
-export const RankItRound: React.FC<RankItProps> = ({
-  challenge,
-  currentPlayer,
-  onComplete
-}) => {
-  const [itemsOrder, setItemsOrder] = useState(() => {
-    return [...challenge.items].sort(() => Math.random() - 0.5);
-  });
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [earnedScore, setEarnedScore] = useState(0);
-
-  const moveItem = (index: number, direction: 'UP' | 'DOWN') => {
-    sound.playClick();
-    const newItems = [...itemsOrder];
-    const targetIdx = direction === 'UP' ? index - 1 : index + 1;
-    if (targetIdx < 0 || targetIdx >= newItems.length) return;
-
-    const temp = newItems[index];
-    newItems[index] = newItems[targetIdx];
-    newItems[targetIdx] = temp;
-    setItemsOrder(newItems);
-  };
-
-  const handleConfirmOrder = () => {
-    sound.playStamp();
-    setEarnedScore(scoreRanking(itemsOrder));
-    setIsSubmitted(true);
-  };
-
-  return (
-    <div className="w-full flex flex-col items-center max-w-3xl mx-auto font-['Plus_Jakarta_Sans']">
-      <div className="w-full bg-[#162235] border-2 border-[#d4af37] rounded-lg p-4 mb-4 shadow-xl text-center">
-        <div className="flex items-center justify-center gap-2 mb-1">
-          <ArrowUpDown className="text-[#ffd700]" size={20} />
-          <span className="font-['Courier_Prime'] text-xs font-bold text-[#e6c875] tracking-widest uppercase">
-            Sequential Registry • Rank It
-          </span>
-        </div>
-        <h2 className="font-['Cinzel'] font-black text-xl sm:text-2xl text-white tracking-wide">
-          {challenge.prompt}
-        </h2>
-        <p className="font-['Courier_Prime'] text-xs text-slate-300 mt-1">
-          Candidate <strong className="text-[#ffd700]">{currentPlayer.name}</strong>, arrange the plaques in precise ascending order.
-        </p>
-      </div>
-
-      {!isSubmitted ? (
-        <div className="w-full bg-[#0e1724] border-2 border-[#d4af37]/80 rounded-lg p-5 flex flex-col items-center gap-4 shadow-2xl">
-          <div className="w-full flex flex-col gap-2.5">
-            {itemsOrder.map((item, idx) => (
-              <div
-                key={item.id}
-                className="bg-[#152336] border border-[#d4af37]/40 hover:border-[#d4af37] rounded-lg p-3 flex items-center justify-between gap-3 shadow transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="w-7 h-7 rounded-full bg-[#d4af37] text-[#0a101d] font-['Space_Mono'] font-bold text-xs flex items-center justify-center shadow">
-                    #{idx + 1}
-                  </span>
-                  <span className="font-['Cinzel'] font-bold text-sm sm:text-base text-white tracking-wide">
-                    {item.label}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1.5">
-                  <button
-                    disabled={idx === 0}
-                    onClick={() => moveItem(idx, 'UP')}
-                    className="p-2 rounded bg-[#1e3450] hover:bg-[#284872] disabled:opacity-30 text-[#ffd700] transition-colors"
-                  >
-                    <ChevronUp size={18} />
-                  </button>
-                  <button
-                    disabled={idx === itemsOrder.length - 1}
-                    onClick={() => moveItem(idx, 'DOWN')}
-                    className="p-2 rounded bg-[#1e3450] hover:bg-[#284872] disabled:opacity-30 text-[#ffd700] transition-colors"
-                  >
-                    <ChevronDown size={18} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <button
-            onClick={handleConfirmOrder}
-            className="w-full max-w-md py-3.5 mt-2 rounded bg-[#1e3450] hover:bg-[#284872] text-[#ffd700] font-['Cinzel'] font-bold text-xs uppercase tracking-widest border border-[#d4af37] transition-all shadow-lg flex items-center justify-center gap-2"
-          >
-            <Check size={16} />
-            <span>Lock Sequence in Archival Order</span>
-          </button>
-        </div>
-      ) : (
-        <div className="w-full flex flex-col items-center gap-4">
-          <div className="w-full max-w-xl bg-[#0e1724] border border-[#d4af37] rounded-lg p-4">
-            <span className="font-['Cinzel'] font-bold text-xs text-[#e6c875] uppercase tracking-wider block mb-2">
-              Certified Chronological / Hierarchical Order
-            </span>
-            <div className="flex flex-col gap-2">
-              {[...challenge.items].sort((a, b) => a.correctRank - b.correctRank).map(item => (
-                <div key={item.id} className="flex justify-between items-center p-2 rounded bg-[#152336] text-xs">
-                  <span className="font-bold text-[#ffd700]">#{item.correctRank} {item.label}</span>
-                  <span className="text-slate-400 font-['Courier_Prime']">{item.detail}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <CommentaryPlaque
-            score={earnedScore}
-            playerName={currentPlayer.name}
-            roundType="RANK_IT"
-            questionPrompt={challenge.prompt}
-            explanation={challenge.explanation}
-            source={challenge.source}
-            isCorrect={earnedScore >= 600}
-            onProceed={() => onComplete(earnedScore)}
-          />
-        </div>
-      )}
-    </div>
-  );
+export const RankItRound: React.FC<RankItProps> = ({challenge,currentPlayer,onComplete}) => {
+  const [itemsOrder,setItemsOrder]=useState(()=>[...challenge.items].sort(()=>Math.random()-.5)); const [isSubmitted,setIsSubmitted]=useState(false); const [earnedScore,setEarnedScore]=useState(0);
+  const moveItem=(index:number,direction:'UP'|'DOWN')=>{sound.playClick();const next=[...itemsOrder];const target=direction==='UP'?index-1:index+1;if(target<0||target>=next.length)return;[next[index],next[target]]=[next[target],next[index]];setItemsOrder(next)};
+  const confirm=()=>{sound.playStamp();setEarnedScore(scoreRanking(itemsOrder));setIsSubmitted(true)};
+  if(isSubmitted)return <div className="space-y-5"><ApparatusFrame eyebrow="Sequential Registry • Certified Rail Order" title="Correct Filing Sequence" icon={<ArrowUpDown size={28}/>} accent="#4c82c3" instrumentLabel="SORTER LOCKED"><div className="space-y-3">{[...challenge.items].sort((a,b)=>a.correctRank-b.correctRank).map(item=><div key={item.id} className="flex items-center justify-between rounded-xl border-[3px] border-[#65442c] bg-[#fff7dc] p-3 text-[#30434a] shadow-[0_3px_0_#65442c]"><strong className="font-['Cinzel']">#{item.correctRank} {item.label}</strong><span className="font-['Courier_Prime'] text-[10px] text-[#705744]">{item.detail}</span></div>)}</div></ApparatusFrame><CommentaryPlaque score={earnedScore} playerName={currentPlayer.name} roundType="RANK_IT" questionPrompt={challenge.prompt} explanation={challenge.explanation} source={challenge.source} isCorrect={earnedScore>=600} onProceed={()=>onComplete(earnedScore)}/></div>;
+  return <div className="w-full max-w-4xl mx-auto font-['Plus_Jakarta_Sans']"><ApparatusFrame eyebrow="Sequential Registry • Brass Sorting Rail" title={challenge.prompt} subtitle={<><strong>{currentPlayer.name}</strong>, move the plaques until the Bureau can file them without having to redo your work.</>} icon={<ArrowUpDown size={28}/>} accent="#4c82c3" instrumentLabel="ORDER RAIL"><div className="rounded-[26px] border-[5px] border-[#65442c] bg-[#4c82c3] p-5 shadow-[inset_0_0_0_5px_#8db4df,0_10px_0_#65442c]"><div className="relative rounded-[20px] border-[4px] border-[#65442c] bg-[#e9ddbb] p-5 shadow-inner"><div className="absolute left-8 top-0 bottom-0 w-2 rounded-full bg-[#c59c51]"/><div className="absolute right-8 top-0 bottom-0 w-2 rounded-full bg-[#c59c51]"/><div className="space-y-3 relative z-10">{itemsOrder.map((item,idx)=><div key={item.id} className="flex items-center justify-between gap-3 rounded-xl border-[3px] border-[#65442c] bg-[#fff8df] p-3 shadow-[0_4px_0_#65442c]"><div className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-lg border-2 border-[#65442c] bg-[#e65d4e] font-['Space_Mono'] font-black text-white">{idx+1}</span><span className="font-['Cinzel'] text-sm font-black text-[#30434a]">{item.label}</span></div><div className="flex gap-2"><button disabled={idx===0} onClick={()=>moveItem(idx,'UP')} className="rounded-lg border-2 border-[#65442c] bg-[#f3d66d] p-2 text-[#65442c] shadow-[0_2px_0_#65442c] disabled:opacity-30"><ChevronUp size={18}/></button><button disabled={idx===itemsOrder.length-1} onClick={()=>moveItem(idx,'DOWN')} className="rounded-lg border-2 border-[#65442c] bg-[#2fa8ae] p-2 text-white shadow-[0_2px_0_#65442c] disabled:opacity-30"><ChevronDown size={18}/></button></div></div>)}</div></div><button onClick={confirm} className="mx-auto mt-5 flex max-w-md items-center justify-center gap-2 rounded-xl border-[3px] border-[#65442c] bg-[#e65d4e] px-8 py-4 font-['Cinzel'] text-xs font-black uppercase tracking-widest text-white shadow-[0_5px_0_#65442c]"><Check size={17}/> Lock Rail Order</button></div></ApparatusFrame></div>;
 };
