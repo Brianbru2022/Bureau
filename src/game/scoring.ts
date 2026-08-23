@@ -13,27 +13,21 @@ const stableUnit = (seed: string): number => {
 };
 
 /**
- * Top 10 is a shared 1000-point pool. Lower-ranked, less obvious entries are
- * deliberately worth more. Item values are normalised so discovering every
- * entry distributes exactly 1000 points across the table.
+ * Top 10 values are awarded per discovered entry. Obvious high-ranking entries
+ * sit in the low hundreds; obscure lower-ranked entries can approach 1000.
+ * Values remain deterministic and granular rather than fixed score bands.
  */
 export function getTop10ItemScores(challenge: Top10Challenge): Record<number, number> {
-  const rawWeights = challenge.items.map(item => {
+  return Object.fromEntries(challenge.items.map(item => {
     const rankProgress = challenge.items.length <= 1
       ? 1
       : (item.rank - 1) / (challenge.items.length - 1);
-    const rarity = Math.max(0.75, item.rarityMultiplier || 1);
-    return Math.pow(0.7 + rankProgress * 2.4, 1.35) * Math.pow(rarity, 1.2);
-  });
-
-  const total = rawWeights.reduce((sum, value) => sum + value, 0) || 1;
-  const scores = rawWeights.map(weight => Math.max(1, Math.round((weight / total) * 1000)));
-
-  // Correct rounding drift on the hardest entry so the pool remains exactly 1000.
-  const drift = 1000 - scores.reduce((sum, value) => sum + value, 0);
-  if (scores.length > 0) scores[scores.length - 1] += drift;
-
-  return Object.fromEntries(challenge.items.map((item, index) => [item.rank, scores[index]]));
+    const rarityProgress = Math.max(0, Math.min(1, ((item.rarityMultiplier || 1) - 1) / 0.8));
+    const rankValue = 125 + 725 * Math.pow(rankProgress, 1.18);
+    const rarityBonus = 115 * rarityProgress;
+    const texture = (stableUnit(`${challenge.id}:${item.rank}`) - 0.5) * 34;
+    return [item.rank, clampScore(rankValue + rarityBonus + texture)];
+  }));
 }
 
 /** Push-your-luck value for The List. Smooth curve: early answers matter, but
