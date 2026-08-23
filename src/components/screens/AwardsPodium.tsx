@@ -3,190 +3,25 @@ import { Player, HiddenCommendation } from '../../types';
 import { sound } from '../../sound/audioEngine';
 import { evaluateCommendations, type ScoreSnapshot } from '../../data/commendations';
 import { applyDirectiveEvaluation } from '../../game/directives';
-import { BureauInsignia } from '../common/BureauInsignia';
+import { COMMENDATION_ART, EVENT_ART } from '../../data/visualAssets';
+import { GeneratedArtBackdrop } from '../common/GeneratedArtBackdrop';
+import { BureauAvatar } from '../common/BureauAvatar';
 import confetti from 'canvas-confetti';
 import { Award, Crown, RotateCcw, Sparkles, CheckCircle2, XCircle } from 'lucide-react';
 
-interface AwardsPodiumProps {
-  players: Player[];
-  hiddenCommendations: HiddenCommendation[];
-  scoreHistory: ScoreSnapshot[];
-  onPlayAgain: () => void;
-}
+interface AwardsPodiumProps { players:Player[]; hiddenCommendations:HiddenCommendation[]; scoreHistory:ScoreSnapshot[]; onPlayAgain:()=>void; }
 
-export const AwardsPodium: React.FC<AwardsPodiumProps> = ({
-  players,
-  hiddenCommendations,
-  scoreHistory,
-  onPlayAgain
-}) => {
-  const [step, setStep] = useState<'DIRECTIVES_REVEAL' | 'COMMENDATIONS_REVEAL' | 'FINAL_PODIUM'>('DIRECTIVES_REVEAL');
-  const [evaluatedPlayers, setEvaluatedPlayers] = useState<Player[]>(players);
-  const [awardedCommendations, setAwardedCommendations] = useState<Array<{ commendation: HiddenCommendation; winner: Player }>>([]);
-
-  useEffect(() => {
-    const directiveChecked = players.map(applyDirectiveEvaluation);
-    const afterDirectives = directiveChecked.map(player => ({
-      ...player,
-      score: player.score + (player.secretDirective.isCompleted ? player.secretDirective.bonusPoints : 0)
-    }));
-
-    const finalHistory = [
-      ...scoreHistory,
-      { roundNumber: 999, scores: Object.fromEntries(afterDirectives.map(player => [player.id, player.score])) }
-    ];
-    const { commendationsWithWinners, playerBonusMap } = evaluateCommendations(
-      afterDirectives,
-      hiddenCommendations,
-      finalHistory
-    );
-    setAwardedCommendations(commendationsWithWinners);
-
-    const finalized = afterDirectives
-      .map(player => ({
-        ...player,
-        score: player.score + (playerBonusMap[player.id] || 0)
-      }))
-      .sort((a, b) => b.score - a.score);
-
-    setEvaluatedPlayers(finalized);
-  }, [players, hiddenCommendations, scoreHistory]);
-
-  const handleRevealCommendations = () => {
-    sound.playBrassChime();
-    setStep('COMMENDATIONS_REVEAL');
-  };
-
-  const handleRevealPodium = () => {
-    sound.playVictoryFanfare();
-    confetti({
-      particleCount: 120,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ['#d4af37', '#ffd700', '#4fd1c5', '#f6ad55', '#feb2b2']
-    });
-    setStep('FINAL_PODIUM');
-  };
-
-  const winner = evaluatedPlayers[0];
-
-  return (
-    <div className="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto py-6 px-4 font-['Plus_Jakarta_Sans']">
-      <div className="text-center mb-6">
-        <BureauInsignia size={64} />
-        <span className="font-['Courier_Prime'] text-xs font-bold text-[#e6c875] uppercase tracking-widest block mt-2 mb-0.5">
-          Concluding Bureau Judgment
-        </span>
-        <h1 className="font-['Cinzel'] font-black text-3xl sm:text-4xl text-white tracking-wide">
-          The Grand Bureau Ceremony
-        </h1>
-      </div>
-
-      {step === 'DIRECTIVES_REVEAL' && (
-        <div className="w-full bg-[#121c2d] border-2 border-[#d4af37] rounded-xl p-6 shadow-2xl flex flex-col items-center gap-5">
-          <div className="text-center">
-            <span className="font-['Courier_Prime'] text-xs text-amber-300 font-bold uppercase tracking-wider block">Secret Directive Audit</span>
-            <h2 className="font-['Cinzel'] font-bold text-xl text-white mt-1">The Files Are Opened</h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-            {evaluatedPlayers.map(player => {
-              const completed = player.secretDirective.isCompleted;
-              return (
-                <div key={player.id} className={`p-4 rounded-lg bg-[#0e1624] border ${completed ? 'border-emerald-500/70' : 'border-rose-500/60'} flex flex-col gap-2`}>
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-2xl">{player.avatar}</span>
-                      <span className="font-['Cinzel'] font-bold text-sm text-white">{player.name}</span>
-                    </div>
-                    <span className={`flex items-center gap-1 font-['Courier_Prime'] text-xs font-bold ${completed ? 'text-emerald-400' : 'text-rose-400'}`}>
-                      {completed ? <CheckCircle2 size={15} /> : <XCircle size={15} />}
-                      {completed ? `+${player.secretDirective.bonusPoints}` : '+0'}
-                    </span>
-                  </div>
-                  <div className="p-2 bg-[#172336] rounded text-xs font-['Courier_Prime'] text-slate-300">
-                    <strong className="text-[#ffd700] block">{player.secretDirective.title}</strong>
-                    {player.secretDirective.description}
-                  </div>
-                  <div className={`p-2 rounded text-[11px] font-['Courier_Prime'] ${completed ? 'bg-emerald-950/35 text-emerald-200' : 'bg-rose-950/35 text-rose-200'}`}>
-                    <strong>{completed ? 'PASSED: ' : 'FAILED: '}</strong>{player.secretDirective.progressText}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <button onClick={handleRevealCommendations} className="px-8 py-3.5 rounded bg-gradient-to-r from-[#d4af37] to-[#ffd700] text-[#0a101d] font-['Cinzel'] font-black text-xs uppercase tracking-widest shadow-xl flex items-center gap-2">
-            <Sparkles size={16} /> Reveal the Two Hidden Commendations
-          </button>
-        </div>
-      )}
-
-      {step === 'COMMENDATIONS_REVEAL' && (
-        <div className="w-full bg-[#121c2d] border-2 border-[#d4af37] rounded-xl p-6 shadow-2xl flex flex-col items-center gap-5">
-          <div className="text-center">
-            <span className="font-['Courier_Prime'] text-xs text-amber-300 font-bold uppercase tracking-wider block">Selected Before Play Began</span>
-            <h2 className="font-['Cinzel'] font-bold text-xl text-white mt-1">Hidden Commendations</h2>
-            <p className="font-['Fraunces'] text-xs text-slate-300 italic mt-1">No convenient rewriting of history. These were the two awards chosen at the start.</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-            {hiddenCommendations.map(selected => {
-              const awarded = awardedCommendations.find(item => item.commendation.id === selected.id);
-              return (
-                <div key={selected.id} className="p-4 rounded-lg bg-[#0e1624] border border-[#d4af37]/60 flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-['Cinzel'] font-black text-sm text-[#ffd700] flex items-center gap-1.5"><Award size={16} />{selected.title}</span>
-                    <span className="font-['Space_Mono'] text-xs font-bold text-emerald-400">{awarded ? `+${selected.bonusPoints}` : '+0'} PTS</span>
-                  </div>
-                  <p className="text-xs font-['Fraunces'] text-slate-300 italic">{selected.description}</p>
-                  {awarded ? (
-                    <div className="pt-2 border-t border-slate-800 text-xs font-['Courier_Prime'] text-slate-300">
-                      <strong className="text-white">{awarded.winner.name}</strong><br />{awarded.commendation.evaluationNote}
-                    </div>
-                  ) : (
-                    <div className="pt-2 border-t border-slate-800 text-xs font-['Courier_Prime'] text-slate-500">Nobody qualified. The Bureau declines to lower its standards further.</div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          <button onClick={handleRevealPodium} className="px-8 py-3.5 rounded bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-['Cinzel'] font-black text-xs uppercase tracking-widest shadow-xl flex items-center gap-2 border border-emerald-400">
-            <Crown size={16} /> Final Standings
-          </button>
-        </div>
-      )}
-
-      {step === 'FINAL_PODIUM' && (
-        <div className="w-full flex flex-col items-center gap-6">
-          {winner && (
-            <div className="w-full max-w-xl bg-gradient-to-b from-[#2a1e09] via-[#3d2c0e] to-[#1e1506] border-4 border-[#ffd700] rounded-2xl p-6 text-center shadow-[0_0_50px_rgba(255,215,0,0.4)]">
-              <Crown className="text-[#ffd700] mx-auto mb-2" size={42} />
-              <span className="font-['Courier_Prime'] text-xs text-[#ffd700] uppercase font-bold tracking-widest block">Chief Bureau Adjudicator</span>
-              <h2 className="font-['Cinzel'] font-black text-3xl sm:text-4xl text-white my-1">{winner.name}</h2>
-              <div className="font-['Space_Mono'] font-extrabold text-3xl text-[#ffd700] my-2">{winner.score.toLocaleString()} <span className="text-xs text-amber-200">BUREAU PTS</span></div>
-            </div>
-          )}
-
-          <div className="w-full max-w-2xl bg-[#0f1726] border-2 border-[#d4af37]/60 rounded-xl p-5 shadow-xl flex flex-col gap-2.5">
-            {evaluatedPlayers.map((player, idx) => (
-              <div key={player.id} className={`p-3.5 rounded-lg border flex items-center justify-between ${idx === 0 ? 'bg-[#1e2d44] border-[#ffd700]' : 'bg-[#121b2b] border-slate-800'}`}>
-                <div className="flex items-center gap-3">
-                  <span className="font-['Space_Mono'] font-bold text-sm">#{idx + 1}</span>
-                  <span className="text-2xl">{player.avatar}</span>
-                  <span className="font-['Cinzel'] font-bold text-sm text-white">{player.name}</span>
-                </div>
-                <span className="font-['Space_Mono'] font-bold text-xl text-[#ffd700]">{player.score.toLocaleString()}</span>
-              </div>
-            ))}
-          </div>
-
-          <button onClick={() => { sound.playStamp(); onPlayAgain(); }} className="px-10 py-4 rounded bg-gradient-to-r from-[#d4af37] to-[#ffd700] text-[#0a101d] font-['Cinzel'] font-black text-sm uppercase tracking-widest shadow-2xl flex items-center gap-3">
-            <RotateCcw size={18} /> Play Again
-          </button>
-        </div>
-      )}
-    </div>
-  );
+export const AwardsPodium:React.FC<AwardsPodiumProps>=({players,hiddenCommendations,scoreHistory,onPlayAgain})=>{
+  const[step,setStep]=useState<'DIRECTIVES_REVEAL'|'COMMENDATIONS_REVEAL'|'FINAL_PODIUM'>('DIRECTIVES_REVEAL');
+  const[evaluatedPlayers,setEvaluatedPlayers]=useState<Player[]>(players);const[awardedCommendations,setAwardedCommendations]=useState<Array<{commendation:HiddenCommendation;winner:Player}>>([]);
+  useEffect(()=>{const checked=players.map(applyDirectiveEvaluation);const after=checked.map(p=>({...p,score:p.score+(p.secretDirective.isCompleted?p.secretDirective.bonusPoints:0)}));const hist=[...scoreHistory,{roundNumber:999,scores:Object.fromEntries(after.map(p=>[p.id,p.score]))}];const{commendationsWithWinners,playerBonusMap}=evaluateCommendations(after,hiddenCommendations,hist);setAwardedCommendations(commendationsWithWinners);setEvaluatedPlayers(after.map(p=>({...p,score:p.score+(playerBonusMap[p.id]||0)})).sort((a,b)=>b.score-a.score));},[players,hiddenCommendations,scoreHistory]);
+  const revealCommendations=()=>{sound.playBrassChime();setStep('COMMENDATIONS_REVEAL')};
+  const revealPodium=()=>{sound.playVictoryFanfare();confetti({particleCount:120,spread:70,origin:{y:.6},colors:['#d4af37','#ffd700','#4fd1c5','#f6ad55','#feb2b2']});setStep('FINAL_PODIUM')};
+  const winner=evaluatedPlayers[0];
+  return <div className="relative flex-1 overflow-hidden rounded-[28px] border-[4px] border-[#765139] min-h-[78vh]"><GeneratedArtBackdrop src={EVENT_ART.PODIUM} dim={0.48} animate/><div className="relative z-10 flex flex-col items-center justify-center max-w-5xl mx-auto py-8 px-4 font-['Plus_Jakarta_Sans']">
+    <div className="bureau-paper mb-6 rounded-[24px] border-[3px] border-[#765139] px-8 py-4 text-center"><span className="font-['Courier_Prime'] text-xs font-black text-[#a9443d] uppercase tracking-widest block">Concluding Bureau Judgment</span><h1 className="font-['Cinzel'] font-black text-3xl sm:text-4xl text-[#244b55]">The Grand Bureau Ceremony</h1></div>
+    {step==='DIRECTIVES_REVEAL'&&<div className="w-full bureau-paper border-[4px] border-[#765139] rounded-[26px] p-6 shadow-2xl flex flex-col gap-5"><div className="text-center"><span className="font-['Courier_Prime'] text-xs text-[#a9443d] font-black uppercase">Secret Directive Audit</span><h2 className="font-['Cinzel'] font-black text-xl text-[#244b55]">The Files Are Opened</h2></div><div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{evaluatedPlayers.map(p=>{const ok=p.secretDirective.isCompleted;return <div key={p.id} className={`rounded-2xl border-[3px] p-4 ${ok?'border-[#4f7457] bg-[#eef1d9]':'border-[#a9443d] bg-[#f5ddd2]'}`}><div className="flex items-center justify-between gap-3"><div className="flex items-center gap-2"><BureauAvatar player={p} size={46}/><span className="font-['Cinzel'] font-black text-[#244b55]">{p.name}</span></div><span className={`bureau-stamp-in flex items-center gap-1 font-['Courier_Prime'] text-xs font-black ${ok?'text-[#3e6e4d]':'text-[#a9443d]'}`}>{ok?<CheckCircle2 size={15}/>:<XCircle size={15}/>} {ok?`+${p.secretDirective.bonusPoints}`:'+0'}</span></div><div className="mt-3 rounded-xl bg-[#fff7df] p-3 text-xs text-[#5e4d3f]"><strong className="font-['Cinzel'] text-[#244b55] block">{p.secretDirective.title}</strong>{p.secretDirective.description}</div><div className="mt-2 text-[11px] font-['Courier_Prime'] text-[#624f42]"><strong>{ok?'PASSED: ':'FAILED: '}</strong>{p.secretDirective.progressText}</div></div>})}</div><button onClick={revealCommendations} className="bureau-button mx-auto px-8 py-3.5 rounded-xl bg-[#e0a83f] text-[#463421] font-['Cinzel'] font-black text-xs uppercase tracking-widest flex items-center gap-2"><Sparkles size={16}/>Reveal Hidden Commendations</button></div>}
+    {step==='COMMENDATIONS_REVEAL'&&<div className="w-full bureau-paper border-[4px] border-[#765139] rounded-[26px] p-6 shadow-2xl flex flex-col gap-5"><div className="text-center"><span className="font-['Courier_Prime'] text-xs text-[#a9443d] font-black uppercase">Selected Before Play Began</span><h2 className="font-['Cinzel'] font-black text-xl text-[#244b55]">Hidden Commendations</h2></div><div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{hiddenCommendations.map(selected=>{const awarded=awardedCommendations.find(x=>x.commendation.id===selected.id);return <div key={selected.id} className="rounded-2xl border-[3px] border-[#765139] bg-[#fff7df] overflow-hidden shadow-[0_4px_0_#765139]"><img src={COMMENDATION_ART[selected.id]} alt="" className="h-44 w-full object-cover"/><div className="p-4"><div className="flex items-center justify-between"><span className="font-['Cinzel'] font-black text-sm text-[#244b55] flex items-center gap-1"><Award size={16}/>{selected.title}</span><span className="font-['Space_Mono'] text-xs font-bold text-[#3e6e4d]">{awarded?`+${selected.bonusPoints}`:'+0'}</span></div><p className="text-xs text-[#665348] italic mt-1">{selected.description}</p><div className="mt-2 border-t border-[#d4bd93] pt-2 text-xs font-['Courier_Prime'] text-[#5b4a3d]">{awarded?<><strong>{awarded.winner.name}</strong><br/>{awarded.commendation.evaluationNote}</>:<>Nobody qualified. Standards remain inconveniently intact.</>}</div></div></div>})}</div><button onClick={revealPodium} className="bureau-button mx-auto px-8 py-3.5 rounded-xl bg-[#4f7457] text-white font-['Cinzel'] font-black text-xs uppercase tracking-widest flex items-center gap-2"><Crown size={16}/>Final Standings</button></div>}
+    {step==='FINAL_PODIUM'&&<div className="w-full flex flex-col items-center gap-6">{winner&&<div className="bureau-paper w-full max-w-xl border-[4px] border-[#b7882f] rounded-[28px] p-6 text-center shadow-2xl bureau-float"><Crown className="text-[#b7882f] mx-auto mb-2" size={42}/><span className="font-['Courier_Prime'] text-xs text-[#a9443d] uppercase font-black tracking-widest block">Chief Bureau Adjudicator</span><BureauAvatar player={winner} size={92} className="mx-auto my-3 border-[4px] border-[#b7882f]"/><h2 className="font-['Cinzel'] font-black text-3xl sm:text-4xl text-[#244b55]">{winner.name}</h2><div className="font-['Space_Mono'] font-extrabold text-3xl text-[#376d9b]">{winner.score.toLocaleString()} <span className="text-xs">BUREAU PTS</span></div></div>}<div className="bureau-paper w-full max-w-2xl border-[3px] border-[#765139] rounded-2xl p-5 space-y-2">{evaluatedPlayers.map((p,idx)=><div key={p.id} className={`bureau-mechanical p-3 rounded-xl border-2 flex items-center justify-between ${idx===0?'bg-[#e8d36a] border-[#765139]':'bg-[#fff7df] border-[#b48f61]'}`}><div className="flex items-center gap-3"><span className="font-['Space_Mono'] font-black">#{idx+1}</span><BureauAvatar player={p} size={42}/><span className="font-['Cinzel'] font-black text-[#244b55]">{p.name}</span></div><span className="font-['Space_Mono'] font-black text-xl text-[#376d9b]">{p.score.toLocaleString()}</span></div>)}</div><button onClick={()=>{sound.playStamp();onPlayAgain();}} className="bureau-button px-10 py-4 rounded-xl bg-[#d9644f] text-white font-['Cinzel'] font-black text-sm uppercase tracking-widest flex items-center gap-3"><RotateCcw size={18}/>Play Again</button></div>}
+  </div></div>;
 };
