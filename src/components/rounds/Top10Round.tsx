@@ -53,7 +53,7 @@ export const Top10Round: React.FC<Top10RoundProps> = ({
       setRevealedRanks(prev => [...prev, match.rank]);
       setPlayerRoundScores(prev => ({
         ...prev,
-        [activePlayer.id]: Math.min(1000, (prev[activePlayer.id] || 0) + scored)
+        [activePlayer.id]: (prev[activePlayer.id] || 0) + scored
       }));
 
       setMessage(`Correct! #${match.rank}: ${match.name} revealed (+${scored} pts)`);
