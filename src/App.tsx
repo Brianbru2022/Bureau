@@ -126,11 +126,7 @@ export default function App() {
       const nextAssets = [...player.assets];
       if (removedIndex >= 0) nextAssets.splice(removedIndex, 1);
       const stats = player.stats as ExtendedStats;
-      return {
-        ...player,
-        assets: nextAssets,
-        stats: { ...stats, assetsUsed: [...(stats.assetsUsed ?? []), assetType] }
-      };
+      return { ...player, assets: nextAssets, stats: { ...stats, assetsUsed: [...(stats.assetsUsed ?? []), assetType] } };
     }));
   };
 
@@ -139,16 +135,19 @@ export default function App() {
   };
 
   const clearArmedAsset = (playerId: string, assetType: BureauAssetKey) => {
-    setArmedAssets(prev => ({
-      ...prev,
-      [playerId]: (prev[playerId] ?? []).filter(asset => asset !== assetType)
-    }));
+    setArmedAssets(prev => ({ ...prev, [playerId]: (prev[playerId] ?? []).filter(asset => asset !== assetType) }));
   };
 
   const handleUseAsset = (assetType: BureauAssetKey) => {
     if (!activePlayer || phase !== 'PLAYING_ROUND') return;
     sound.playStamp();
     setAssetNotice(null);
+
+    if (currentRoundDefinition.participationMode !== 'EVERYONE_TAKES_A_TURN' && assetType !== 'PRIORITY_ACCESS') {
+      setAssetNotice('Individual-attempt Assets are locked during shared or sealed-answer rounds. The Bureau has prevented an administrative accident.');
+      setIsAssetDrawerOpen(false);
+      return;
+    }
 
     if (assetType === 'REFILE') {
       const replacement = pickRoundChallenge(currentRoundIndex, [...usedChallengeIdsThisRound, currentChallenge?.id ?? '']);
@@ -170,39 +169,29 @@ export default function App() {
 
     armAsset(activePlayer.id, assetType);
     removeOwnedAsset(activePlayer.id, assetType);
-    setAssetNotice(`${activePlayer.name} armed ${assetType.replaceAll('_', ' ')} for the next applicable result.`);
+    setAssetNotice(`${activePlayer.name} armed ${assetType.replaceAll('_', ' ')} for this attempt.`);
     setIsAssetDrawerOpen(false);
   };
 
-  const resolveScoresWithAssets = (
-    scoreOrScores: number | Record<string, number>,
-    extraData?: Record<string, unknown>
-  ) => {
-    const baseScores: Record<string, number> = typeof scoreOrScores === 'number'
-      ? (activePlayer ? { [activePlayer.id]: scoreOrScores } : {})
-      : { ...scoreOrScores };
+  const resolveScoresWithAssets = (scoreOrScores: number | Record<string, number>, extraData?: Record<string, unknown>) => {
+    const baseScores: Record<string, number> = typeof scoreOrScores === 'number' ? (activePlayer ? { [activePlayer.id]: scoreOrScores } : {}) : { ...scoreOrScores };
     const finalScores = { ...baseScores };
-    const assetBonuses: Record<string, number> = {};
 
     Object.entries(baseScores).forEach(([playerId, baseScore]) => {
       const armed = armedAssets[playerId] ?? [];
-      if (baseScore > 0 && armed.includes('SECOND_OPINION')) {
-        const bonus = Math.min(120, Math.round(baseScore * 0.15));
-        finalScores[playerId] += bonus;
-        assetBonuses[playerId] = (assetBonuses[playerId] || 0) + bonus;
+      if (armed.includes('SECOND_OPINION')) {
+        if (baseScore > 0) finalScores[playerId] += Math.min(120, Math.round(baseScore * 0.15));
         clearArmedAsset(playerId, 'SECOND_OPINION');
       }
-      if (baseScore > 0 && armed.includes('DOUBLE_ENTRY')) {
-        const bonus = Math.min(750, Math.round(baseScore * 0.75));
-        finalScores[playerId] += bonus;
-        assetBonuses[playerId] = (assetBonuses[playerId] || 0) + bonus;
+      if (armed.includes('DOUBLE_ENTRY')) {
+        if (baseScore > 0) finalScores[playerId] += Math.min(750, Math.round(baseScore * 0.75));
         clearArmedAsset(playerId, 'DOUBLE_ENTRY');
       }
-      if (baseScore === 0 && armed.includes('INSURANCE')) {
-        const riskedValue = typeof extraData?.riskedValue === 'number' ? extraData.riskedValue : 0;
-        const payout = Math.max(150, Math.round(riskedValue * 0.35));
-        finalScores[playerId] += payout;
-        assetBonuses[playerId] = (assetBonuses[playerId] || 0) + payout;
+      if (armed.includes('INSURANCE')) {
+        if (baseScore === 0) {
+          const riskedValue = typeof extraData?.riskedValue === 'number' ? extraData.riskedValue : 0;
+          finalScores[playerId] += Math.min(350, Math.max(150, Math.round(riskedValue * 0.35)));
+        }
         clearArmedAsset(playerId, 'INSURANCE');
       }
     });
@@ -216,20 +205,15 @@ export default function App() {
           const transfer = Math.max(1, Math.round(victimBase * 0.20));
           finalScores[victimId] = Math.max(0, finalScores[victimId] - transfer);
           finalScores[interceptor.id] = (finalScores[interceptor.id] || 0) + transfer;
-          assetBonuses[interceptor.id] = (assetBonuses[interceptor.id] || 0) + transfer;
           clearArmedAsset(interceptor.id, 'INTERCEPT');
         }
       }
     }
 
-    return { baseScores, finalScores, assetBonuses };
+    return { baseScores, finalScores };
   };
 
-  const applyRoundResult = (
-    basePlayers: Player[],
-    scoreOrScores: number | Record<string, number>,
-    extraData?: Record<string, unknown>
-  ): Player[] => {
+  const applyRoundResult = (basePlayers: Player[], scoreOrScores: number | Record<string, number>, extraData?: Record<string, unknown>): Player[] => {
     const { baseScores, finalScores } = resolveScoresWithAssets(scoreOrScores, extraData);
     const participantIds = new Set(Object.keys(baseScores));
 
@@ -241,11 +225,7 @@ export default function App() {
 
       const stats = player.stats as ExtendedStats;
       if (interceptedOnly) {
-        return {
-          ...player,
-          score: player.score + finalEarned,
-          stats: { ...stats, interceptCount: stats.interceptCount + 1 }
-        };
+        return { ...player, score: player.score + finalEarned, stats: { ...stats, interceptCount: stats.interceptCount + 1 } };
       }
 
       const explicitCorrect = typeof extraData?.correct === 'boolean' && activePlayer?.id === player.id ? extraData.correct : undefined;
@@ -253,7 +233,7 @@ export default function App() {
       const mapDistance = currentRoundDefinition.type === 'WHERE_IN_BRITAIN' && activePlayer?.id === player.id && typeof extraData?.km === 'number' ? extraData.km : null;
       const estimateErrors = currentRoundDefinition.type === 'CLOSEST_WINS' && extraData?.errors && typeof extraData.errors === 'object' ? extraData.errors as Record<string, number> : null;
       const isList = currentRoundDefinition.type === 'THE_LIST' && activePlayer?.id === player.id;
-      const listBanked = isList && isSuccess ? finalEarned : null;
+      const listBanked = isList && isSuccess ? (baseEarned ?? 0) : null;
       const isStopTheScore = currentRoundDefinition.type === 'STOP_THE_SCORE' && activePlayer?.id === player.id;
       const category = currentChallenge?.category;
       const categoryScores = { ...(stats.categoryScores ?? {}) };
@@ -285,10 +265,7 @@ export default function App() {
   };
 
   const recordRoundSnapshot = (updatedPlayers: Player[]) => {
-    setScoreHistory(prev => [
-      ...prev,
-      { roundNumber: currentRoundIndex + 1, scores: Object.fromEntries(updatedPlayers.map(player => [player.id, player.score])) }
-    ]);
+    setScoreHistory(prev => [...prev, { roundNumber: currentRoundIndex + 1, scores: Object.fromEntries(updatedPlayers.map(player => [player.id, player.score])) }]);
   };
 
   const completeFullRound = (updatedPlayers: Player[]) => {
@@ -298,11 +275,8 @@ export default function App() {
     const minScore = Math.min(...scores, 0);
     const trailing = updatedPlayers.find(player => player.score === minScore);
 
-    if (!bureauReviewUsed && updatedPlayers.length > 1 && currentRoundIndex >= 2 && (maxScore - minScore) >= 1200 && trailing) {
-      setReviewEligiblePlayer(trailing);
-    } else {
-      advanceToNextRound(updatedPlayers);
-    }
+    if (!bureauReviewUsed && updatedPlayers.length > 1 && currentRoundIndex >= 2 && (maxScore - minScore) >= 1200 && trailing) setReviewEligiblePlayer(trailing);
+    else advanceToNextRound(updatedPlayers);
   };
 
   const handleRoundComplete = (scoreOrScores: number | Record<string, number>, extraData?: Record<string, unknown>) => {
@@ -407,19 +381,9 @@ export default function App() {
 
   return (
     <BureauRoomBackdrop roomName={currentRoundConfig.roomName}>
-      <Header
-        roundConfig={phase === 'TITLE' || phase === 'SETUP' ? undefined : currentRoundConfig}
-        totalRounds={ROUND_DEFINITIONS.length}
-        players={players}
-        currentPlayerIndex={activePlayerIndex}
-        onOpenAssets={() => setIsAssetDrawerOpen(true)}
-        canReview={!!reviewEligiblePlayer}
-        onTriggerReview={() => {}}
-      />
+      <Header roundConfig={phase === 'TITLE' || phase === 'SETUP' ? undefined : currentRoundConfig} totalRounds={ROUND_DEFINITIONS.length} players={players} currentPlayerIndex={activePlayerIndex} onOpenAssets={() => setIsAssetDrawerOpen(true)} canReview={!!reviewEligiblePlayer} onTriggerReview={() => {}} />
 
-      {assetNotice && phase === 'PLAYING_ROUND' && (
-        <div className="mx-auto mb-2 max-w-3xl rounded-lg border border-[#4fd1c5]/50 bg-[#0d2530] px-4 py-2 text-center font-['Courier_Prime'] text-xs text-[#a7f3e8]">{assetNotice}</div>
-      )}
+      {assetNotice && phase === 'PLAYING_ROUND' && <div className="mx-auto mb-2 max-w-3xl rounded-lg border border-[#4fd1c5]/50 bg-[#0d2530] px-4 py-2 text-center font-['Courier_Prime'] text-xs text-[#a7f3e8]">{assetNotice}</div>}
 
       <main className="w-full flex-1 flex flex-col justify-center py-4 px-2 sm:px-4">
         {phase === 'TITLE' && <TitleScreen onStartGame={handleStartGame} />}
@@ -446,17 +410,7 @@ export default function App() {
 
       {activePlayer && <AssetDrawer isOpen={isAssetDrawerOpen} activePlayer={activePlayer} onClose={() => setIsAssetDrawerOpen(false)} onUseAsset={handleUseAsset} />}
 
-      {reviewEligiblePlayer && (
-        <BureauReviewModal
-          trailingPlayer={reviewEligiblePlayer}
-          onSelectOption={handleResolveBureauReview}
-          onClose={() => {
-            setBureauReviewUsed(true);
-            setReviewEligiblePlayer(null);
-            advanceToNextRound(players);
-          }}
-        />
-      )}
+      {reviewEligiblePlayer && <BureauReviewModal trailingPlayer={reviewEligiblePlayer} onSelectOption={handleResolveBureauReview} onClose={() => { setBureauReviewUsed(true); setReviewEligiblePlayer(null); advanceToNextRound(players); }} />}
     </BureauRoomBackdrop>
   );
 }
