@@ -48,6 +48,15 @@ const buildChoiceOutcomes = (type: MiniGameType, count: number): ChoiceOutcome[]
   ]).slice(0, count);
 };
 
+const comparisonLabels = (prompt: string): [string, string] => {
+  const lower = prompt.toLowerCase();
+  if (lower.includes('north') || lower.includes('south')) return ['Further North', 'Further South'];
+  if (lower.includes('longer') || lower.includes('shorter')) return ['Longer', 'Shorter'];
+  if (lower.includes('deeper') || lower.includes('shallower')) return ['Deeper', 'Shallower'];
+  if (lower.includes('taller')) return ['Taller', 'Shorter'];
+  return ['Higher', 'Lower'];
+};
+
 export const InterstitialMiniGame: React.FC<InterstitialMiniGameProps> = ({ type, players, onComplete }) => {
   const [playerIndex, setPlayerIndex] = useState(0);
   const [effects, setEffects] = useState<MiniGameEffect[]>([]);
@@ -61,6 +70,8 @@ export const InterstitialMiniGame: React.FC<InterstitialMiniGameProps> = ({ type
   const currentPrompt = higherLowerPrompts[playerIndex % higherLowerPrompts.length];
 
   if (!currentPlayer) return null;
+
+  const [upperChoiceLabel, lowerChoiceLabel] = comparisonLabels(currentPrompt.prompt);
 
   const finishTurn = (effect: MiniGameEffect) => {
     sound.playStamp();
@@ -194,8 +205,8 @@ export const InterstitialMiniGame: React.FC<InterstitialMiniGameProps> = ({ type
               <strong className="block font-['Cinzel'] text-xl text-[#ffd700] mt-1">{currentPrompt.targetLabel}</strong>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <button onClick={() => chooseHigherLower('HIGHER')} className="py-4 rounded-lg bg-emerald-700 border-2 border-emerald-400 text-white font-['Cinzel'] font-black uppercase tracking-widest hover:brightness-110">Higher / Further</button>
-              <button onClick={() => chooseHigherLower('LOWER')} className="py-4 rounded-lg bg-rose-800 border-2 border-rose-400 text-white font-['Cinzel'] font-black uppercase tracking-widest hover:brightness-110">Lower / Shorter</button>
+              <button onClick={() => chooseHigherLower('HIGHER')} className="py-4 rounded-lg bg-emerald-700 border-2 border-emerald-400 text-white font-['Cinzel'] font-black uppercase tracking-widest hover:brightness-110">{upperChoiceLabel}</button>
+              <button onClick={() => chooseHigherLower('LOWER')} className="py-4 rounded-lg bg-rose-800 border-2 border-rose-400 text-white font-['Cinzel'] font-black uppercase tracking-widest hover:brightness-110">{lowerChoiceLabel}</button>
             </div>
           </div>
         )}
