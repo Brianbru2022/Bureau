@@ -12,6 +12,7 @@ export interface MiniGameEffect {
   playerId: string;
   pointsDelta?: number;
   asset?: BureauAssetKey;
+  priorityNextRound?: boolean;
   note: string;
 }
 
