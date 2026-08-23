@@ -8,6 +8,11 @@ export type RoundType =
   | 'IMAGE_REVEAL'
   | 'STOP_THE_SCORE';
 
+export type RoundParticipationMode =
+  | 'EVERYONE_TAKES_A_TURN'
+  | 'SHARED_ROTATION'
+  | 'HIDDEN_SEQUENTIAL';
+
 export interface Player {
   id: string;
   name: string;
@@ -254,17 +259,14 @@ export type GamePhase =
   | 'SETUP'
   | 'DIRECTIVES'
   | 'ROOM_TRANSITION'
-  | 'ROUND_ACTIVE'
-  | 'ROUND_RESULT'
-  | 'BUREAU_REVIEW'
-  | 'FINAL_CASE_BRIEF'
-  | 'FINAL_CASE_PLAY'
-  | 'FINAL_CASE_VERDICT'
+  | 'PLAYING_ROUND'
+  | 'FINAL_CASE'
   | 'PODIUM';
 
 export interface RoundConfig {
   roundNumber: number;
   type: RoundType;
+  participationMode: RoundParticipationMode;
   name: string;
   roomName: string;
   roomTheme: string;
