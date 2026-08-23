@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { ClosestWinsChallenge, Player } from '../../types';
 import { sound } from '../../sound/audioEngine';
-import { Calculator, EyeOff, Eye, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Calculator, EyeOff, ArrowRight } from 'lucide-react';
 import { CommentaryPlaque } from '../common/CommentaryPlaque';
+import { scoreEstimate } from '../../game/scoring';
 
 interface ClosestWinsProps {
   challenge: ClosestWinsChallenge;
@@ -23,14 +24,12 @@ export const ClosestWinsRound: React.FC<ClosestWinsProps> = ({
   const [errorsComputed, setErrorsComputed] = useState<Record<string, number>>({});
 
   const activePlayer = players[currentInputIdx] || players[0];
-  const allAnswered = currentInputIdx >= players.length;
-
   if (!activePlayer) return null;
 
   const handleRegisterGuess = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     const val = parseFloat(currentGuessString.trim());
-    if (isNaN(val)) return;
+    if (Number.isNaN(val)) return;
 
     sound.playStamp();
     const newInputs = { ...playerInputs, [activePlayer.id]: val };
@@ -40,7 +39,6 @@ export const ClosestWinsRound: React.FC<ClosestWinsProps> = ({
     if (currentInputIdx + 1 < players.length) {
       setCurrentInputIdx(currentInputIdx + 1);
     } else {
-      // Calculate scores for all players
       computeAllScores(newInputs);
     }
   };
@@ -52,20 +50,10 @@ export const ClosestWinsRound: React.FC<ClosestWinsProps> = ({
     players.forEach(p => {
       const guess = inputs[p.id] !== undefined ? inputs[p.id] : 0;
       const absDiff = Math.abs(guess - challenge.correctValue);
-      const errorPct = (absDiff / Math.max(1, challenge.correctValue)) * 100;
+      const denominator = Math.max(Math.abs(challenge.correctValue), 1);
+      const errorPct = (absDiff / denominator) * 100;
       errors[p.id] = errorPct;
-
-      // Mathematical continuous scoring 0-1000
-      let score = 0;
-      if (errorPct <= 1) score = 1000;
-      else if (errorPct <= 5) score = Math.round(980 - (errorPct - 1) * 25);
-      else if (errorPct <= 15) score = Math.round(880 - (errorPct - 5) * 20);
-      else if (errorPct <= 35) score = Math.round(680 - (errorPct - 15) * 15);
-      else if (errorPct <= 75) score = Math.round(380 - (errorPct - 35) * 6);
-      else if (errorPct <= 150) score = Math.max(10, Math.round(140 - (errorPct - 75) * 1.5));
-      else score = 0;
-
-      scores[p.id] = score;
+      scores[p.id] = scoreEstimate(errorPct, challenge.toleranceScale);
     });
 
     setScoresComputed(scores);
@@ -74,9 +62,13 @@ export const ClosestWinsRound: React.FC<ClosestWinsProps> = ({
     sound.playVictoryFanfare();
   };
 
+  const bestPlayer = players.reduce<Player | null>((best, candidate) => {
+    if (!best) return candidate;
+    return (scoresComputed[candidate.id] ?? 0) > (scoresComputed[best.id] ?? 0) ? candidate : best;
+  }, null);
+
   return (
     <div className="w-full flex flex-col items-center max-w-4xl mx-auto font-['Plus_Jakarta_Sans']">
-      {/* Title */}
       <div className="w-full bg-[#162235] border-2 border-[#d4af37] rounded-lg p-4 mb-4 shadow-xl text-center">
         <div className="flex items-center justify-center gap-2 mb-1">
           <Calculator className="text-[#ffd700]" size={20} />
@@ -90,9 +82,7 @@ export const ClosestWinsRound: React.FC<ClosestWinsProps> = ({
       </div>
 
       {!isRevealed ? (
-        /* Sequential Hidden Entry Screen */
         <div className="w-full max-w-lg bg-[#0e1724] border-2 border-[#d4af37] rounded-lg p-6 flex flex-col items-center gap-5 shadow-2xl">
-          {/* Privacy Seal Notice */}
           <div className="flex items-center gap-2 px-3 py-1.5 rounded bg-amber-950/60 border border-amber-500/50 text-amber-300 text-xs font-['Courier_Prime']">
             <EyeOff size={15} />
             <span>CONFIDENTIAL ESTIMATE ENTRY — CANDIDATE {currentInputIdx + 1} OF {players.length}</span>
@@ -101,12 +91,8 @@ export const ClosestWinsRound: React.FC<ClosestWinsProps> = ({
           <div className="flex items-center gap-3 w-full border-b border-slate-800 pb-3">
             <span className="text-3xl">{activePlayer.avatar}</span>
             <div>
-              <span className="font-['Courier_Prime'] text-[9px] text-[#ffd700] uppercase font-bold tracking-widest block">
-                Estimated By
-              </span>
-              <h3 className="font-['Cinzel'] font-bold text-lg text-white">
-                {activePlayer.name}
-              </h3>
+              <span className="font-['Courier_Prime'] text-[9px] text-[#ffd700] uppercase font-bold tracking-widest block">Estimated By</span>
+              <h3 className="font-['Cinzel'] font-bold text-lg text-white">{activePlayer.name}</h3>
             </div>
           </div>
 
@@ -122,13 +108,11 @@ export const ClosestWinsRound: React.FC<ClosestWinsProps> = ({
                   autoFocus
                   value={currentGuessString}
                   onChange={e => setCurrentGuessString(e.target.value)}
-                  placeholder="e.g. 158"
+                  placeholder="Enter your estimate"
                   className="w-full px-4 py-3 rounded bg-[#0a111a] border border-[#d4af37] text-white text-xl focus:outline-none focus:border-[#ffd700] font-['Space_Mono']"
                 />
                 {challenge.unitSuffix && (
-                  <span className="absolute right-3 top-3.5 font-['Courier_Prime'] text-xs text-slate-400">
-                    {challenge.unitSuffix}
-                  </span>
+                  <span className="absolute right-3 top-3.5 font-['Courier_Prime'] text-xs text-slate-400">{challenge.unitSuffix}</span>
                 )}
               </div>
             </div>
@@ -144,50 +128,32 @@ export const ClosestWinsRound: React.FC<ClosestWinsProps> = ({
           </form>
         </div>
       ) : (
-        /* Dramatic Reveal of All Guesses */
         <div className="w-full flex flex-col items-center gap-5">
-          {/* True Answer Plaque */}
           <div className="w-full max-w-xl bg-[#16253b] border-2 border-[#ffd700] rounded-lg p-5 text-center shadow-2xl">
-            <span className="font-['Courier_Prime'] text-xs text-amber-300 font-bold uppercase tracking-widest block">
-              Official Certified Value
-            </span>
+            <span className="font-['Courier_Prime'] text-xs text-amber-300 font-bold uppercase tracking-widest block">Official Certified Value</span>
             <div className="font-['Space_Mono'] font-black text-4xl sm:text-5xl text-[#ffd700] my-1">
               {challenge.correctValue.toLocaleString()} {challenge.unitSuffix || challenge.unit}
             </div>
-            <p className="font-['Fraunces'] text-slate-300 text-xs italic">
-              Verified by the Central Metric Registry
-            </p>
           </div>
 
-          {/* Comparison Cards Grid */}
           <div className="w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 gap-3">
             {players.map(p => {
-              const guess = playerInputs[p.id] || 0;
-              const errPct = errorsComputed[p.id] || 0;
-              const score = scoresComputed[p.id] || 0;
+              const guess = playerInputs[p.id] ?? 0;
+              const errPct = errorsComputed[p.id] ?? 0;
+              const score = scoresComputed[p.id] ?? 0;
 
               return (
-                <div
-                  key={p.id}
-                  className="bg-[#0f1928] border border-[#d4af37]/60 rounded-lg p-4 flex items-center justify-between shadow-lg"
-                >
+                <div key={p.id} className="bg-[#0f1928] border border-[#d4af37]/60 rounded-lg p-4 flex items-center justify-between shadow-lg">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{p.avatar}</span>
                     <div>
                       <h4 className="font-['Cinzel'] font-bold text-sm text-white">{p.name}</h4>
-                      <span className="font-['Space_Mono'] text-xs text-slate-300">
-                        Guess: <strong>{guess.toLocaleString()}</strong>
-                      </span>
-                      <span className="block font-['Courier_Prime'] text-[10px] text-amber-300/80">
-                        Error: {errPct.toFixed(1)}%
-                      </span>
+                      <span className="font-['Space_Mono'] text-xs text-slate-300">Guess: <strong>{guess.toLocaleString()}</strong></span>
+                      <span className="block font-['Courier_Prime'] text-[10px] text-amber-300/80">Error: {errPct.toFixed(1)}%</span>
                     </div>
                   </div>
-
                   <div className="text-right">
-                    <span className="font-['Space_Mono'] font-bold text-xl text-[#ffd700]">
-                      +{score}
-                    </span>
+                    <span className="font-['Space_Mono'] font-bold text-xl text-[#ffd700]">+{score}</span>
                     <span className="block font-['Courier_Prime'] text-[9px] text-slate-400 uppercase">PTS</span>
                   </div>
                 </div>
@@ -195,15 +161,14 @@ export const ClosestWinsRound: React.FC<ClosestWinsProps> = ({
             })}
           </div>
 
-          {/* Commentary */}
           <CommentaryPlaque
-            score={scoresComputed[players[0]?.id] || 500}
-            playerName="Candidates"
+            score={bestPlayer ? (scoresComputed[bestPlayer.id] ?? 0) : 0}
+            playerName={bestPlayer?.name ?? 'Candidates'}
             roundType="CLOSEST_WINS"
             questionPrompt={challenge.prompt}
             explanation={challenge.explanation}
             source={challenge.source}
-            errorPercent={errorsComputed[players[0]?.id]}
+            errorPercent={bestPlayer ? errorsComputed[bestPlayer.id] : undefined}
             isCorrect={true}
             onProceed={() => onCompleteRound(scoresComputed, errorsComputed)}
           />
