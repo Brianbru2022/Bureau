@@ -1,7 +1,7 @@
 import React from 'react';
 import { Player, RoundConfig } from '../../types';
 import { BureauInsignia } from './BureauInsignia';
-import { Volume2, VolumeX, Briefcase, Award, ShieldAlert } from 'lucide-react';
+import { Volume2, VolumeX, Briefcase, ShieldAlert } from 'lucide-react';
 import { sound } from '../../sound/audioEngine';
 
 interface HeaderProps {
@@ -24,6 +24,7 @@ export const Header: React.FC<HeaderProps> = ({
   canReview = false
 }) => {
   const [muted, setMuted] = React.useState(sound.isMuted);
+  const currentPlayer = players[currentPlayerIndex];
 
   const handleToggleMute = () => {
     const isNowMuted = sound.toggleMute();
@@ -31,112 +32,56 @@ export const Header: React.FC<HeaderProps> = ({
     if (!isNowMuted) sound.playClick();
   };
 
-  const currentPlayer = players[currentPlayerIndex];
-
   return (
-    <header className="w-full flex flex-col gap-2 pb-3 mb-2 border-b border-[#d4af37]/30">
-      {/* Top Banner Row */}
-      <div className="flex items-center justify-between gap-2 flex-wrap">
-        {/* Left: Bureau Insignia & Room Plaque */}
+    <header className="w-full flex flex-col gap-3 pb-3 mb-2">
+      <div className="flex items-center justify-between gap-3 flex-wrap rounded-2xl border-[3px] border-[#7e5c24] bg-[#f5e7c3] px-4 py-2.5 shadow-[0_5px_0_#7b4f32,0_10px_20px_rgba(70,50,34,.14)]">
         <div className="flex items-center gap-3">
-          <BureauInsignia size={38} showText={true} />
+          <BureauInsignia size={42} showText />
           {roundConfig && (
-            <div className="hidden sm:flex flex-col border-l border-[#d4af37]/40 pl-3">
-              <span className="font-['Cinzel'] font-bold text-xs text-[#e6c875] tracking-wider uppercase">
-                {roundConfig.roomName}
-              </span>
-              <span className="font-['Courier_Prime'] text-[10px] text-slate-400 uppercase">
-                Round {roundConfig.roundNumber} of {totalRounds} • {roundConfig.name}
-              </span>
+            <div className="hidden md:flex flex-col border-l-2 border-[#b7882f]/50 pl-3">
+              <span className="font-['Cinzel'] font-black text-xs text-[#244b55] tracking-wider uppercase">{roundConfig.roomName}</span>
+              <span className="font-['Courier_Prime'] text-[10px] text-[#775e47] uppercase font-bold">Round {roundConfig.roundNumber} of {totalRounds} • {roundConfig.name}</span>
             </div>
           )}
         </div>
 
-        {/* Right Action Bar */}
         <div className="flex items-center gap-2">
-          {/* Bureau Review Comeback Trigger button if underdog flag active */}
           {canReview && onTriggerReview && (
-            <button
-              onClick={() => {
-                sound.playStamp();
-                onTriggerReview();
-              }}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-950/80 border border-amber-500/60 text-amber-300 hover:bg-amber-900 text-xs font-['Courier_Prime'] font-bold tracking-wide animate-pulse"
-              title="Underdog intervention available"
-            >
-              <ShieldAlert size={14} className="text-amber-400" />
-              <span>BUREAU REVIEW</span>
+            <button onClick={() => { sound.playStamp(); onTriggerReview(); }} className="bureau-button flex items-center gap-1.5 rounded-xl bg-[#e0a83f] px-3 py-2 text-[#463421] text-xs font-['Courier_Prime'] font-bold uppercase tracking-wide">
+              <ShieldAlert size={14} /> Bureau Review
             </button>
           )}
-
-          {/* Player Assets Bag / Clearance */}
           {currentPlayer && onOpenAssets && (
-            <button
-              onClick={() => {
-                sound.playClick();
-                onOpenAssets();
-              }}
-              className="flex items-center gap-1.5 px-3 py-1 rounded bg-[#1e293b] hover:bg-[#334155] border border-[#d4af37]/50 text-[#e6c875] text-xs font-['Cinzel'] font-semibold tracking-wider transition-all"
-            >
-              <Briefcase size={14} />
-              <span>Assets ({currentPlayer.assets.length})</span>
+            <button onClick={() => { sound.playClick(); onOpenAssets(); }} className="bureau-button flex items-center gap-1.5 rounded-xl bg-[#376d9b] px-3 py-2 text-[#fff7df] text-xs font-['Cinzel'] font-bold">
+              <Briefcase size={14} /> Assets ({currentPlayer.assets.length})
             </button>
           )}
-
-          {/* Sound Toggle */}
-          <button
-            onClick={handleToggleMute}
-            className="p-1.5 rounded-full bg-[#1b263b]/80 border border-[#d4af37]/30 text-[#e6c875] hover:bg-[#27354f] transition-all"
-            title={muted ? 'Unmute Bureau Audio' : 'Mute Bureau Audio'}
-          >
+          <button onClick={handleToggleMute} className="bureau-button rounded-full bg-[#fff7df] p-2 text-[#244b55]" title={muted ? 'Unmute Bureau Audio' : 'Mute Bureau Audio'}>
             {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
           </button>
         </div>
       </div>
 
-      {/* Player Score Banners Row (High Visibility on Shared Device) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-        {players.map((p, idx) => {
-          const isTurn = idx === currentPlayerIndex;
-          return (
-            <div
-              key={p.id}
-              className={`relative flex items-center justify-between px-3 py-1.5 rounded-md border transition-all duration-300 ${
-                isTurn
-                  ? 'bg-gradient-to-r from-[#1c2e4a] to-[#243b55] border-[#d4af37] shadow-[0_0_15px_rgba(212,175,55,0.35)] scale-[1.02]'
-                  : 'bg-[#101827]/80 border-slate-700/60 opacity-85 hover:opacity-100'
-              }`}
-            >
-              {/* Active Marker Indicator */}
-              {isTurn && (
-                <div className="absolute -top-1.5 left-2 px-1.5 py-0.2 bg-[#d4af37] text-[#0a101d] font-['Courier_Prime'] font-bold text-[8px] tracking-widest rounded uppercase">
-                  ACTIVE CANDIDATE
+      {players.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {players.map((p, idx) => {
+            const isTurn = idx === currentPlayerIndex;
+            return (
+              <div key={p.id} className={`relative flex items-center justify-between gap-2 rounded-2xl border-[3px] px-3 py-2 transition-transform ${isTurn ? 'border-[#7e5c24] bg-[#2f8f95] text-[#fff7df] shadow-[0_5px_0_#7b4f32] -translate-y-0.5' : 'border-[#b58e59] bg-[#fff7df]/95 text-[#2f4248] shadow-[0_3px_0_#b18b60]'}`}>
+                {isTurn && <div className="absolute -top-2 left-3 rounded-full border border-[#7e5c24] bg-[#e0a83f] px-2 py-0.5 font-['Courier_Prime'] text-[8px] font-black uppercase text-[#49361e]">Active</div>}
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="text-xl shrink-0">{p.avatar}</span>
+                  <span className="font-['Cinzel'] text-xs font-black truncate">{p.name}</span>
                 </div>
-              )}
-
-              <div className="flex items-center gap-2 overflow-hidden">
-                <span className="text-lg shrink-0">{p.avatar}</span>
-                <div className="flex flex-col min-w-0">
-                  <span className={`font-['Cinzel'] text-xs font-bold truncate ${isTurn ? 'text-[#f5deb3]' : 'text-slate-200'}`}>
-                    {p.name}
-                  </span>
-                  <span className="text-[9px] font-['Courier_Prime'] text-slate-400 truncate">
-                    {p.department.split(' ')[0]}
-                  </span>
+                <div className="text-right shrink-0">
+                  <span className={`font-['Space_Mono'] font-black text-base ${isTurn ? 'text-white' : 'text-[#376d9b]'}`}>{p.score.toLocaleString()}</span>
+                  <span className={`block font-['Courier_Prime'] text-[8px] uppercase ${isTurn ? 'text-[#d8f2ef]' : 'text-[#876a4d]'}`}>Pts</span>
                 </div>
               </div>
-
-              {/* Exact Continuous Score Display */}
-              <div className="flex flex-col items-end shrink-0 pl-2">
-                <span className={`font-['Space_Mono'] font-bold text-sm tracking-tight ${isTurn ? 'text-[#ffd700]' : 'text-slate-100'}`}>
-                  {p.score.toLocaleString()}
-                </span>
-                <span className="text-[8px] font-['Courier_Prime'] text-slate-400 uppercase">PTS</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </header>
   );
 };
