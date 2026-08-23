@@ -9,7 +9,7 @@ interface TitleScreenProps { onStartGame: (playerCount: number) => void; }
 export const TitleScreen: React.FC<TitleScreenProps> = ({ onStartGame }) => {
   return (
     <div className="relative flex-1 overflow-hidden rounded-[24px]">
-      <GeneratedArtBackdrop src="/assets/generated/rooms/grand-hall.jpg" dim={0.42} animate />
+      <GeneratedArtBackdrop src="/assets/generated/grand-hall.jpg" dim={0.42} animate />
       <div className="relative z-10 flex min-h-[78vh] flex-col items-center justify-center text-center max-w-5xl mx-auto py-6 sm:py-9 px-3">
         <div className="bureau-float mb-3 rounded-[28px] border-[4px] border-[#7e5c24] bg-[#fff7df]/94 px-7 py-4 shadow-[0_8px_0_#7b4f32,0_18px_32px_rgba(76,52,33,.2)]">
           <BureauInsignia size={104} />
