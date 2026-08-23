@@ -3,13 +3,14 @@ import { Player, BureauAssetKey } from '../../types';
 import { sound } from '../../sound/audioEngine';
 import { assignSecretDirectives } from '../../data/secretDirectives';
 import { ArrowRight } from 'lucide-react';
+import { BureauAvatar } from '../common/BureauAvatar';
 
 interface SetupScreenProps {
   playerCount: number;
   onProceedToDirectives: (players: Player[]) => void;
 }
 
-const DEFAULT_AVATARS = ['🧐', '🎩', '🏛️', '👑', '📜', '⚖️', '🧭', '🔬'];
+const DEFAULT_AVATARS = ['🧭', '📚', '🔬', '🔎', '⚙️', '👑', '🏛️', '🌐'];
 const BRITISH_DEPARTMENTS = [
   'Department of Cartography & Spite',
   'Admiralty Ministry of Obscure Measurements',
@@ -21,26 +22,27 @@ const BRITISH_DEPARTMENTS = [
 const STARTER_ASSETS: BureauAssetKey[] = ['SECOND_OPINION', 'REFILE', 'INSURANCE'];
 const CARD_COLORS = ['#67c4c1', '#e0a83f', '#d9644f', '#7ca66f'];
 
+type Profile = { name: string; avatar: string; portraitIndex: number; department: string };
+
 export const SetupScreen: React.FC<SetupScreenProps> = ({ playerCount, onProceedToDirectives }) => {
-  const [profiles, setProfiles] = useState<Array<{ name: string; avatar: string; department: string }>>(() =>
+  const [profiles, setProfiles] = useState<Profile[]>(() =>
     Array.from({ length: playerCount }).map((_, i) => ({
       name: `Candidate ${i + 1}`,
       avatar: DEFAULT_AVATARS[i % DEFAULT_AVATARS.length],
+      portraitIndex: i % 8,
       department: BRITISH_DEPARTMENTS[i % BRITISH_DEPARTMENTS.length]
     }))
   );
 
   const handleUpdateName = (index: number, name: string) => {
-    const next = [...profiles];
-    next[index].name = name;
-    setProfiles(next);
+    const next = [...profiles]; next[index].name = name; setProfiles(next);
   };
 
   const handleCycleAvatar = (index: number) => {
     sound.playClick();
     const next = [...profiles];
-    const currentIdx = DEFAULT_AVATARS.indexOf(next[index].avatar);
-    next[index].avatar = DEFAULT_AVATARS[(currentIdx + 1) % DEFAULT_AVATARS.length];
+    next[index].portraitIndex = (next[index].portraitIndex + 1) % 8;
+    next[index].avatar = DEFAULT_AVATARS[next[index].portraitIndex];
     setProfiles(next);
   };
 
@@ -51,29 +53,17 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ playerCount, onProceed
       id: `p-${i + 1}`,
       name: p.name.trim() || `Candidate ${i + 1}`,
       avatar: p.avatar,
+      portraitIndex: p.portraitIndex,
       color: ['#4fd1c5', '#f6ad55', '#d6bcfa', '#feb2b2'][i % 4],
       department: p.department,
       score: 0,
       assets: [STARTER_ASSETS[Math.floor(Math.random() * STARTER_ASSETS.length)]],
       secretDirective: directives[i],
       stats: {
-        roundsPlayed: 0,
-        correctAnswers: 0,
-        totalAnswers: 0,
-        bestScore: 0,
-        worstScore: 1000,
-        mapDistancesKm: [],
-        estimateErrorsPercent: [],
-        risksTaken: 0,
-        successfulRisks: 0,
-        highestBankedList: 0,
-        categoriesAttempted: new Set<string>(),
-        interceptCount: 0,
-        challengeScores: [],
-        mapScores: [],
-        successfulListBanks: [],
-        categoryScores: {},
-        assetsUsed: []
+        roundsPlayed: 0, correctAnswers: 0, totalAnswers: 0, bestScore: 0, worstScore: 1000,
+        mapDistancesKm: [], estimateErrorsPercent: [], risksTaken: 0, successfulRisks: 0,
+        highestBankedList: 0, categoriesAttempted: new Set<string>(), interceptCount: 0,
+        challengeScores: [], mapScores: [], successfulListBanks: [], categoryScores: {}, assetsUsed: []
       }
     }));
     onProceedToDirectives(createdPlayers);
@@ -84,12 +74,12 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ playerCount, onProceed
       <div className="text-center mb-6 bureau-paper rounded-[24px] border-[3px] border-[#7e5c24] px-8 py-5 max-w-3xl w-full">
         <span className="font-['Courier_Prime'] text-[10px] font-black text-[#a9443d] uppercase tracking-[0.2em] block mb-1">Candidate Registration</span>
         <h2 className="font-['Cinzel'] font-black text-3xl sm:text-4xl text-[#244b55]">Issue the Bureau ID Cards</h2>
-        <p className="font-['Fraunces'] text-sm text-[#6f543f] italic mt-2">Names are compulsory. Competence remains optional.</p>
+        <p className="font-['Fraunces'] text-sm text-[#6f543f] italic mt-2">Tap a portrait to cycle candidates. Names are compulsory. Competence remains optional.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full mb-7">
         {profiles.map((prof, idx) => (
-          <div key={idx} className="relative rounded-[24px] border-[4px] border-[#6f4933] p-5 bureau-enamel overflow-hidden" style={{ backgroundColor: CARD_COLORS[idx % CARD_COLORS.length] }}>
+          <div key={idx} className="relative rounded-[24px] border-[4px] border-[#6f4933] p-5 bureau-enamel overflow-hidden bureau-paper-drop" style={{ backgroundColor: CARD_COLORS[idx % CARD_COLORS.length] }}>
             <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/20" />
             <div className="flex items-center justify-between border-b-2 border-[#6f4933]/30 pb-3 mb-4">
               <span className="font-['Courier_Prime'] font-black text-[10px] text-[#423424] uppercase tracking-wider">Bureau ID #{String(idx + 1).padStart(2, '0')}</span>
@@ -97,8 +87,8 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ playerCount, onProceed
             </div>
 
             <div className="flex items-center gap-4">
-              <button type="button" onClick={() => handleCycleAvatar(idx)} className="bureau-button w-20 h-20 rounded-2xl bg-[#fff7df] border-[#6f4933] flex items-center justify-center text-4xl shrink-0 cursor-pointer" title="Cycle portrait">
-                {prof.avatar}
+              <button type="button" onClick={() => handleCycleAvatar(idx)} className="bureau-button w-24 h-24 rounded-2xl bg-[#fff7df] border-[#6f4933] flex items-center justify-center shrink-0 cursor-pointer overflow-hidden" title="Cycle portrait">
+                <BureauAvatar avatar={prof.avatar} portraitIndex={prof.portraitIndex} size={88} className="border-0 rounded-xl" />
               </button>
               <div className="flex-1">
                 <label className="font-['Courier_Prime'] text-[9px] font-black text-[#4d3e30] uppercase tracking-widest block mb-1">Candidate name</label>
