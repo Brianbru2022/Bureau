@@ -4,43 +4,43 @@ export const BUREAU_ASSET_DEFINITIONS: Record<BureauAssetKey, Omit<BureauAsset, 
   SECOND_OPINION: {
     id: 'SECOND_OPINION',
     name: 'Second Opinion',
-    tagline: 'Request archival clarification',
-    description: 'Receive an additional high-level hint or eliminate 50% of the erroneous choices.',
+    tagline: 'A suspiciously favourable review',
+    description: 'Arm this before an individual challenge. A successful score receives a 15% review uplift, capped at +120 points.',
     iconName: 'HelpCircle'
   },
   REFILE: {
     id: 'REFILE',
     name: 'Bureaucratic Refile',
     tagline: 'Reject and reassign',
-    description: 'Discard the current question prompt and draw a freshly stamped alternative dossier.',
+    description: 'Immediately discard the current challenge and draw a fresh challenge of the same round type. The rejected answer is never revealed.',
     iconName: 'FileSpreadsheet'
   },
   DOUBLE_ENTRY: {
     id: 'DOUBLE_ENTRY',
     name: 'Double Entry Ledger',
-    tagline: 'Treasury multiplier',
-    description: 'Double the total score acquired from this challenge if answered successfully.',
+    tagline: 'Confidence with accounting consequences',
+    description: 'Arm this before an individual challenge. A successful result receives a 75% bonus, capped at +750 points. Failure still earns nothing.',
     iconName: 'TrendingUp'
   },
   INTERCEPT: {
     id: 'INTERCEPT',
     name: 'Admiralty Intercept',
-    tagline: 'Pounce on a colleague\'s failure',
-    description: 'If the current player fails or passes, you may attempt to seize 50% of the available points.',
+    tagline: 'Administrative theft with paperwork',
+    description: 'Arm this asset. The next eligible opponent score is intercepted: 20% is transferred to you before their result is filed.',
     iconName: 'Crosshair'
   },
   INSURANCE: {
     id: 'INSURANCE',
     name: 'Crown Indemnity',
-    tagline: 'Loss prevention policy',
-    description: 'Protects 50% of your accumulated score or bank in high-risk failure scenarios.',
+    tagline: 'Failure, but with a claims department',
+    description: 'Arm this before an individual challenge. If the attempt scores zero, the Bureau pays 35% of the recorded risk value, or 150 points when no risk value exists.',
     iconName: 'ShieldCheck'
   },
   PRIORITY_ACCESS: {
     id: 'PRIORITY_ACCESS',
-    name: 'Whitehall Clearance',
-    tagline: 'Executive discretion',
-    description: 'Grants an immediate +250 point administrative stipend and immunity from mistake penalties.',
+    name: 'Priority Access',
+    tagline: 'Jump the administrative queue',
+    description: 'Use this during your turn to become the starting player in the next round. Petty, procedural and occasionally useful.',
     iconName: 'Key'
   }
 };
