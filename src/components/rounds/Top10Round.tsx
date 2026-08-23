@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Top10Challenge, Player } from '../../types';
 import { sound } from '../../sound/audioEngine';
-import { Layers, Send, XCircle, Award, CheckCircle } from 'lucide-react';
+import { Layers, Send } from 'lucide-react';
 import { CommentaryPlaque } from '../common/CommentaryPlaque';
+import { getTop10ItemScores } from '../../game/scoring';
 
 interface Top10RoundProps {
   challenge: Top10Challenge;
@@ -29,6 +30,7 @@ export const Top10Round: React.FC<Top10RoundProps> = ({
   });
   const [message, setMessage] = useState<string | null>(null);
   const [isRoundOver, setIsRoundOver] = useState(false);
+  const itemScores = useMemo(() => getTop10ItemScores(challenge), [challenge]);
 
   const activePlayer = players[turnIndex % (players.length || 1)] || players[0];
   if (!activePlayer) return null;
@@ -38,7 +40,6 @@ export const Top10Round: React.FC<Top10RoundProps> = ({
     const query = inputValue.trim().toLowerCase();
     if (!query) return;
 
-    // Check against hidden items
     const match = challenge.items.find(item => {
       if (revealedRanks.includes(item.rank)) return false;
       if (item.name.toLowerCase().includes(query) || query.includes(item.name.toLowerCase())) return true;
@@ -47,19 +48,17 @@ export const Top10Round: React.FC<Top10RoundProps> = ({
 
     if (match) {
       sound.playBrassChime();
-      const baseValue = (11 - match.rank) * 75; // e.g. Rank 1 = 750, Rank 10 = 75
-      const scored = Math.round(baseValue * match.rarityMultiplier);
+      const scored = itemScores[match.rank] ?? 0;
 
       setRevealedRanks(prev => [...prev, match.rank]);
       setPlayerRoundScores(prev => ({
         ...prev,
-        [activePlayer.id]: (prev[activePlayer.id] || 0) + scored
+        [activePlayer.id]: Math.min(1000, (prev[activePlayer.id] || 0) + scored)
       }));
 
       setMessage(`Correct! #${match.rank}: ${match.name} revealed (+${scored} pts)`);
       setInputValue('');
 
-      // Check if all 10 completed
       if (revealedRanks.length + 1 >= challenge.items.length) {
         sound.playStamp();
         setIsRoundOver(true);
@@ -78,13 +77,11 @@ export const Top10Round: React.FC<Top10RoundProps> = ({
       }
     }
 
-    // Advance turn to next player
     setTurnIndex(prev => prev + 1);
   };
 
   return (
     <div className="w-full flex flex-col items-center max-w-5xl mx-auto font-['Plus_Jakarta_Sans']">
-      {/* Title Header */}
       <div className="w-full bg-[#162235] border-2 border-[#d4af37] rounded-lg p-4 mb-4 shadow-xl text-center">
         <div className="flex items-center justify-center gap-2 mb-1">
           <Layers className="text-[#ffd700]" size={20} />
@@ -96,13 +93,12 @@ export const Top10Round: React.FC<Top10RoundProps> = ({
           {challenge.prompt}
         </h2>
         <p className="font-['Courier_Prime'] text-xs text-slate-300 mt-1">
-          Take turns naming valid entries. Less obvious entries command greater bureaucratic merit.
+          Take turns naming valid entries. Obvious answers are cheap; obscure answers are where the Bureau reluctantly pays out.
         </p>
       </div>
 
       {!isRoundOver ? (
         <div className="w-full flex flex-col lg:flex-row gap-5 items-start">
-          {/* Physical Records Board (10 Slots) */}
           <div className="flex-1 w-full bg-[#0d1624] border-2 border-[#d4af37]/60 rounded-lg p-4 shadow-2xl">
             <div className="flex items-center justify-between border-b border-[#d4af37]/30 pb-2 mb-3">
               <span className="font-['Cinzel'] font-bold text-xs text-[#e6c875] uppercase tracking-wider">
@@ -148,7 +144,7 @@ export const Top10Round: React.FC<Top10RoundProps> = ({
 
                     <div className="shrink-0 text-right pl-2">
                       <span className="font-['Courier_Prime'] text-[10px] text-slate-400 block">
-                        {isRevealed ? item.detail : `x${item.rarityMultiplier.toFixed(1)} val`}
+                        {isRevealed ? `${item.detail} • ${itemScores[item.rank]} pts` : 'VALUE CLASSIFIED'}
                       </span>
                     </div>
                   </div>
@@ -157,7 +153,6 @@ export const Top10Round: React.FC<Top10RoundProps> = ({
             </div>
           </div>
 
-          {/* Turn Input Panel */}
           <div className="w-full lg:w-80 bg-[#141f30] border border-[#d4af37]/40 rounded-lg p-5 flex flex-col gap-4 shadow-xl">
             <div className="flex items-center gap-2.5 pb-2 border-b border-slate-700">
               <span className="text-2xl">{activePlayer.avatar}</span>
@@ -200,7 +195,6 @@ export const Top10Round: React.FC<Top10RoundProps> = ({
               </button>
             </form>
 
-            {/* Current Round Scores */}
             <div className="mt-2 pt-3 border-t border-slate-800">
               <span className="font-['Courier_Prime'] text-[10px] text-slate-400 block mb-1 uppercase font-bold">
                 Round Accruals
@@ -219,9 +213,7 @@ export const Top10Round: React.FC<Top10RoundProps> = ({
           </div>
         </div>
       ) : (
-        /* Round Over Summary */
         <div className="w-full flex flex-col items-center">
-          {/* Reveal all remaining */}
           <div className="w-full max-w-2xl bg-[#0e1724] border border-[#d4af37]/60 rounded-lg p-4 mb-4">
             <h4 className="font-['Cinzel'] font-bold text-xs text-[#e6c875] uppercase tracking-wider mb-2">
               Full Archival Top 10 Disclosed
@@ -230,20 +222,20 @@ export const Top10Round: React.FC<Top10RoundProps> = ({
               {challenge.items.map(item => (
                 <div key={item.rank} className="flex items-center justify-between px-2.5 py-1.5 rounded bg-[#162335] text-xs">
                   <span className="font-bold text-[#ffd700]">#{item.rank} {item.name}</span>
-                  <span className="text-[10px] text-slate-400 font-['Courier_Prime']">{item.detail}</span>
+                  <span className="text-[10px] text-slate-400 font-['Courier_Prime']">{itemScores[item.rank]} pts</span>
                 </div>
               ))}
             </div>
           </div>
 
           <CommentaryPlaque
-            score={playerRoundScores[players[0]?.id] || 650}
+            score={Math.max(0, ...Object.values(playerRoundScores))}
             playerName="Candidates"
             roundType="TOP_10"
             questionPrompt={challenge.prompt}
             explanation={challenge.explanation}
             source={challenge.source}
-            isCorrect={revealedRanks.length >= 5}
+            isCorrect={revealedRanks.length >= Math.ceil(challenge.items.length / 2)}
             onProceed={() => onCompleteRound(playerRoundScores)}
           />
         </div>
