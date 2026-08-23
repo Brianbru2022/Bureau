@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { sound } from '../../sound/audioEngine';
-import { CheckCircle2, XCircle, FileText, ArrowRight, Shield } from 'lucide-react';
-import { generateBureauAssessment } from '../../data/commentaryEngine';
+import { CheckCircle2, XCircle, FileText, ArrowRight } from 'lucide-react';
+import { generateBureauAssessment, type BureauPlayerHistory } from '../../data/commentaryEngine';
 
 interface CommentaryPlaqueProps {
   score: number;
@@ -10,11 +10,14 @@ interface CommentaryPlaqueProps {
   questionPrompt?: string;
   explanation: string;
   source?: string;
+  playerAnswer?: string | number;
+  correctAnswer?: string | number;
   errorKm?: number;
   errorPercent?: number;
+  riskedValue?: number;
   isCorrect?: boolean;
+  history?: BureauPlayerHistory;
   onProceed: () => void;
-  doubleEntryActive?: boolean;
 }
 
 export const CommentaryPlaque: React.FC<CommentaryPlaqueProps> = ({
@@ -24,11 +27,14 @@ export const CommentaryPlaque: React.FC<CommentaryPlaqueProps> = ({
   questionPrompt,
   explanation,
   source,
+  playerAnswer,
+  correctAnswer,
   errorKm,
   errorPercent,
+  riskedValue,
   isCorrect = true,
-  onProceed,
-  doubleEntryActive = false
+  history,
+  onProceed
 }) => {
   useEffect(() => {
     sound.playStamp();
@@ -39,99 +45,82 @@ export const CommentaryPlaque: React.FC<CommentaryPlaqueProps> = ({
     playerName,
     roundType,
     questionPrompt,
+    playerAnswer,
+    correctAnswer,
+    explanation,
     errorKm,
     errorPercent,
-    isCorrect
+    riskedValue,
+    isCorrect,
+    history
   });
 
-  return (
-    <div className="w-full max-w-3xl mx-auto my-4 bg-[#141e2e] border-2 border-[#d4af37] rounded-lg shadow-[0_10px_35px_rgba(0,0,0,0.8)] overflow-hidden font-['Plus_Jakarta_Sans'] animate-in fade-in zoom-in-95 duration-300">
-      {/* Brass Header Plate */}
-      <div className="bg-gradient-to-r from-[#1b2a41] via-[#243b55] to-[#1b2a41] px-4 sm:px-6 py-3 border-b border-[#d4af37]/60 flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-2">
-          <FileText className="text-[#e6c875]" size={20} />
-          <span className="font-['Cinzel'] font-bold text-sm sm:text-base text-[#e6c875] tracking-widest uppercase">
-            Official Bureau Assessment Dossier
-          </span>
-        </div>
+  const hasAnswerComparison = playerAnswer !== undefined || correctAnswer !== undefined;
 
-        <div className="flex items-center gap-3">
-          {doubleEntryActive && (
-            <span className="flex items-center gap-1 text-[10px] font-['Courier_Prime'] font-bold text-amber-300 bg-amber-950 px-2 py-0.5 rounded border border-amber-500">
-              <Shield size={12} /> DOUBLE ENTRY APPLIED
-            </span>
-          )}
-          <span className="font-['Courier_Prime'] text-xs text-slate-300">
-            Candidate: <strong className="text-white">{playerName}</strong>
-          </span>
+  return (
+    <div className="w-full max-w-3xl mx-auto my-4 overflow-hidden rounded-[24px] border-[4px] border-[#6e4b31] bg-[#f5e8c9] shadow-[0_10px_0_#5a3925,0_24px_40px_rgba(57,35,20,.25)] font-['Plus_Jakarta_Sans'] animate-in fade-in zoom-in-95 duration-300">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b-[3px] border-[#6e4b31] bg-[#2f9ea5] px-4 py-3 text-white sm:px-6">
+        <div className="flex items-center gap-2">
+          <FileText size={20} />
+          <span className="font-['Cinzel'] text-sm font-black uppercase tracking-widest sm:text-base">Bureau Finding</span>
         </div>
+        <span className="font-['Courier_Prime'] text-xs">Candidate: <strong>{playerName}</strong></span>
       </div>
 
-      {/* Main Parchment Assessment Sheet */}
-      <div className="p-4 sm:p-6 bg-[#fcf8ed] text-slate-900 flex flex-col gap-4">
-        {/* Score Plaque & Ink Stamp */}
-        <div className="flex items-center justify-between border-b border-stone-300 pb-3 flex-wrap gap-3">
+      <div className="flex flex-col gap-4 bg-[#fff8e7] p-4 text-[#30434a] sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-[#d4bd8c] pb-4">
           <div>
-            <span className="block font-['Courier_Prime'] text-xs font-bold uppercase tracking-wider text-stone-500">
-              Points Certified by Whitehall
-            </span>
-            <div className="flex items-baseline gap-2">
-              <span className="font-['Space_Mono'] font-extrabold text-3xl sm:text-4xl text-stone-900 tracking-tight">
-                +{score.toLocaleString()}
-              </span>
-              <span className="font-['Courier_Prime'] text-xs text-stone-600 font-bold">/ 1,000</span>
-            </div>
+            <span className="block font-['Courier_Prime'] text-[10px] font-black uppercase tracking-wider text-[#7b6248]">Points certified</span>
+            <span className="font-['Space_Mono'] text-4xl font-black text-[#30434a]">+{score.toLocaleString()}</span>
           </div>
-
-          {/* Stamped Ink Seal */}
-          <div className={`transform -rotate-6 px-3 py-1.5 rounded border-2 font-['Courier_Prime'] font-bold text-xs uppercase tracking-widest flex items-center gap-1.5 shadow-sm ${
-            score > 500 
-              ? 'border-emerald-800 text-emerald-900 bg-emerald-100/70' 
-              : score > 0 
-                ? 'border-amber-800 text-amber-900 bg-amber-100/70' 
-                : 'border-rose-800 text-rose-900 bg-rose-100/70'
+          <div className={`-rotate-3 rounded-lg border-[3px] px-3 py-2 font-['Courier_Prime'] text-xs font-black uppercase tracking-widest ${
+            isCorrect
+              ? score >= 800
+                ? 'border-[#29795f] bg-[#d9efdf] text-[#23634e]'
+                : 'border-[#ad7b2d] bg-[#f8e6ab] text-[#76541e]'
+              : 'border-[#a74339] bg-[#f5d4cb] text-[#873a33]'
           }`}>
-            {score > 0 ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
-            <span>{score >= 800 ? 'EXEMPLARY' : score > 400 ? 'ACCEPTED' : score > 0 ? 'SUB-STANDARD' : 'CATASTROPHIC'}</span>
+            <span className="flex items-center gap-1.5">
+              {isCorrect ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+              {isCorrect ? (score >= 800 ? 'DISTURBINGLY GOOD' : 'ACCEPTED') : 'REALITY DISAGREES'}
+            </span>
           </div>
         </div>
 
-        {/* The Factual Explanation (Weaved with dry British context) */}
-        <div className="bg-[#f2ebdc] border-l-4 border-[#8b6b23] p-3.5 rounded-r">
-          <span className="font-['Cinzel'] font-bold text-xs text-[#614710] block mb-1 uppercase tracking-wider">
-            Archival Record &amp; Context
-          </span>
-          <p className="font-['Fraunces'] text-stone-800 text-sm sm:text-base leading-relaxed">
-            {explanation}
-          </p>
-          {source && (
-            <span className="block mt-2 font-['Courier_Prime'] text-[10px] text-stone-500 italic">
-              Source: {source}
-            </span>
-          )}
+        {hasAnswerComparison && (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {playerAnswer !== undefined && (
+              <div className="rounded-xl border-[3px] border-[#6e4b31] bg-[#f0d36f] p-3 shadow-[0_4px_0_#6e4b31]">
+                <span className="font-['Courier_Prime'] text-[9px] font-black uppercase tracking-widest text-[#725131]">Submitted</span>
+                <div className="mt-1 break-words font-['Fraunces'] text-base font-bold text-[#3c4b4f]">{String(playerAnswer)}</div>
+              </div>
+            )}
+            {correctAnswer !== undefined && (
+              <div className="rounded-xl border-[3px] border-[#6e4b31] bg-[#a9d6c5] p-3 shadow-[0_4px_0_#6e4b31]">
+                <span className="font-['Courier_Prime'] text-[9px] font-black uppercase tracking-widest text-[#456351]">Certified answer</span>
+                <div className="mt-1 break-words font-['Fraunces'] text-base font-bold text-[#30434a]">{String(correctAnswer)}</div>
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="rounded-xl border-l-[6px] border-[#d19b3b] bg-[#f2e6c8] p-4">
+          <span className="mb-1 block font-['Cinzel'] text-xs font-black uppercase tracking-wider text-[#6a4d22]">Archival record</span>
+          <p className="font-['Fraunces'] text-sm leading-relaxed text-[#51483e] sm:text-base">{explanation}</p>
+          {source && <span className="mt-2 block font-['Courier_Prime'] text-[10px] italic text-[#81715e]">Source: {source}</span>}
         </div>
 
-        {/* Bureau Sarcastic Assessment (Merciless British Supervisor) */}
-        <div className="bg-stone-900 text-amber-100 p-3.5 rounded border border-amber-700/40">
-          <span className="font-['Courier_Prime'] font-bold text-[11px] text-amber-400 block mb-1 tracking-widest uppercase">
-            Supervisor's Confidential Appraisal
-          </span>
-          <p className="font-['Courier_Prime'] text-xs sm:text-sm text-stone-200 leading-relaxed italic">
-            "{assessment}"
-          </p>
+        <div className="rounded-xl border-[3px] border-[#6e4b31] bg-[#334d55] p-4 text-[#fff4d2] shadow-[0_5px_0_#6e4b31]">
+          <span className="mb-1 block font-['Courier_Prime'] text-[10px] font-black uppercase tracking-[.18em] text-[#f0cf68]">Supervisor's finding</span>
+          <p className="font-['Fraunces'] text-sm leading-relaxed sm:text-base">{assessment}</p>
         </div>
 
-        {/* Proceed Action Button */}
-        <div className="pt-2 flex justify-end">
+        <div className="flex justify-end pt-1">
           <button
-            onClick={() => {
-              sound.playClick();
-              onProceed();
-            }}
-            className="flex items-center gap-2 px-6 py-3 rounded bg-[#1b2a41] hover:bg-[#253a5b] text-[#ffd700] font-['Cinzel'] font-bold text-sm tracking-widest uppercase border border-[#d4af37] shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+            onClick={() => { sound.playClick(); onProceed(); }}
+            className="flex items-center gap-2 rounded-xl border-[3px] border-[#6e4b31] bg-[#e55f50] px-6 py-3 font-['Cinzel'] text-xs font-black uppercase tracking-widest text-white shadow-[0_5px_0_#6e4b31] active:translate-y-1 active:shadow-none"
           >
-            <span>Affix Seal &amp; Continue</span>
-            <ArrowRight size={16} />
+            Continue <ArrowRight size={16} />
           </button>
         </div>
       </div>
