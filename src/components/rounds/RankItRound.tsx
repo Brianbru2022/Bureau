@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { RankItChallenge, Player } from '../../types';
 import { sound } from '../../sound/audioEngine';
-import { ArrowUpDown, ChevronUp, ChevronDown, Check, Shuffle } from 'lucide-react';
+import { ArrowUpDown, ChevronUp, ChevronDown, Check } from 'lucide-react';
 import { CommentaryPlaque } from '../common/CommentaryPlaque';
+import { scoreRanking } from '../../game/scoring';
 
 interface RankItProps {
   challenge: RankItChallenge;
@@ -15,7 +16,6 @@ export const RankItRound: React.FC<RankItProps> = ({
   currentPlayer,
   onComplete
 }) => {
-  // Start with shuffled order
   const [itemsOrder, setItemsOrder] = useState(() => {
     return [...challenge.items].sort(() => Math.random() - 0.5);
   });
@@ -36,31 +36,12 @@ export const RankItRound: React.FC<RankItProps> = ({
 
   const handleConfirmOrder = () => {
     sound.playStamp();
-
-    // Calculate score based on:
-    // 1. Exact position matches (e.g. +180 per exact position)
-    // 2. Inversion penalty / Kendall tau distance for relative order
-    let exactMatches = 0;
-    let distanceSum = 0;
-
-    itemsOrder.forEach((item, userIdx) => {
-      const userRank = userIdx + 1;
-      const trueRank = item.correctRank;
-      if (userRank === trueRank) exactMatches++;
-      distanceSum += Math.abs(userRank - trueRank);
-    });
-
-    const maxDist = itemsOrder.length * (itemsOrder.length - 1);
-    const closenessRatio = Math.max(0, 1 - (distanceSum / maxDist));
-    const score = Math.min(1000, Math.round(exactMatches * 150 + closenessRatio * 400));
-
-    setEarnedScore(score);
+    setEarnedScore(scoreRanking(itemsOrder));
     setIsSubmitted(true);
   };
 
   return (
     <div className="w-full flex flex-col items-center max-w-3xl mx-auto font-['Plus_Jakarta_Sans']">
-      {/* Title */}
       <div className="w-full bg-[#162235] border-2 border-[#d4af37] rounded-lg p-4 mb-4 shadow-xl text-center">
         <div className="flex items-center justify-center gap-2 mb-1">
           <ArrowUpDown className="text-[#ffd700]" size={20} />
@@ -123,7 +104,6 @@ export const RankItRound: React.FC<RankItProps> = ({
         </div>
       ) : (
         <div className="w-full flex flex-col items-center gap-4">
-          {/* Solution Breakdown */}
           <div className="w-full max-w-xl bg-[#0e1724] border border-[#d4af37] rounded-lg p-4">
             <span className="font-['Cinzel'] font-bold text-xs text-[#e6c875] uppercase tracking-wider block mb-2">
               Certified Chronological / Hierarchical Order
@@ -145,7 +125,7 @@ export const RankItRound: React.FC<RankItProps> = ({
             questionPrompt={challenge.prompt}
             explanation={challenge.explanation}
             source={challenge.source}
-            isCorrect={earnedScore > 500}
+            isCorrect={earnedScore >= 600}
             onProceed={() => onComplete(earnedScore)}
           />
         </div>
