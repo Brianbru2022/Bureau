@@ -16,9 +16,9 @@ export type RoundParticipationMode =
 export interface Player {
   id: string;
   name: string;
-  avatar: string; // avatar key or emoji/symbol
-  color: string;  // hex or tailwind identifier
-  department: string; // e.g. "Department of Cartography & Spite"
+  avatar: string;
+  color: string;
+  department: string;
   score: number;
   assets: BureauAssetKey[];
   secretDirective: SecretDirective;
@@ -76,7 +76,6 @@ export interface HiddenCommendation {
   bonusPoints: number;
 }
 
-// 1. TOP 10 Item
 export interface Top10Challenge {
   id: string;
   roundType: 'TOP_10';
@@ -87,19 +86,18 @@ export interface Top10Challenge {
     name: string;
     aliases: string[];
     detail: string;
-    rarityMultiplier: number; // 1.0 (obvious) to 1.8 (obscure)
+    rarityMultiplier: number;
   }>;
   explanation: string;
   source: string;
 }
 
-// 2. Put Up Or Shut Up
 export interface PutUpOrShutUpChallenge {
   id: string;
   roundType: 'PUT_UP_OR_SHUT_UP';
   category: string;
   prompt: string;
-  targetUnit: string; // e.g. "Prime Ministers"
+  targetUnit: string;
   validAnswers: Array<{
     name: string;
     aliases: string[];
@@ -109,7 +107,6 @@ export interface PutUpOrShutUpChallenge {
   source: string;
 }
 
-// 3. The List (Push Your Luck)
 export interface TheListChallenge {
   id: string;
   roundType: 'THE_LIST';
@@ -124,7 +121,6 @@ export interface TheListChallenge {
   source: string;
 }
 
-// 4. Where In Britain
 export interface WhereInBritainChallenge {
   id: string;
   roundType: 'WHERE_IN_BRITAIN';
@@ -132,17 +128,14 @@ export interface WhereInBritainChallenge {
   prompt: string;
   targetName: string;
   region: 'England' | 'Scotland' | 'Wales' | 'Northern Ireland';
-  // Coordinates in percentage on the Britain SVG projection (0-100 x, 0-100 y)
-  // or real lat/long converted
   lat: number;
   lng: number;
-  mapX: number; // 0-100 SVG percentage
-  mapY: number; // 0-100 SVG percentage
+  mapX: number;
+  mapY: number;
   explanation: string;
   source: string;
 }
 
-// 5. Closest Wins / Estimate
 export interface ClosestWinsChallenge {
   id: string;
   roundType: 'CLOSEST_WINS';
@@ -152,13 +145,12 @@ export interface ClosestWinsChallenge {
   unit: string;
   unitPrefix?: string;
   unitSuffix?: string;
-  toleranceScale: number; // typical span for scoring
+  toleranceScale: number;
   formatDisplay?: (val: number) => string;
   explanation: string;
   source: string;
 }
 
-// 6. Rank It
 export interface RankItChallenge {
   id: string;
   roundType: 'RANK_IT';
@@ -167,14 +159,13 @@ export interface RankItChallenge {
   items: Array<{
     id: string;
     label: string;
-    correctRank: number; // 1 to N
+    correctRank: number;
     detail: string;
   }>;
   explanation: string;
   source: string;
 }
 
-// 7. Image Reveal
 export interface ImageRevealChallenge {
   id: string;
   roundType: 'IMAGE_REVEAL';
@@ -182,7 +173,7 @@ export interface ImageRevealChallenge {
   prompt: string;
   subjectName: string;
   aliases: string[];
-  options?: string[]; // Multiple choice fallback or direct text entry
+  options?: string[];
   imageUrl: string;
   svgGraphicType?: 'landmark' | 'artifact' | 'painting' | 'crest' | 'wildlife' | 'structure';
   visualHint: string;
@@ -190,7 +181,6 @@ export interface ImageRevealChallenge {
   source: string;
 }
 
-// 8. Stop The Score
 export interface StopTheScoreChallenge {
   id: string;
   roundType: 'STOP_THE_SCORE';
@@ -212,7 +202,6 @@ export type Challenge =
   | ImageRevealChallenge
   | StopTheScoreChallenge;
 
-// Final Case Investigation Stage
 export interface FinalCase {
   id: string;
   title: string;
@@ -260,6 +249,7 @@ export type GamePhase =
   | 'DIRECTIVES'
   | 'ROOM_TRANSITION'
   | 'PLAYING_ROUND'
+  | 'MINI_GAME'
   | 'FINAL_CASE'
   | 'PODIUM';
 
