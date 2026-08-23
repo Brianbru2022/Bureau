@@ -6,7 +6,7 @@ import { ShieldAlert } from 'lucide-react';
 
 interface BureauReviewModalProps { trailingPlayer: Player; onSelectOption: (optionType: 'SAFE'|'RISKY'|'QUESTIONABLE', scoreDelta:number)=>void; onClose:()=>void; }
 type ReviewType='SAFE'|'RISKY'|'QUESTIONABLE';
-const REVIEW_ART:Record<ReviewType,string>={SAFE:'/assets/generated/review/safe.jpg',RISKY:'/assets/generated/review/risky.jpg',QUESTIONABLE:'/assets/generated/review/deeply-questionable.jpg'};
+const REVIEW_ART:Record<ReviewType,string>={SAFE:'/assets/generated/safe.jpg',RISKY:'/assets/generated/risky.jpg',QUESTIONABLE:'/assets/generated/deeply-questionable.jpg'};
 
 export const BureauReviewModal:React.FC<BureauReviewModalProps>=({trailingPlayer,onSelectOption,onClose})=>{
   const [selectedFile,setSelectedFile]=useState<ReviewType|null>(null);const[resolvedDelta,setResolvedDelta]=useState<number|null>(null);const[outcomeText,setOutcomeText]=useState('');
