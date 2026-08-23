@@ -398,7 +398,7 @@ export default function App() {
 
         {phase === 'PLAYING_ROUND' && currentChallenge && activePlayer && (
           <div className="w-full flex flex-col items-center">
-            {currentChallenge.type === 'WHERE_IN_BRITAIN' && (
+            {currentChallenge.roundType === 'WHERE_IN_BRITAIN' && (
               <WhereInBritainRound
                 key={roundInstanceKey}
                 challenge={currentChallenge as WhereInBritainChallenge}
@@ -407,7 +407,7 @@ export default function App() {
               />
             )}
 
-            {currentChallenge.type === 'TOP_10' && (
+            {currentChallenge.roundType === 'TOP_10' && (
               <Top10Round
                 key={`${currentRoundIndex}-${currentChallenge.id}`}
                 challenge={currentChallenge as Top10Challenge}
@@ -417,7 +417,7 @@ export default function App() {
               />
             )}
 
-            {currentChallenge.type === 'PUT_UP_OR_SHUT_UP' && (
+            {currentChallenge.roundType === 'PUT_UP_OR_SHUT_UP' && (
               <PutUpOrShutUpRound
                 key={`${currentRoundIndex}-${currentChallenge.id}`}
                 challenge={currentChallenge as PutUpOrShutUpChallenge}
@@ -427,7 +427,7 @@ export default function App() {
               />
             )}
 
-            {currentChallenge.type === 'THE_LIST' && (
+            {currentChallenge.roundType === 'THE_LIST' && (
               <TheListRound
                 key={roundInstanceKey}
                 challenge={currentChallenge as TheListChallenge}
@@ -436,7 +436,7 @@ export default function App() {
               />
             )}
 
-            {currentChallenge.type === 'CLOSEST_WINS' && (
+            {currentChallenge.roundType === 'CLOSEST_WINS' && (
               <ClosestWinsRound
                 key={`${currentRoundIndex}-${currentChallenge.id}`}
                 challenge={currentChallenge as ClosestWinsChallenge}
@@ -445,7 +445,7 @@ export default function App() {
               />
             )}
 
-            {currentChallenge.type === 'RANK_IT' && (
+            {currentChallenge.roundType === 'RANK_IT' && (
               <RankItRound
                 key={roundInstanceKey}
                 challenge={currentChallenge as RankItChallenge}
@@ -454,7 +454,7 @@ export default function App() {
               />
             )}
 
-            {currentChallenge.type === 'IMAGE_REVEAL' && (
+            {currentChallenge.roundType === 'IMAGE_REVEAL' && (
               <ImageRevealRound
                 key={roundInstanceKey}
                 challenge={currentChallenge as ImageRevealChallenge}
@@ -463,7 +463,7 @@ export default function App() {
               />
             )}
 
-            {currentChallenge.type === 'STOP_THE_SCORE' && (
+            {currentChallenge.roundType === 'STOP_THE_SCORE' && (
               <StopTheScoreRound
                 key={roundInstanceKey}
                 challenge={currentChallenge as StopTheScoreChallenge}
