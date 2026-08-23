@@ -25,24 +25,81 @@ export const WhereInBritainRound: React.FC<WhereInBritainProps> = ({ challenge, 
 
   useEffect(() => {
     const maplibregl = (window as any).maplibregl;
-    if (!mapContainerRef.current || !maplibregl) { setMapError('The Atlas Room failed to illuminate. Reload and try again.'); return; }
-    const map = new maplibregl.Map({ container: mapContainerRef.current, style: getMapStyleUrl(), center: UK_MAP_CENTER, zoom: 4.8, minZoom: 4.2, maxZoom: 9, maxBounds: UK_MAP_BOUNDS, attributionControl: true, dragRotate: false, pitchWithRotate: false });
+    if (!mapContainerRef.current || !maplibregl) {
+      setMapError('The Atlas Room failed to load its map engine. Refresh the page and try again.');
+      return;
+    }
+    if (typeof maplibregl.supported === 'function' && !maplibregl.supported()) {
+      setMapError('This browser is not providing the WebGL graphics support required by the Atlas Room.');
+      return;
+    }
+
+    let map: any;
+    try {
+      map = new maplibregl.Map({
+        container: mapContainerRef.current,
+        style: getMapStyleUrl(),
+        center: UK_MAP_CENTER,
+        zoom: 4.8,
+        minZoom: 4.2,
+        maxZoom: 9,
+        maxBounds: UK_MAP_BOUNDS,
+        attributionControl: true,
+        dragRotate: false,
+        pitchWithRotate: false,
+        cooperativeGestures: false
+      });
+    } catch (error) {
+      console.error('Bureau map initialisation failed', error);
+      setMapError('The Atlas Room could not initialise the map. Refresh the page and try again.');
+      return;
+    }
+
     mapRef.current = map;
     map.dragRotate?.disable();
     map.touchZoomRotate?.disableRotation();
     map.addControl(new maplibregl.NavigationControl({ showCompass: false, visualizePitch: false }), 'top-right');
-    map.on('load', () => { applyBureauMapStyle(map); setIsMapReady(true); });
+
+    map.on('load', () => {
+      applyBureauMapStyle(map);
+      requestAnimationFrame(() => {
+        map.resize?.();
+        setIsMapReady(true);
+      });
+    });
+
+    map.on('error', (event: any) => {
+      console.error('Bureau map error', event?.error ?? event);
+      if (!map.loaded?.()) setMapError('The Atlas Room could not retrieve its map tiles. Check the connection and reload.');
+    });
+
     map.on('click', (event: any) => {
       if (submittedRef.current) return;
       const nextGuess = { lat: event.lngLat.lat, lng: event.lngLat.lng };
-      setGuess(nextGuess); sound.playClick(); guessMarkerRef.current?.remove();
+      setGuess(nextGuess);
+      sound.playClick();
+      guessMarkerRef.current?.remove();
       guessMarkerRef.current = new maplibregl.Marker({ color: '#e65b4b' }).setLngLat([nextGuess.lng, nextGuess.lat]).addTo(map);
     });
-    return () => { guessMarkerRef.current?.remove(); targetMarkerRef.current?.remove(); map.remove(); mapRef.current = null; };
+
+    const resizeMap = () => map.resize?.();
+    window.addEventListener('orientationchange', resizeMap);
+    window.addEventListener('resize', resizeMap);
+
+    return () => {
+      window.removeEventListener('orientationchange', resizeMap);
+      window.removeEventListener('resize', resizeMap);
+      guessMarkerRef.current?.remove();
+      targetMarkerRef.current?.remove();
+      map.remove();
+      mapRef.current = null;
+    };
   }, [challenge.id]);
 
   const revealAnswer = (playerGuess: GeoPoint) => {
-    const maplibregl = (window as any).maplibregl; const map = mapRef.current; if (!map || !maplibregl) return;
+    const maplibregl = (window as any).maplibregl;
+    const map = mapRef.current;
+    if (!map || !maplibregl) return;
     const target: GeoPoint = { lat: challenge.lat, lng: challenge.lng };
     targetMarkerRef.current?.remove();
     targetMarkerRef.current = new maplibregl.Marker({ color: '#168f69' }).setLngLat([target.lng, target.lat]).addTo(map);
@@ -51,14 +108,22 @@ export const WhereInBritainRound: React.FC<WhereInBritainProps> = ({ challenge, 
     if (map.getSource('bureau-answer-line')) map.removeSource('bureau-answer-line');
     map.addSource('bureau-answer-line', { type: 'geojson', data: lineData });
     map.addLayer({ id: 'bureau-answer-line', type: 'line', source: 'bureau-answer-line', paint: { 'line-color': '#7c4c92', 'line-width': 4, 'line-dasharray': [1.5, 1.5] } });
-    const bounds = new maplibregl.LngLatBounds(); bounds.extend([playerGuess.lng, playerGuess.lat]); bounds.extend([target.lng, target.lat]); map.fitBounds(bounds, { padding: 90, maxZoom: 7.3, duration: 800 });
+    const bounds = new maplibregl.LngLatBounds();
+    bounds.extend([playerGuess.lng, playerGuess.lat]);
+    bounds.extend([target.lng, target.lat]);
+    map.fitBounds(bounds, { padding: 90, maxZoom: 7.3, duration: 800 });
   };
 
   const handleConfirmPin = () => {
     if (!guess || !isMapReady) return;
-    sound.playStamp(); submittedRef.current = true;
+    sound.playStamp();
+    submittedRef.current = true;
     const dist = haversineDistanceKm(guess, { lat: challenge.lat, lng: challenge.lng });
-    const score = scoreMapDistance(dist); setDistanceKm(dist); setEarnedScore(score); setIsSubmitted(true); revealAnswer(guess);
+    const score = scoreMapDistance(dist);
+    setDistanceKm(dist);
+    setEarnedScore(score);
+    setIsSubmitted(true);
+    revealAnswer(guess);
   };
 
   return (
@@ -67,7 +132,7 @@ export const WhereInBritainRound: React.FC<WhereInBritainProps> = ({ challenge, 
         <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_310px] gap-5 items-start">
           <div className="relative rounded-[24px] border-[5px] border-[#68462d] bg-[#1d7277] p-3 shadow-[inset_0_0_0_5px_#84d2ce,0_10px_0_#68462d]">
             <div className="absolute -top-3 left-8 right-8 h-5 rounded-full border-2 border-[#68462d] bg-[#f0cd61] shadow-[0_3px_0_#68462d]" />
-            <div className="relative h-[540px] sm:h-[620px] overflow-hidden rounded-2xl border-[3px] border-[#68462d] bg-[#dfe7df] shadow-inner">
+            <div className="relative h-[500px] sm:h-[620px] overflow-hidden rounded-2xl border-[3px] border-[#68462d] bg-[#dfe7df] shadow-inner touch-manipulation">
               <div ref={mapContainerRef} className="absolute inset-0" aria-label="Interactive unlabelled map of the United Kingdom" />
               {!isMapReady && !mapError && <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#d8eadc]/90 font-['Cinzel'] font-black text-[#31515a]">Illuminating survey table…</div>}
               {mapError && <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#f2d1c7]/95 p-8 text-center font-['Fraunces'] text-[#733d37]">{mapError}</div>}
