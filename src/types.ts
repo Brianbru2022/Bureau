@@ -37,6 +37,7 @@ export interface Player {
   id: string;
   name: string;
   avatar: string;
+  portraitIndex?: number;
   color: string;
   department: string;
   score: number;
@@ -105,11 +106,7 @@ export interface PutUpOrShutUpChallenge {
   category: string;
   prompt: string;
   targetUnit: string;
-  validAnswers: Array<{
-    name: string;
-    aliases: string[];
-    note?: string;
-  }>;
+  validAnswers: Array<{ name: string; aliases: string[]; note?: string }>;
   explanation: string;
   source: string;
 }
@@ -119,11 +116,7 @@ export interface TheListChallenge {
   roundType: 'THE_LIST';
   category: string;
   prompt: string;
-  validAnswers: Array<{
-    name: string;
-    aliases: string[];
-    note?: string;
-  }>;
+  validAnswers: Array<{ name: string; aliases: string[]; note?: string }>;
   explanation: string;
   source: string;
 }
@@ -163,12 +156,7 @@ export interface RankItChallenge {
   roundType: 'RANK_IT';
   category: string;
   prompt: string;
-  items: Array<{
-    id: string;
-    label: string;
-    correctRank: number;
-    detail: string;
-  }>;
+  items: Array<{ id: string; label: string; correctRank: number; detail: string }>;
   explanation: string;
   source: string;
 }
@@ -199,15 +187,7 @@ export interface StopTheScoreChallenge {
   source: string;
 }
 
-export type Challenge = 
-  | Top10Challenge
-  | PutUpOrShutUpChallenge
-  | TheListChallenge
-  | WhereInBritainChallenge
-  | ClosestWinsChallenge
-  | RankItChallenge
-  | ImageRevealChallenge
-  | StopTheScoreChallenge;
+export type Challenge = Top10Challenge | PutUpOrShutUpChallenge | TheListChallenge | WhereInBritainChallenge | ClosestWinsChallenge | RankItChallenge | ImageRevealChallenge | StopTheScoreChallenge;
 
 export interface FinalCase {
   id: string;
@@ -219,46 +199,14 @@ export interface FinalCase {
   correctOptionIndex: number;
   finalVerdictText: string;
   stages: [
-    {
-      stageNumber: 1;
-      stageName: 'Visual Evidence Analysis';
-      room: 'The Darkroom Archive';
-      prompt: string;
-      imageHint: string;
-      options: string[];
-      correctIndex: number;
-      clueUnlocked: string;
-    },
-    {
-      stageNumber: 2;
-      stageName: 'Geographical Coordinates';
-      room: 'The Imperial Atlas Room';
-      prompt: string;
-      targetLocation: { name: string; mapX: number; mapY: number };
-      clueUnlocked: string;
-    },
-    {
-      stageNumber: 3;
-      stageName: 'Chronological Interrogation';
-      room: 'The Hall of Records';
-      prompt: string;
-      correctYear: number;
-      tolerance: number;
-      clueUnlocked: string;
-    }
+    { stageNumber: 1; stageName: 'Visual Evidence Analysis'; room: 'The Darkroom Archive'; prompt: string; imageHint: string; options: string[]; correctIndex: number; clueUnlocked: string },
+    { stageNumber: 2; stageName: 'Geographical Coordinates'; room: 'The Imperial Atlas Room'; prompt: string; targetLocation: { name: string; mapX: number; mapY: number }; clueUnlocked: string },
+    { stageNumber: 3; stageName: 'Chronological Interrogation'; room: 'The Hall of Records'; prompt: string; correctYear: number; tolerance: number; clueUnlocked: string }
   ];
   explanation: string;
 }
 
-export type GamePhase = 
-  | 'TITLE'
-  | 'SETUP'
-  | 'DIRECTIVES'
-  | 'ROOM_TRANSITION'
-  | 'PLAYING_ROUND'
-  | 'MINI_GAME'
-  | 'FINAL_CASE'
-  | 'PODIUM';
+export type GamePhase = 'TITLE' | 'SETUP' | 'DIRECTIVES' | 'ROOM_TRANSITION' | 'PLAYING_ROUND' | 'MINI_GAME' | 'FINAL_CASE' | 'PODIUM';
 
 export interface RoundConfig {
   roundNumber: number;
