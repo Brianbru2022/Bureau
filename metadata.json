@@ -1,0 +1,6 @@
+{
+  "name": "The Bureau",
+  "description": "A merciless British party game of knowledge, judgement, risk, and chaos for 1–4 players.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
