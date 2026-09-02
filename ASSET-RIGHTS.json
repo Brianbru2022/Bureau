@@ -1,0 +1,819 @@
+{
+  "schemaVersion": 1,
+  "productTitle": "The Bureau of Questionable Knowledge",
+  "reviewedAt": "2026-08-30",
+  "releaseRule": "No asset marked CONDITIONAL or BLOCKED may ship in a commercial build without a completed rights-holder review.",
+  "groups": [
+    {
+      "id": "core-reconnaissance",
+      "status": "CLEARED",
+      "basis": "Individual Wikimedia Commons records",
+      "records": [
+        {
+          "file": "public/assets/reconnaissance/rosetta-stone.webp",
+          "subject": "The Rosetta Stone",
+          "author": "Hans Hillewaert",
+          "licence": "CC BY-SA 4.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Rosetta_Stone.JPG",
+          "changes": "Wikimedia Commons 1920-pixel derivative; local filename changed. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 194164,
+          "sha256": "67a13ea0f8fb5c61d81904f51eaaf173eeae3a57fe940b9e368b847fbb1d6a51"
+        },
+        {
+          "file": "public/assets/reconnaissance/angel-of-the-north.webp",
+          "subject": "The Angel of the North",
+          "author": "Mike Peel (www.mikepeel.net)",
+          "licence": "CC BY-SA 4.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Angel_of_the_North_2016_006.jpg",
+          "changes": "Wikimedia Commons 1920-pixel derivative; local filename changed. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 83586,
+          "sha256": "53faa71630bb8eefd1618c30a8a5c06e5e28d8d1d3a93c9ab3efc6185a7cf1d8"
+        },
+        {
+          "file": "public/assets/reconnaissance/glenfinnan-viaduct.webp",
+          "subject": "Glenfinnan Viaduct",
+          "author": "Daniel Kraft",
+          "licence": "CC BY-SA 3.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Jacobite_on_Glenfinnan_Viaduct_2_20211024.jpg",
+          "changes": "Wikimedia Commons 1920-pixel derivative; local filename changed. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 260422,
+          "sha256": "62c7c95937ea1a77855941257fd6ad2cd8a4b1520e2343c38a4bb106d2ee5ed5"
+        },
+        {
+          "file": "public/assets/reconnaissance/tower-bridge.webp",
+          "subject": "Tower Bridge",
+          "author": "Diliff",
+          "licence": "CC BY-SA 3.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Tower_Bridge_London_Feb_2006.jpg",
+          "changes": "Wikimedia Commons 1920-pixel derivative; local filename changed. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 86654,
+          "sha256": "a87dba4e4ab99742fcb64ea4adcd72dcee8ab5e8fb2f2b0f02dc3c000b90967e"
+        },
+        {
+          "file": "public/assets/reconnaissance/stonehenge.webp",
+          "subject": "Stonehenge",
+          "author": "Diego Delso",
+          "licence": "CC BY-SA 4.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Stonehenge,_Condado_de_Wiltshire,_Inglaterra,_2014-08-12,_DD_09.JPG",
+          "changes": "Wikimedia Commons 1920-pixel derivative; local filename changed. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 113916,
+          "sha256": "29fe590db3d207a6a01a5740ca67ca96a15eb65886491c0d4355213bd8d6e160"
+        },
+        {
+          "file": "public/assets/reconnaissance/edinburgh-castle.webp",
+          "subject": "Edinburgh Castle",
+          "author": "Daniel Kraft",
+          "licence": "CC BY-SA 3.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Edinburgh_Castle_from_Esplanade_20211019.jpg",
+          "changes": "Wikimedia Commons 1920-pixel derivative; local filename changed. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 154092,
+          "sha256": "0753cdb8687dc0762845b426113c0f9b6a1c7404a2d5b30e0a2e5f88d95cfb71"
+        },
+        {
+          "file": "public/assets/reconnaissance/elizabeth-tower.webp",
+          "subject": "Elizabeth Tower",
+          "author": "Julian Herzog",
+          "licence": "CC BY 4.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by/4.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Big_Ben_Elizabeth_Tower_London_2023_01.jpg",
+          "changes": "Wikimedia Commons 1920-pixel derivative; local filename changed. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 137040,
+          "sha256": "3444a3a99a937f44469fef88cc8ce3f0098509dc3702370d7bd3943b2d1379bc"
+        },
+        {
+          "file": "public/assets/reconnaissance/giants-causeway.webp",
+          "subject": "Giant's Causeway",
+          "author": "Jriley17",
+          "licence": "CC0 1.0",
+          "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Giant%27s_Causeway_Panoramic.jpg",
+          "changes": "Wikimedia Commons 1920-pixel derivative; local filename changed. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 82400,
+          "sha256": "760f882f895abbec9be0ca99f814d48709c7702200f9d3b2e31be74a67a51514"
+        },
+        {
+          "file": "public/assets/reconnaissance/forth-bridge.webp",
+          "subject": "Forth Bridge",
+          "author": "George Gastin",
+          "licence": "CC BY-SA 3.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Forthrailbridgefromsouthqueensferry.jpg",
+          "changes": "Local filename changed; no other intentional changes. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 51494,
+          "sha256": "bf491205067775b0349c112f486475f2590b82dc9e1bbf1de8ae9215063082d8"
+        },
+        {
+          "file": "public/assets/reconnaissance/kelpies.webp",
+          "subject": "The Kelpies",
+          "author": "Steven Straiton",
+          "licence": "CC BY 2.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:The_Kelpies_at_The_Helix_in_Falkirk,_Scotland,_June_2014.jpg",
+          "changes": "Wikimedia Commons 1920-pixel derivative; local filename changed. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 220134,
+          "sha256": "e5695de43474b37f146f4b1c7347b12eada0909f7af9c132eb1e4d0d5ce139bf"
+        },
+        {
+          "file": "public/assets/reconnaissance/sutton-hoo-helmet.webp",
+          "subject": "Sutton Hoo Helmet",
+          "author": "Michel wal",
+          "licence": "CC BY-SA 3.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Original_Sutton_Hoo_Helmet.jpg",
+          "changes": "Wikimedia Commons 1920-pixel derivative; local filename changed. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 74778,
+          "sha256": "e5cb1b96eeb7c6ff51d5de3fd9e9bca0738d02df21c08db1c08d5df7af5ac146"
+        },
+        {
+          "file": "public/assets/reconnaissance/spitfire.webp",
+          "subject": "Supermarine Spitfire",
+          "author": "Anders Bot",
+          "licence": "CC BY 2.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Supermarine_Spitfire_-_53839293244.jpg",
+          "changes": "Local filename changed; no other intentional changes. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 48826,
+          "sha256": "60a1918d129e3b3d8edca02c9ac1105dc75c883a8add3bfdd43e2b13adcc7b45"
+        },
+        {
+          "file": "public/assets/reconnaissance/caernarfon-castle.webp",
+          "subject": "Caernarfon Castle",
+          "author": "Berit from Redhill/Surrey, UK",
+          "licence": "CC BY 2.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Caernarfon_Castle,_Wales_(8236719543).jpg",
+          "changes": "Wikimedia Commons 1920-pixel derivative; local filename changed. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 240386,
+          "sha256": "4412039340bb5bbaf5eb9f4c00235f6b6194e4f68f496ef19c2244b11b57ece2"
+        },
+        {
+          "file": "public/assets/reconnaissance/hadrians-wall.webp",
+          "subject": "Hadrian's Wall",
+          "author": "Nilfanion",
+          "licence": "CC BY-SA 3.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Hadrian%27s_Wall_near_Steel_Rigg.jpg",
+          "changes": "Wikimedia Commons 1920-pixel derivative; local filename changed. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 340962,
+          "sha256": "9e7db344fb32b9c9598fa9e857fc74e19bb391e0c563c2d4d3aec0433f8639cc"
+        },
+        {
+          "file": "public/assets/reconnaissance/cerne-abbas-giant.webp",
+          "subject": "Cerne Abbas Giant",
+          "author": "Pete Harlow",
+          "licence": "CC BY-SA 3.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:The_Cerne_Abbas_Giant_-_012.jpg",
+          "changes": "Local filename changed; no other intentional changes. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "bytes": 163032,
+          "sha256": "5921be2a43196c9491b2dd1b4583f3de3befe7593e4f075ec9089c0e09af0a3d"
+        }
+      ]
+    },
+    {
+      "id": "expansion-reconnaissance",
+      "status": "CLEARED",
+      "basis": "Individual Wikimedia Commons records",
+      "records": [
+        {
+          "file": "public/assets/reconnaissance/white-cliffs-of-dover.webp",
+          "subject": "White Cliffs of Dover",
+          "author": "Immanuel Giel",
+          "licence": "CC BY-SA 3.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:White_Cliffs_of_Dover_02.JPG",
+          "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "acquiredAt": "2026-08-30",
+          "bytes": 53258,
+          "sha256": "17b54a04e25593c15078a9cd248da8008ea2a871573d9d987a56fcac3db45d4a"
+        },
+        {
+          "file": "public/assets/reconnaissance/blackpool-tower.webp",
+          "subject": "Blackpool Tower",
+          "author": "Nathanemmison",
+          "licence": "CC BY-SA 4.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Blackpool_Tower_05082017_(cropped).jpg",
+          "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "acquiredAt": "2026-08-30",
+          "bytes": 58886,
+          "sha256": "4da069ee5105a991ea0297b582a597325edc725b49de59f51422c9203efa480f"
+        },
+        {
+          "file": "public/assets/reconnaissance/royal-pavilion-brighton.webp",
+          "subject": "Royal Pavilion",
+          "author": "Qmin",
+          "licence": "CC BY-SA 3.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Brighton_royal_pavilion_Qmin.jpg",
+          "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "acquiredAt": "2026-08-30",
+          "bytes": 102634,
+          "sha256": "dc05bcf205ee4b97369d3d705efc47cd272252c9d07ad72062629f52f3d8a5ea"
+        },
+        {
+          "file": "public/assets/reconnaissance/falkirk-wheel.webp",
+          "subject": "Falkirk Wheel",
+          "author": "Sean Mack",
+          "licence": "CC BY 2.5",
+          "licenceUrl": "https://creativecommons.org/licenses/by/2.5",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:FalkirkWheelSide_2004_SeanMcClean.jpg",
+          "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "acquiredAt": "2026-08-30",
+          "bytes": 68944,
+          "sha256": "0f7ac823a130121bc0716e54955927193330f88c7c6bfec3174cdb8d31dffc30"
+        },
+        {
+          "file": "public/assets/reconnaissance/clifton-suspension-bridge.webp",
+          "subject": "Clifton Suspension Bridge",
+          "author": "Gothick",
+          "licence": "CC BY-SA 3.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Clifton_Suspension_Bridge-9350.jpg",
+          "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "acquiredAt": "2026-08-30",
+          "bytes": 89140,
+          "sha256": "256cafc7d3534b3e817c62faf3829106cf4d7505696c168d501a3fb7c15d28ec"
+        },
+        {
+          "file": "public/assets/reconnaissance/stirling-castle.webp",
+          "subject": "Stirling Castle",
+          "author": "John McPake",
+          "licence": "CC BY 2.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Stirling_Castle_Aerial_Photo.jpg",
+          "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "acquiredAt": "2026-08-30",
+          "bytes": 119998,
+          "sha256": "895716a225068d51a1f9f31670ff629e96c78ca128d9d6ed36afac2fed24b1ed"
+        },
+        {
+          "file": "public/assets/reconnaissance/durham-cathedral.webp",
+          "subject": "Durham Cathedral",
+          "author": "mattbuck",
+          "licence": "CC BY-SA 4.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Durham_MMB_02_Cathedral.jpg",
+          "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "acquiredAt": "2026-08-30",
+          "bytes": 98946,
+          "sha256": "4ab3c7953d640dab36b46672bb0a3b18195a6e8edbaa525a9d623580dc9c0820"
+        },
+        {
+          "file": "public/assets/reconnaissance/royal-liver-building.webp",
+          "subject": "Royal Liver Building",
+          "author": "Ank Kumar",
+          "licence": "CC BY-SA 4.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:2013-_The_Royal_Liver_Building,_Liverpool,_England,_UK_(_Ank_Kumar_)_01.jpg",
+          "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "acquiredAt": "2026-08-30",
+          "bytes": 66878,
+          "sha256": "6037cf105646634394c6c4644d0e84ee8a815debb29a8b467da077651ba871cc"
+        },
+        {
+          "file": "public/assets/reconnaissance/menai-suspension-bridge.webp",
+          "subject": "Menai Suspension Bridge",
+          "author": "Reading Tom",
+          "licence": "CC BY 2.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:The_Menai_Suspension_Bridge_(35349065306).jpg",
+          "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "acquiredAt": "2026-08-30",
+          "bytes": 71366,
+          "sha256": "16600e943afe3349ff3351a90d56ff120fbe69da2681e2b33c6d4b1d2ca3610d"
+        },
+        {
+          "file": "public/assets/reconnaissance/glastonbury-tor.webp",
+          "subject": "Glastonbury Tor",
+          "author": "Eugene Birchall",
+          "licence": "CC BY-SA 2.0",
+          "licenceUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+          "sourceImage": "https://commons.wikimedia.org/wiki/File:Glastonbury_Tor-_View_of_an_iconic_landmark_(geograph_5500644).jpg",
+          "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+          "acquiredAt": "2026-08-30",
+          "bytes": 82592,
+          "sha256": "805deb51e8495d82c120ccdc1265ea5764da47abf73dbd6b86783ba5269e5218"
+        }
+      ]
+    },
+    {
+      "id": "generated-artwork",
+      "status": "CONDITIONAL",
+      "basis": "Exact model versions, generation account, prompts, dates and edit histories were not retained for every legacy generated asset.",
+      "requiredAction": "Complete and approve GENERATED-ART-PROVENANCE.json and the signed declaration in ARTWORK-PROVENANCE.md, or replace conditional assets.",
+      "records": [
+        {
+          "file": "public/assets/generated/archive.jpg",
+          "provenanceAssetId": null,
+          "bytes": 194218,
+          "sha256": "0c69456b8becb532135e16bd1b404866fd5c33a98b2749fa09a2fce76d0e61ed"
+        },
+        {
+          "file": "public/assets/generated/atlas-room.jpg",
+          "provenanceAssetId": null,
+          "bytes": 193466,
+          "sha256": "9c1a00b0f77bfec5dcef7e9af3b64d2c2e99382912a6eeb3c6ca2bc946a196bb"
+        },
+        {
+          "file": "public/assets/generated/awards-hall.jpg",
+          "provenanceAssetId": null,
+          "bytes": 207160,
+          "sha256": "1e69b8698d6491739bd021455a86d09c42b1d97292ad794e0d3615a694281172"
+        },
+        {
+          "file": "public/assets/generated/bureaucratic-survivor.jpg",
+          "provenanceAssetId": null,
+          "bytes": 47418,
+          "sha256": "19eab2f428e18bdaffd9c4ae86b81b0cbdf47c82dce1a68b4adeb90cc1b6be7f"
+        },
+        {
+          "file": "public/assets/generated/candidate-1.jpg",
+          "provenanceAssetId": null,
+          "bytes": 39323,
+          "sha256": "3298a7f4f813dc5b1dcda2ba248aab8c64092c803ba55e8df615cdacd6524680"
+        },
+        {
+          "file": "public/assets/generated/candidate-2.jpg",
+          "provenanceAssetId": null,
+          "bytes": 34937,
+          "sha256": "1e30aeae0ec2c2cb84cbb362839ae79038862bb6e21f91086cd4a0271dd1a230"
+        },
+        {
+          "file": "public/assets/generated/candidate-3.jpg",
+          "provenanceAssetId": null,
+          "bytes": 41975,
+          "sha256": "853ce618b19cdc6259f1dad5c603cdc31e5e3b6581f273ba9dac2dbbd91ce79c"
+        },
+        {
+          "file": "public/assets/generated/candidate-4.jpg",
+          "provenanceAssetId": null,
+          "bytes": 35024,
+          "sha256": "e8620452d05653053883e38d9c13c4d49eaba348e3825ec05321af8a315bd90c"
+        },
+        {
+          "file": "public/assets/generated/candidate-5.jpg",
+          "provenanceAssetId": null,
+          "bytes": 37280,
+          "sha256": "a53d887edc82703cf0f5da7ae6f706fde48e99697cfe01cb3788db540317ba56"
+        },
+        {
+          "file": "public/assets/generated/candidate-6.jpg",
+          "provenanceAssetId": null,
+          "bytes": 43442,
+          "sha256": "622e8c6e7af6f062a3b4a5d222a3dbf624420c903333f5b39dcdb8222dee7f58"
+        },
+        {
+          "file": "public/assets/generated/candidate-7.jpg",
+          "provenanceAssetId": null,
+          "bytes": 33802,
+          "sha256": "fb66034b1b8192858b51a5fd84d18d82dfdda62c3b6a77e7adde557129cca5d9"
+        },
+        {
+          "file": "public/assets/generated/candidate-8.jpg",
+          "provenanceAssetId": null,
+          "bytes": 35519,
+          "sha256": "1af1ca7c344638e9f67db8ba32c317e4f8835f604c3e4eae0b6002190d96d693"
+        },
+        {
+          "file": "public/assets/generated/cartographer.jpg",
+          "provenanceAssetId": null,
+          "bytes": 20943,
+          "sha256": "0cefd295d614f01f43bb518de9fc526e9b18cf5b6eaee32351b4cb8bf2f5554a"
+        },
+        {
+          "file": "public/assets/generated/classified-envelope.jpg",
+          "provenanceAssetId": null,
+          "bytes": 62919,
+          "sha256": "9b54ca8aa31e625ffa3a6520a95553cdb7b062a96d30c1b861d0353c1f5b6924"
+        },
+        {
+          "file": "public/assets/generated/confidently-incorrect.jpg",
+          "provenanceAssetId": null,
+          "bytes": 41223,
+          "sha256": "53e201e50d0c2778e0bff215d3d62ec1ebf49c598d6c77cf4820c0ffe0085960"
+        },
+        {
+          "file": "public/assets/generated/deeply-questionable.jpg",
+          "provenanceAssetId": null,
+          "bytes": 102388,
+          "sha256": "e063ec1473b5ad5d066a23251ea9ae5dce2794f705e11677e9650bfa2a13e0b3"
+        },
+        {
+          "file": "public/assets/generated/disturbingly-specific.jpg",
+          "provenanceAssetId": null,
+          "bytes": 46326,
+          "sha256": "7e300787bd76837b8fd2ad5644384fdb32e127348af8e7bfea0d588cd79d1053"
+        },
+        {
+          "file": "public/assets/generated/double-entry.jpg",
+          "provenanceAssetId": null,
+          "bytes": 28866,
+          "sha256": "7c52ccc0f19742c35f5f8a3e4c54ddbcb3feed25427aac87b822b2f51b518696"
+        },
+        {
+          "file": "public/assets/generated/file-cabinet.jpg",
+          "provenanceAssetId": null,
+          "bytes": 178490,
+          "sha256": "b31de512c501d9614f3957a593451625ef7a4cf4cdf97a13d881024a262d2bbf"
+        },
+        {
+          "file": "public/assets/generated/final-chamber.jpg",
+          "provenanceAssetId": null,
+          "bytes": 241113,
+          "sha256": "7733ed3e0ef76f0382a186454db4bac8dc515c149e90d908ce1ebc7f6afd7aea"
+        },
+        {
+          "file": "public/assets/generated/gambler.jpg",
+          "provenanceAssetId": null,
+          "bytes": 20410,
+          "sha256": "d2ab980dc2e611f1e9335a72232ece2c9469f8258acec0dd781d8952dda4a7de"
+        },
+        {
+          "file": "public/assets/generated/generalist.jpg",
+          "provenanceAssetId": null,
+          "bytes": 20071,
+          "sha256": "3efdca092d76bc955c4db691d3cbc17fae0a2cf5ca1aba04c9842bf2ff8965b7"
+        },
+        {
+          "file": "public/assets/generated/grand-hall.jpg",
+          "provenanceAssetId": null,
+          "bytes": 213094,
+          "sha256": "bd8cacd623da4c923e108ce25e1442eec4c2a2ba2bef318357f9da42607035a8"
+        },
+        {
+          "file": "public/assets/generated/hall-of-records.jpg",
+          "provenanceAssetId": null,
+          "bytes": 226839,
+          "sha256": "e1ff2a3f0b7c8dd965e3eeb77f856ae1c799bc8bb2b797b9d9d55d7c0aebe548"
+        },
+        {
+          "file": "public/assets/generated/human-sat-nav.jpg",
+          "provenanceAssetId": null,
+          "bytes": 45568,
+          "sha256": "5b37e4eda1e037bb35e04898318412e79bc0426104617d59c92fb50f93714ffe"
+        },
+        {
+          "file": "public/assets/generated/insurance.jpg",
+          "provenanceAssetId": null,
+          "bytes": 42947,
+          "sha256": "c22df66626a5cc21d39c26828d648e2a38f0f0f698c9c1a8fdc4471d1d61cf44"
+        },
+        {
+          "file": "public/assets/generated/intercept.jpg",
+          "provenanceAssetId": null,
+          "bytes": 46685,
+          "sha256": "d6965d03a9db5586839a526f33917623a5e600a9a72b2af1f10386249ed1058a"
+        },
+        {
+          "file": "public/assets/generated/manifest.json",
+          "provenanceAssetId": null,
+          "bytes": 835,
+          "sha256": "cd4a123ab8cb4b696d3d9e11e0ebc585dc6c5dbbc745d8d4c94b99987cb6e26c"
+        },
+        {
+          "file": "public/assets/generated/opportunist.jpg",
+          "provenanceAssetId": null,
+          "bytes": 19061,
+          "sha256": "a3c0ed1c8cb8c572eb903dc99f1fba63e136fcbfc5fa922f2cc6f05341bca33d"
+        },
+        {
+          "file": "public/assets/generated/priority-access.jpg",
+          "provenanceAssetId": null,
+          "bytes": 47097,
+          "sha256": "9dbc12c35bf8d42cf07c3cdbfe40cd056c016a441468b07829c27d8c45924312"
+        },
+        {
+          "file": "public/assets/generated/red-button-office.jpg",
+          "provenanceAssetId": null,
+          "bytes": 221151,
+          "sha256": "2ebe24cf234efa7d16f21eb8a1a3889f2ccd194e67fdaf2ca6f2bc8ac760a76e"
+        },
+        {
+          "file": "public/assets/generated/refile.jpg",
+          "provenanceAssetId": null,
+          "bytes": 35561,
+          "sha256": "8c8cdbbf3f9038bcc4d0de54a3ddae04d3cfad63933f61ff25de71fef6f1d8ca"
+        },
+        {
+          "file": "public/assets/generated/risk-chamber.jpg",
+          "provenanceAssetId": null,
+          "bytes": 220983,
+          "sha256": "e409f1c1f5cfcb3c2ce9117d9393486199115149cbd62ad1131b382632b60e12"
+        },
+        {
+          "file": "public/assets/generated/risky.jpg",
+          "provenanceAssetId": null,
+          "bytes": 88435,
+          "sha256": "d570a057f537030a883a66be7e8fa7e7edb6a2da92e4f4cacc1cebab6aa4da6f"
+        },
+        {
+          "file": "public/assets/generated/safe.jpg",
+          "provenanceAssetId": null,
+          "bytes": 79910,
+          "sha256": "94cedbc1b42bc529e75245a4eaec90de7e7797d160f372c552b847f17201dc72"
+        },
+        {
+          "file": "public/assets/generated/second-opinion.jpg",
+          "provenanceAssetId": null,
+          "bytes": 36621,
+          "sha256": "db035db8010b79ff2d18a325dae69ef8cfe481a32790709152cd02b7a1d78d9e"
+        },
+        {
+          "file": "public/assets/generated/specialist.jpg",
+          "provenanceAssetId": null,
+          "bytes": 20756,
+          "sha256": "08a2a0c686e9770e8f119d91841f04286cdb90e1a110b602ab6a427490cbcf92"
+        },
+        {
+          "file": "public/assets/generated/spectacular-recovery.jpg",
+          "provenanceAssetId": null,
+          "bytes": 40733,
+          "sha256": "242721cfef1622ede546fd32596ff2f06ff08a39bf15f785f752b56e3f093212"
+        },
+        {
+          "file": "public/assets/generated/statistics-office.jpg",
+          "provenanceAssetId": null,
+          "bytes": 232424,
+          "sha256": "a3219c79c96a426c09f7d1670921648abd505c809b79fefc8db3fef30ec20309"
+        },
+        {
+          "file": "public/assets/generated/survivor.jpg",
+          "provenanceAssetId": null,
+          "bytes": 19572,
+          "sha256": "7503d009c70d6f2b29b7cebd13766def14d25fcc5bb95a12b02b936903176b40"
+        },
+        {
+          "file": "public/assets/generated/three-files.jpg",
+          "provenanceAssetId": null,
+          "bytes": 160167,
+          "sha256": "f7a76f4aaa91b79a3ea4dabb7fe5f5ce16759a4c40da42989d1606e4568a8984"
+        },
+        {
+          "file": "public/assets/generated/unpleasantly-well-rounded.jpg",
+          "provenanceAssetId": null,
+          "bytes": 53354,
+          "sha256": "05ba5bcd5e7aa3d9c2ae2f75c3fec86c8fc57635b079607556f23ecf77fd1af9"
+        },
+        {
+          "file": "public/assets/generated/visual-gallery.jpg",
+          "provenanceAssetId": null,
+          "bytes": 213807,
+          "sha256": "6abf8c82b924dba8b27583c70c9b11ba1a1ae2b97a5a378559abd6b70700c111"
+        },
+        {
+          "file": "public/assets/generated/walking-encyclopaedia.jpg",
+          "provenanceAssetId": null,
+          "bytes": 43596,
+          "sha256": "3d3004b704609b0cc1d73f30b0ac592e10995ca382fd022076ff93ee0c3f2b38"
+        },
+        {
+          "file": "public/assets/generated-v2/dispatch-board.webp",
+          "provenanceAssetId": null,
+          "bytes": 131056,
+          "sha256": "72793be0e1cc0cd011dc3d98bc2ac6f369782ed3b1926078a4a3ce7a640cf9a3"
+        },
+        {
+          "file": "public/assets/generated-v2/final-adjudication-engine.webp",
+          "provenanceAssetId": null,
+          "bytes": 148400,
+          "sha256": "962adb799c9a796354a8e0a4ce3a7905d46142db49229b9671a756ea0dad0184"
+        },
+        {
+          "file": "public/assets/generated-v2/finding-press.webp",
+          "provenanceAssetId": null,
+          "bytes": 92142,
+          "sha256": "2ac46631f0a9686d92daf72279d5bdeeb2ec0a697d7cbe08c1641b7877d10268"
+        },
+        {
+          "file": "public/assets/generated-v2/podium-machine.webp",
+          "provenanceAssetId": null,
+          "bytes": 146368,
+          "sha256": "05e97bc3c515c3c6efded76fe7d6da3ec2c9ee1f77b4f3bbdaf6d63b3bdd964c"
+        },
+        {
+          "file": "public/assets/generated-v4/bidding-claim-console-v5-small.webp",
+          "provenanceAssetId": "bidding-claim-console-v5",
+          "bytes": 51358,
+          "sha256": "f996fea4270a34120fcbcf78261f51e4a1ba8dc7852aee7d7633aa381ca07c1f"
+        },
+        {
+          "file": "public/assets/generated-v4/bidding-claim-console-v5.webp",
+          "provenanceAssetId": "bidding-claim-console-v5",
+          "bytes": 175890,
+          "sha256": "e13e4585b87721abc7e704aa3c45732dc3fc80f6e2fcdd081447ae9fdcaddc3f"
+        },
+        {
+          "file": "public/assets/generated-v4/chain-of-command-relay-v1-small.webp",
+          "provenanceAssetId": null,
+          "bytes": 61696,
+          "sha256": "9da6ee6daddb7af81528b293877a94638c0103142d9d9d4067d07b1c69921f2e"
+        },
+        {
+          "file": "public/assets/generated-v4/chain-of-command-relay-v1.webp",
+          "provenanceAssetId": null,
+          "bytes": 271468,
+          "sha256": "006015d820b6115cea8125c18c62f68cc927148e2e253db3705daf8f09a1e02e"
+        },
+        {
+          "file": "public/assets/generated-v4/closest-capsule-engine-v4-small.webp",
+          "provenanceAssetId": null,
+          "bytes": 55066,
+          "sha256": "d929ad270908a005f1bfb6b7b661f8a639d32a2f917d304d7f554b0574466887"
+        },
+        {
+          "file": "public/assets/generated-v4/closest-capsule-engine-v4.webp",
+          "provenanceAssetId": null,
+          "bytes": 188538,
+          "sha256": "1c8297f4feb3236a4e66313d9b24c166f4baa16fe53905e2803fc3c75e7ec90d"
+        },
+        {
+          "file": "public/assets/generated-v4/common-dossier-correlator-v1-small.webp",
+          "provenanceAssetId": null,
+          "bytes": 48492,
+          "sha256": "a58318758af40f4e08f0c888c3f2c9156cbb51febe3cc64008fba72ec8906e88"
+        },
+        {
+          "file": "public/assets/generated-v4/common-dossier-correlator-v1.webp",
+          "provenanceAssetId": null,
+          "bytes": 203614,
+          "sha256": "f57b13477d608abcb1421bff9eca8b07406ae90e3da0c890b21d10514c9bfd06"
+        },
+        {
+          "file": "public/assets/generated-v4/complaints-desk-analyser-v2-small.webp",
+          "provenanceAssetId": "complaints-desk-analyser-v2",
+          "bytes": 55178,
+          "sha256": "fffafbac190656b7a4d431249deb9d1e64cd91a881c6e651426dde255b49d723"
+        },
+        {
+          "file": "public/assets/generated-v4/complaints-desk-analyser-v2.webp",
+          "provenanceAssetId": "complaints-desk-analyser-v2",
+          "bytes": 195310,
+          "sha256": "b357d06f09d7624e4d39bc80195a67eefeafa56aeda1dafa3c1ed4c62c9ee1fe"
+        },
+        {
+          "file": "public/assets/generated-v4/dispatch-box-apparatus-v1-small.webp",
+          "provenanceAssetId": null,
+          "bytes": 52364,
+          "sha256": "50b60e07ebbc783d584069f765f5af5ff6df26105feedc16156b41decdb608b9"
+        },
+        {
+          "file": "public/assets/generated-v4/dispatch-box-apparatus-v1.webp",
+          "provenanceAssetId": null,
+          "bytes": 243646,
+          "sha256": "cc9afe94458cbfb14eea454dc2a7acec8b1c42aa9dd0656295238589e872e5b8"
+        },
+        {
+          "file": "public/assets/generated-v4/image-optical-iris-v4-small.webp",
+          "provenanceAssetId": null,
+          "bytes": 50438,
+          "sha256": "25384a9efe850653d1933ec74f6a551a44dc4aa4dfb6fb0734d8ee947336cb8c"
+        },
+        {
+          "file": "public/assets/generated-v4/image-optical-iris-v4.webp",
+          "provenanceAssetId": null,
+          "bytes": 191936,
+          "sha256": "bdf035b57ce2ee36c10ba787fdc55880490165ab2dc1f016cb8d96efcaf09d9e"
+        },
+        {
+          "file": "public/assets/generated-v4/list-pressure-vessel-v4-small.webp",
+          "provenanceAssetId": null,
+          "bytes": 56486,
+          "sha256": "076e6955157c626d3c728304d396f3cc71cb68aa4dff44c6d53931acf80e5c4f"
+        },
+        {
+          "file": "public/assets/generated-v4/list-pressure-vessel-v4.webp",
+          "provenanceAssetId": null,
+          "bytes": 183742,
+          "sha256": "e839001e1a5ff9110b9ec9637f0dc0a236d7080bd27a14d955869facb4a705e9"
+        },
+        {
+          "file": "public/assets/generated-v4/map-plotting-console-v6-small.webp",
+          "provenanceAssetId": "map-plotting-console-v6",
+          "bytes": 33284,
+          "sha256": "e7dba0ff8410efc170004479d6f85abeab97ff424009644eecd1caef62842095"
+        },
+        {
+          "file": "public/assets/generated-v4/map-plotting-console-v6.webp",
+          "provenanceAssetId": "map-plotting-console-v6",
+          "bytes": 107932,
+          "sha256": "15e3ef60fdcee6f90d4da79eb162e8d56d47593913b2aed07cc20f79bcb1780b"
+        },
+        {
+          "file": "public/assets/generated-v4/misfiled-records-sorter-v1-small.webp",
+          "provenanceAssetId": null,
+          "bytes": 69264,
+          "sha256": "dc093469933819e4ba10bea2ba455219b8adcd81eaa9bb1ec68d092d15f2381e"
+        },
+        {
+          "file": "public/assets/generated-v4/misfiled-records-sorter-v1.webp",
+          "provenanceAssetId": null,
+          "bytes": 257902,
+          "sha256": "a906a26db5a089ef2f7976bb6c727c6b469ad90d6489f5cf5acb4103b828a305"
+        },
+        {
+          "file": "public/assets/generated-v4/missing-minutes-machine-v1-small.webp",
+          "provenanceAssetId": null,
+          "bytes": 40506,
+          "sha256": "92e3eed1500b837aff476b3c18e91ddee38b4f270d5c3cdf7fcf54107a980bd5"
+        },
+        {
+          "file": "public/assets/generated-v4/missing-minutes-machine-v1.webp",
+          "provenanceAssetId": null,
+          "bytes": 155352,
+          "sha256": "fdea75535fdd5bf2b5e22f97659529e5211fbc972d46d479e4fd821ebf91c8ae"
+        },
+        {
+          "file": "public/assets/generated-v4/public-enquiry-lectern-v1-small.webp",
+          "provenanceAssetId": null,
+          "bytes": 44062,
+          "sha256": "4bed1a3a40c43a220c8ef1eafa1f4c7cb4a03406d824577030f60b2875aa7300"
+        },
+        {
+          "file": "public/assets/generated-v4/public-enquiry-lectern-v1.webp",
+          "provenanceAssetId": null,
+          "bytes": 172754,
+          "sha256": "e689b4736856c2b99efbfe4c2b350708a3ac4c27b055633134f363ba27d0bf8a"
+        },
+        {
+          "file": "public/assets/generated-v4/rank-sorting-rail-v4-small.webp",
+          "provenanceAssetId": null,
+          "bytes": 45152,
+          "sha256": "f7930d191fba4738f4752311b55691cd917d71c47c78b344430bbf7141095e4c"
+        },
+        {
+          "file": "public/assets/generated-v4/rank-sorting-rail-v4.webp",
+          "provenanceAssetId": null,
+          "bytes": 175050,
+          "sha256": "7e370e6beccbe6375ecec24d3af254d0a0ab866443fcd18ea2e25110ad085a7b"
+        },
+        {
+          "file": "public/assets/generated-v4/redacted-records-desk-v2-small.webp",
+          "provenanceAssetId": "redacted-records-desk-v2",
+          "bytes": 39074,
+          "sha256": "4a87be090d78b17664523feab2ffb6590accdbd0a5bc7a810211710d0ea7677d"
+        },
+        {
+          "file": "public/assets/generated-v4/redacted-records-desk-v2.webp",
+          "provenanceAssetId": "redacted-records-desk-v2",
+          "bytes": 132460,
+          "sha256": "4211bbfdee7f56ff27168824bb415b9d13d2c3f8705b2fbef04ce1ea581ece5d"
+        },
+        {
+          "file": "public/assets/generated-v4/seating-committee-apparatus-v1-small.webp",
+          "provenanceAssetId": null,
+          "bytes": 54790,
+          "sha256": "6b346ebb5e3277b2c1f3246dac8c209faf4b373bd2eb9b668b1c05b2be750bb0"
+        },
+        {
+          "file": "public/assets/generated-v4/seating-committee-apparatus-v1.webp",
+          "provenanceAssetId": null,
+          "bytes": 235870,
+          "sha256": "55f39ad0309bd19ccf552bdf10ce10f98b75f50f7608b1085f436a56884703da"
+        },
+        {
+          "file": "public/assets/generated-v4/stop-volatility-engine-v4-small.webp",
+          "provenanceAssetId": null,
+          "bytes": 54202,
+          "sha256": "27390668c823826cf04c213648998f6a1026f96b771b0115a72036e64e823ad3"
+        },
+        {
+          "file": "public/assets/generated-v4/stop-volatility-engine-v4.webp",
+          "provenanceAssetId": null,
+          "bytes": 266054,
+          "sha256": "74fdd362aa9b3638ab9871e3bb6f9c42516baf6f1f9f00a348298eace290bb31"
+        },
+        {
+          "file": "public/assets/generated-v4/top10-shutter-cabinet-v4-small.webp",
+          "provenanceAssetId": null,
+          "bytes": 34242,
+          "sha256": "cde21482f62b35549a374eb0a6642b5577c133e7b5ccff437f54865d62c13d53"
+        },
+        {
+          "file": "public/assets/generated-v4/top10-shutter-cabinet-v4.webp",
+          "provenanceAssetId": null,
+          "bytes": 106272,
+          "sha256": "0ef5e2242a0b816790ed6edfa8b57c7e967b9d0ae7a4de159404ddc50f78ffc5"
+        }
+      ]
+    },
+    {
+      "id": "bundled-map",
+      "status": "CLEARED",
+      "basis": "OpenStreetMap ODbL data and CARTO-rendered style with in-game attribution",
+      "notice": "See THIRD-PARTY-NOTICES.md and the attribution rendered in the Atlas Room."
+    },
+    {
+      "id": "bundled-fonts",
+      "status": "CLEARED",
+      "basis": "SIL Open Font Licence 1.1",
+      "notice": "Complete OFL texts are shipped under public/assets/fonts."
+    }
+  ]
+}

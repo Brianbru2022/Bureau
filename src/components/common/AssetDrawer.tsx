@@ -5,6 +5,7 @@ import { ASSET_ART } from '../../data/visualAssets';
 import { BureauAvatar } from './BureauAvatar';
 import { X, Zap } from 'lucide-react';
 import { sound } from '../../sound/audioEngine';
+import { useModalFocus } from './useModalFocus';
 
 interface AssetDrawerProps {
   player?: Player;
@@ -22,14 +23,15 @@ const AssetPicture: React.FC<{ assetKey: BureauAssetKey }> = ({ assetKey }) => {
 
 export const AssetDrawer: React.FC<AssetDrawerProps> = ({ player: propPlayer, activePlayer: propActivePlayer, isOpen = true, onClose, onUseAsset }) => {
   const player = propPlayer || propActivePlayer;
+  const dialogRef = useModalFocus<HTMLDivElement>({ isOpen: isOpen && !!player, onEscape: onClose });
   if (!isOpen || !player) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#183138]/70 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bureau-paper border-[4px] border-[#765139] w-full max-w-2xl rounded-[28px] shadow-2xl overflow-hidden bureau-paper-drop">
+    <div className="fixed inset-0 z-50 bg-[#183138]/70 backdrop-blur-sm flex items-center justify-center p-4" role="presentation">
+      <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={`${player.name}'s Bureau assets`} className="bureau-paper border-[4px] border-[#765139] w-full max-w-2xl rounded-[28px] shadow-2xl overflow-hidden bureau-paper-drop">
         <div className="bg-[#2f8f95] px-5 py-4 border-b-[3px] border-[#765139] flex items-center justify-between text-white">
           <div className="flex items-center gap-3"><BureauAvatar player={player} size={48}/><div><h3 className="font-['Cinzel'] font-black text-base uppercase tracking-wider">{player.name}'s Bureau Assets</h3><p className="font-['Courier_Prime'] text-[10px] text-[#d9f4ef]">Single-use administrative privileges. Misuse is encouraged only when entertaining.</p></div></div>
-          <button onClick={() => { sound.playClick(); onClose(); }} className="bureau-button rounded-full bg-[#fff7df] p-2 text-[#244b55]"><X size={19}/></button>
+          <button type="button" data-modal-autofocus onClick={() => { sound.playClick(); onClose(); }} aria-label="Close asset dossier" className="bureau-button rounded-full bg-[#fff7df] p-2 text-[#244b55]"><X size={19}/></button>
         </div>
 
         <div className="p-5 flex flex-col gap-3 max-h-[72vh] overflow-y-auto bureau-scrollbar">

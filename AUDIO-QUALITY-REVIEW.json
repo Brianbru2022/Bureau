@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "reviewedOn": "2026-08-31",
+  "scope": "Internal commercial Stage 8 review of the department mechanical cue system",
+  "rightsBasis": "original-procedural",
+  "limitations": "Procedural cues have passed technical review but still require first-time-player listening sessions on representative speakers.",
+  "motifs": ["RATCHET", "SHUTTER", "GAVEL", "PRESSURE", "CAPSULE", "RAIL", "IRIS", "GAUGE"],
+  "checks": {
+    "noThirdPartySamples": true,
+    "muteAndVolumePersist": true,
+    "audioNeverCarriesRequiredState": true,
+    "cueDurationIsBounded": true
+  },
+  "approved": [
+    "WHERE_IN_BRITAIN", "TOP_10", "PUT_UP_OR_SHUT_UP", "THE_LIST", "CLOSEST_WINS", "RANK_IT", "IMAGE_REVEAL", "STOP_THE_SCORE",
+    "MISFILED_RECORDS", "REDACTED_RECORDS", "COMMON_DOSSIER", "MISSING_MINUTES", "PUBLIC_ENQUIRY", "CHAIN_OF_COMMAND", "COMPLAINTS_DESK", "SEATING_COMMITTEE", "DISPATCH_BOX"
+  ]
+}

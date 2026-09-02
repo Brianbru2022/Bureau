@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "startupEncodedBytes": 1000000,
+  "startupRoundArtworkRequests": 0,
+  "setupInteractionMedianMs": 250,
+  "maximumSingleApparatusDecodedBytes": 6291456,
+  "maximumActiveImageDecodedBytes": 33554432
+}

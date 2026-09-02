@@ -1,0 +1,72 @@
+[
+  {
+    "title": "White Cliffs of Dover",
+    "file": "white-cliffs-of-dover",
+    "article": "https://en.wikipedia.org/wiki/White_Cliffs_of_Dover",
+    "sourceImage": "https://upload.wikimedia.org/wikipedia/commons/7/74/White_Cliffs_of_Dover_02.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "downloaded": "white-cliffs-of-dover.JPG"
+  },
+  {
+    "title": "Blackpool Tower",
+    "file": "blackpool-tower",
+    "article": "https://en.wikipedia.org/wiki/Blackpool_Tower",
+    "sourceImage": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Blackpool_Tower_05082017_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "downloaded": "blackpool-tower.jpg"
+  },
+  {
+    "title": "Royal Pavilion",
+    "file": "royal-pavilion-brighton",
+    "article": "https://en.wikipedia.org/wiki/Royal_Pavilion",
+    "sourceImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Brighton_royal_pavilion_Qmin.jpg/3840px-Brighton_royal_pavilion_Qmin.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "downloaded": "royal-pavilion-brighton.jpg"
+  },
+  {
+    "title": "Falkirk Wheel",
+    "file": "falkirk-wheel",
+    "article": "https://en.wikipedia.org/wiki/Falkirk_Wheel",
+    "sourceImage": "https://upload.wikimedia.org/wikipedia/commons/c/cd/FalkirkWheelSide_2004_SeanMcClean.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "downloaded": "falkirk-wheel.jpg"
+  },
+  {
+    "title": "Clifton Suspension Bridge",
+    "file": "clifton-suspension-bridge",
+    "article": "https://en.wikipedia.org/wiki/Clifton_Suspension_Bridge",
+    "sourceImage": "https://upload.wikimedia.org/wikipedia/commons/7/79/Clifton_Suspension_Bridge-9350.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "downloaded": "clifton-suspension-bridge.jpg"
+  },
+  {
+    "title": "Stirling Castle",
+    "file": "stirling-castle",
+    "article": "https://en.wikipedia.org/wiki/Stirling_Castle",
+    "sourceImage": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Stirling_Castle_Aerial_Photo.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "downloaded": "stirling-castle.jpg"
+  },
+  {
+    "title": "Durham Cathedral",
+    "file": "durham-cathedral",
+    "article": "https://en.wikipedia.org/wiki/Durham_Cathedral",
+    "sourceImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Durham_MMB_02_Cathedral.jpg/3840px-Durham_MMB_02_Cathedral.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "downloaded": "durham-cathedral.jpg"
+  },
+  {
+    "title": "Royal Liver Building",
+    "file": "royal-liver-building",
+    "article": "https://en.wikipedia.org/wiki/Royal_Liver_Building",
+    "sourceImage": "https://upload.wikimedia.org/wikipedia/commons/b/ba/Royal_Liver_Building.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "downloaded": "royal-liver-building.jpg"
+  },
+  {
+    "title": "Menai Suspension Bridge",
+    "file": "menai-suspension-bridge",
+    "article": "https://en.wikipedia.org/wiki/Menai_Suspension_Bridge",
+    "sourceImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/The_Menai_Suspension_Bridge_%2835349065306%29.jpg/3840px-The_Menai_Suspension_Bridge_%2835349065306%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "downloaded": "menai-suspension-bridge.jpg"
+  },
+  {
+    "title": "Glastonbury Tor",
+    "file": "glastonbury-tor",
+    "article": "https://en.wikipedia.org/wiki/Glastonbury_Tor",
+    "sourceImage": "https://upload.wikimedia.org/wikipedia/commons/d/d7/Glastonbury_Tor-_View_of_an_iconic_landmark_%28geograph_5500644%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "downloaded": "glastonbury-tor.jpg"
+  }
+]

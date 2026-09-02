@@ -1,7 +1,36 @@
-import type { RankItChallenge, Top10Challenge } from '../types';
+import type { RankItChallenge, RoundType, Top10Challenge } from '../types';
 
 export const clampScore = (value: number): number =>
   Math.max(0, Math.min(1000, Math.round(Number.isFinite(value) ? value : 0)));
+
+/**
+ * Evidence-led economy calibration. Each power curve is applied to the exact
+ * continuous result produced by a department; it never converts performance
+ * into bands or fixed awards. Baselines are the Stage 5 seeded regular-player
+ * means and are replaced only when sufficient consented beta evidence exists.
+ */
+export const DEPARTMENT_SCORE_CALIBRATION: Record<RoundType, { exponent: number; baselineMean: number }> = {
+  WHERE_IN_BRITAIN: { exponent:.905, baselineMean: 465 },
+  TOP_10: { exponent:1.58, baselineMean: 645 },
+  PUT_UP_OR_SHUT_UP: { exponent:.42, baselineMean: 391 },
+  THE_LIST: { exponent:.72, baselineMean: 409 },
+  CLOSEST_WINS: { exponent:1.402, baselineMean: 610 },
+  RANK_IT: { exponent:1.70, baselineMean: 651 },
+  IMAGE_REVEAL: { exponent:.48, baselineMean: 405 },
+  STOP_THE_SCORE: { exponent:.44, baselineMean: 397 },
+  MISFILED_RECORDS: { exponent:.954, baselineMean: 484 },
+  REDACTED_RECORDS: { exponent:.58, baselineMean: 442 },
+  COMMON_DOSSIER: { exponent:.78, baselineMean: 469 },
+  MISSING_MINUTES: { exponent:.36, baselineMean: 372 },
+  PUBLIC_ENQUIRY: { exponent:1.55, baselineMean: 639 },
+  CHAIN_OF_COMMAND: { exponent:.36, baselineMean: 378 },
+  COMPLAINTS_DESK: { exponent:.39, baselineMean: 394 },
+  SEATING_COMMITTEE: { exponent:1.044, baselineMean: 515 },
+  DISPATCH_BOX: { exponent:.64, baselineMean: 361 },
+};
+
+export const calibrateDepartmentScore = (roundType: RoundType, continuousScore: number): number =>
+  continuousScore <= 0 ? 0 : continuousScore >= 1000 ? 1000 : clampScore(1000*Math.pow(continuousScore/1000,DEPARTMENT_SCORE_CALIBRATION[roundType].exponent));
 
 const stableUnit = (seed: string): number => {
   let hash = 2166136261;
@@ -17,8 +46,8 @@ const stableUnit = (seed: string): number => {
  * sit in the low hundreds; obscure lower-ranked entries can approach 1000.
  * Values remain deterministic and granular rather than fixed score bands.
  */
-export function getTop10ItemScores(challenge: Top10Challenge): Record<number, number> {
-  return Object.fromEntries(challenge.items.map(item => {
+export function getTop10ItemScores(challenge: Top10Challenge, candidateCount = 1): Record<number, number> {
+  const rawWeights = challenge.items.map(item => {
     const rankProgress = challenge.items.length <= 1
       ? 1
       : (item.rank - 1) / (challenge.items.length - 1);
@@ -26,8 +55,13 @@ export function getTop10ItemScores(challenge: Top10Challenge): Record<number, nu
     const rankValue = 125 + 725 * Math.pow(rankProgress, 1.18);
     const rarityBonus = 115 * rarityProgress;
     const texture = (stableUnit(`${challenge.id}:${item.rank}`) - 0.5) * 34;
-    return [item.rank, clampScore(rankValue + rarityBonus + texture)];
-  }));
+    return { rank: item.rank, weight: Math.max(1, rankValue + rarityBonus + texture) };
+  });
+  const totalWeight = rawWeights.reduce((sum, item) => sum + item.weight, 0);
+  // Shared boards gain value as more candidates divide the ten files, but the
+  // square-root scale prevents the round from overwhelming the wider economy.
+  const boardValue = 1000 * Math.sqrt(Math.max(1, Math.min(4, candidateCount)));
+  return Object.fromEntries(rawWeights.map(item => [item.rank, clampScore((item.weight / totalWeight) * boardValue)]));
 }
 
 /** Push-your-luck value for The List. Smooth curve: early answers matter, but
@@ -93,7 +127,8 @@ export function scoreRanking(
 
   const pairRatio = correctPairs / totalPairs;
   const exactRatio = exact / n;
-  return clampScore(1000 * (0.74 * pairRatio + 0.26 * exactRatio));
+  const accuracy = 0.68 * pairRatio + 0.32 * exactRatio;
+  return clampScore(1000 * Math.pow(accuracy, 1.28));
 }
 
 /** Bidding rewards how much of the complete valid set a player confidently

@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-02T19:13:07.237Z",
+  "status": "AWAITING_EVIDENCE",
+  "scoredAttempts": 0,
+  "eligibleSessions": 0,
+  "independentGroups": 0,
+  "representedPlayerCounts": [],
+  "excludedScoredEvents": 0,
+  "departments": [
+    {
+      "roundType": "WHERE_IN_BRITAIN",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "TOP_10",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "PUT_UP_OR_SHUT_UP",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "THE_LIST",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "CLOSEST_WINS",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "RANK_IT",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "IMAGE_REVEAL",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "STOP_THE_SCORE",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "MISFILED_RECORDS",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "REDACTED_RECORDS",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "COMMON_DOSSIER",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "MISSING_MINUTES",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "PUBLIC_ENQUIRY",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "CHAIN_OF_COMMAND",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "COMPLAINTS_DESK",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "SEATING_COMMITTEE",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    },
+    {
+      "roundType": "DISPATCH_BOX",
+      "samples": 0,
+      "meanScore": 0,
+      "medianScore": 0,
+      "meanAttemptSeconds": 0,
+      "zeroRate": 0,
+      "suggestedMultiplier": null
+    }
+  ],
+  "seatMeans": [],
+  "seatSpreadRatio": 0,
+  "issues": [
+    "No consented scored beta attempts are available.",
+    "17 departments have fewer than 8 scored attempts.",
+    "Need 6 independent balance groups; found 0.",
+    "No eligible 1-candidate balance session is represented.",
+    "No eligible 2-candidate balance session is represented.",
+    "No eligible 4-candidate balance session is represented."
+  ]
+}

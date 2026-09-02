@@ -1,6 +1,5 @@
-import type { BureauAssetKey } from '../types';
-
-export type MiniGameType = 'RED_BUTTON' | 'FILE_CABINET' | 'HIGHER_LOWER' | 'THREE_FILES';
+import type { BureauAssetKey, MiniGameType } from '../types';
+export type { MiniGameType } from '../types';
 
 export interface HigherLowerPrompt {
   id: string;

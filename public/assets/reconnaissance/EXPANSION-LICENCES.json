@@ -1,0 +1,122 @@
+[
+  {
+    "file": "white-cliffs-of-dover.webp",
+    "subject": "White Cliffs of Dover",
+    "author": "Immanuel Giel",
+    "licence": "CC BY-SA 3.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "sourceImage": "https://commons.wikimedia.org/wiki/File:White_Cliffs_of_Dover_02.JPG",
+    "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+    "acquiredAt": "2026-08-30",
+    "bytes": 53258,
+    "sha256": "17b54a04e25593c15078a9cd248da8008ea2a871573d9d987a56fcac3db45d4a"
+  },
+  {
+    "file": "blackpool-tower.webp",
+    "subject": "Blackpool Tower",
+    "author": "Nathanemmison",
+    "licence": "CC BY-SA 4.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourceImage": "https://commons.wikimedia.org/wiki/File:Blackpool_Tower_05082017_(cropped).jpg",
+    "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+    "acquiredAt": "2026-08-30",
+    "bytes": 58886,
+    "sha256": "4da069ee5105a991ea0297b582a597325edc725b49de59f51422c9203efa480f"
+  },
+  {
+    "file": "royal-pavilion-brighton.webp",
+    "subject": "Royal Pavilion",
+    "author": "Qmin",
+    "licence": "CC BY-SA 3.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "sourceImage": "https://commons.wikimedia.org/wiki/File:Brighton_royal_pavilion_Qmin.jpg",
+    "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+    "acquiredAt": "2026-08-30",
+    "bytes": 102634,
+    "sha256": "dc05bcf205ee4b97369d3d705efc47cd272252c9d07ad72062629f52f3d8a5ea"
+  },
+  {
+    "file": "falkirk-wheel.webp",
+    "subject": "Falkirk Wheel",
+    "author": "Sean Mack",
+    "licence": "CC BY 2.5",
+    "licenceUrl": "https://creativecommons.org/licenses/by/2.5",
+    "sourceImage": "https://commons.wikimedia.org/wiki/File:FalkirkWheelSide_2004_SeanMcClean.jpg",
+    "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+    "acquiredAt": "2026-08-30",
+    "bytes": 68944,
+    "sha256": "0f7ac823a130121bc0716e54955927193330f88c7c6bfec3174cdb8d31dffc30"
+  },
+  {
+    "file": "clifton-suspension-bridge.webp",
+    "subject": "Clifton Suspension Bridge",
+    "author": "Gothick",
+    "licence": "CC BY-SA 3.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "sourceImage": "https://commons.wikimedia.org/wiki/File:Clifton_Suspension_Bridge-9350.jpg",
+    "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+    "acquiredAt": "2026-08-30",
+    "bytes": 89140,
+    "sha256": "256cafc7d3534b3e817c62faf3829106cf4d7505696c168d501a3fb7c15d28ec"
+  },
+  {
+    "file": "stirling-castle.webp",
+    "subject": "Stirling Castle",
+    "author": "John McPake",
+    "licence": "CC BY 2.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+    "sourceImage": "https://commons.wikimedia.org/wiki/File:Stirling_Castle_Aerial_Photo.jpg",
+    "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+    "acquiredAt": "2026-08-30",
+    "bytes": 119998,
+    "sha256": "895716a225068d51a1f9f31670ff629e96c78ca128d9d6ed36afac2fed24b1ed"
+  },
+  {
+    "file": "durham-cathedral.webp",
+    "subject": "Durham Cathedral",
+    "author": "mattbuck",
+    "licence": "CC BY-SA 4.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourceImage": "https://commons.wikimedia.org/wiki/File:Durham_MMB_02_Cathedral.jpg",
+    "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+    "acquiredAt": "2026-08-30",
+    "bytes": 98946,
+    "sha256": "4ab3c7953d640dab36b46672bb0a3b18195a6e8edbaa525a9d623580dc9c0820"
+  },
+  {
+    "file": "royal-liver-building.webp",
+    "subject": "Royal Liver Building",
+    "author": "Ank Kumar",
+    "licence": "CC BY-SA 4.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourceImage": "https://commons.wikimedia.org/wiki/File:2013-_The_Royal_Liver_Building,_Liverpool,_England,_UK_(_Ank_Kumar_)_01.jpg",
+    "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+    "acquiredAt": "2026-08-30",
+    "bytes": 66878,
+    "sha256": "6037cf105646634394c6c4644d0e84ee8a815debb29a8b467da077651ba871cc"
+  },
+  {
+    "file": "menai-suspension-bridge.webp",
+    "subject": "Menai Suspension Bridge",
+    "author": "Reading Tom",
+    "licence": "CC BY 2.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+    "sourceImage": "https://commons.wikimedia.org/wiki/File:The_Menai_Suspension_Bridge_(35349065306).jpg",
+    "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+    "acquiredAt": "2026-08-30",
+    "bytes": 71366,
+    "sha256": "16600e943afe3349ff3351a90d56ff120fbe69da2681e2b33c6d4b1d2ca3610d"
+  },
+  {
+    "file": "glastonbury-tor.webp",
+    "subject": "Glastonbury Tor",
+    "author": "Eugene Birchall",
+    "licence": "CC BY-SA 2.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "sourceImage": "https://commons.wikimedia.org/wiki/File:Glastonbury_Tor-_View_of_an_iconic_landmark_(geograph_5500644).jpg",
+    "changes": "No intentional crop. Converted to a maximum 1440 by 1080 WebP derivative for local display.",
+    "acquiredAt": "2026-08-30",
+    "bytes": 82592,
+    "sha256": "805deb51e8495d82c120ccdc1265ea5764da47abf73dbd6b86783ba5269e5218"
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "productTitle": "The Bureau of Questionable Knowledge",
+  "status": "INCOMPLETE",
+  "fictionalInstitutionNotice": "A fictional institution. Not affiliated with or endorsed by any government, public authority or the Royal Household.",
+  "publisher": {
+    "legalName": null,
+    "address": null,
+    "jurisdiction": null,
+    "companyNumber": null
+  },
+  "contacts": {
+    "support": null,
+    "privacy": null
+  },
+  "trademark": {
+    "status": "PROFESSIONAL_REVIEW_REQUIRED",
+    "intendedTerritories": [],
+    "classes": [],
+    "adviser": null,
+    "decision": null,
+    "decidedOn": null
+  },
+  "legalReview": {
+    "status": "PROFESSIONAL_REVIEW_REQUIRED",
+    "adviser": null,
+    "reviewedOn": null,
+    "eulaApproved": false,
+    "privacyApproved": false,
+    "supportApproved": false
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "evidenceContractVersion": 2,
+  "generatedAt": "2026-09-02T19:13:05.992Z",
+  "status": "AWAITING_EVIDENCE",
+  "reports": 0,
+  "completedSessions": 0,
+  "passingSessions": 0,
+  "independentPassingGroups": 0,
+  "issues": [
+    "No structured play-test JSON reports found.",
+    "Need three independent passing groups.",
+    "Need the attested solo First Assessment, two-candidate Quick/Light and four-candidate Standard/Standard matrix."
+  ],
+  "incidentCounts": {},
+  "qualityThresholds": {
+    "meanEnjoyment": 3.5,
+    "meanClarity": 3.5,
+    "meanPacing": 3,
+    "wouldPlayAgainRate": 0.6666666666666666
+  }
+}

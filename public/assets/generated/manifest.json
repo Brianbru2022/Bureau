@@ -43,13 +43,5 @@
     "safe",
     "risky",
     "deeply-questionable"
-  ],
-  "stamps": [
-    "passed",
-    "failed",
-    "certified",
-    "rejected",
-    "classified",
-    "intercepted"
   ]
 }

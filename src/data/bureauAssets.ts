@@ -5,7 +5,7 @@ export const BUREAU_ASSET_DEFINITIONS: Record<BureauAssetKey, Omit<BureauAsset, 
     id: 'SECOND_OPINION',
     name: 'Second Opinion',
     tagline: 'A suspiciously favourable review',
-    description: 'Arm this before an individual challenge. A successful score receives a 15% review uplift, capped at +120 points.',
+    description: 'Arm this before an individual challenge. A successful score receives a 12% review uplift, capped at +100 points.',
     iconName: 'HelpCircle'
   },
   REFILE: {
@@ -19,7 +19,7 @@ export const BUREAU_ASSET_DEFINITIONS: Record<BureauAssetKey, Omit<BureauAsset, 
     id: 'DOUBLE_ENTRY',
     name: 'Double Entry Ledger',
     tagline: 'Confidence with accounting consequences',
-    description: 'Arm this before an individual challenge. A successful result receives a 75% bonus, capped at +750 points. Failure still earns nothing.',
+    description: 'Arm this before an individual challenge. A successful result receives a 40% bonus, capped at +350 points. Failure still earns nothing.',
     iconName: 'TrendingUp'
   },
   INTERCEPT: {
@@ -31,7 +31,7 @@ export const BUREAU_ASSET_DEFINITIONS: Record<BureauAssetKey, Omit<BureauAsset, 
   },
   INSURANCE: {
     id: 'INSURANCE',
-    name: 'Crown Indemnity',
+    name: 'Bureau Indemnity',
     tagline: 'Failure, but with a claims department',
     description: 'Arm this before an individual challenge. If the attempt scores zero, the Bureau pays 35% of the recorded risk value, or 150 points when no risk value exists.',
     iconName: 'ShieldCheck'

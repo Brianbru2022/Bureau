@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-08-31T22:58:31.722Z",
+  "build": "production-preview",
+  "viewport": "1366x768",
+  "startup": {
+    "encodedBytes": 641639,
+    "roundArtworkRequests": 0,
+    "resources": [
+      {
+        "url": "/",
+        "encodedBytes": 616,
+        "type": "navigation"
+      },
+      {
+        "url": "/assets/fonts/bureau-fonts.css",
+        "encodedBytes": 867,
+        "type": "link"
+      },
+      {
+        "url": "/assets/index-DMZ0nAyB.js",
+        "encodedBytes": 62163,
+        "type": "script"
+      },
+      {
+        "url": "/assets/index-Dv7ZMCVn.css",
+        "encodedBytes": 29587,
+        "type": "link"
+      },
+      {
+        "url": "/assets/App-DQqn_hyU.js",
+        "encodedBytes": 136456,
+        "type": "script"
+      },
+      {
+        "url": "/assets/fonts/bureau-font-08.woff2",
+        "encodedBytes": 19348,
+        "type": "css"
+      },
+      {
+        "url": "/favicon.ico",
+        "encodedBytes": 0,
+        "type": "other"
+      },
+      {
+        "url": "/assets/generated/grand-hall.jpg",
+        "encodedBytes": 213094,
+        "type": "img"
+      },
+      {
+        "url": "/assets/fonts/bureau-font-02.woff2",
+        "encodedBytes": 25904,
+        "type": "css"
+      },
+      {
+        "url": "/assets/fonts/bureau-font-11.woff2",
+        "encodedBytes": 42228,
+        "type": "css"
+      },
+      {
+        "url": "/assets/fonts/bureau-font-14.woff2",
+        "encodedBytes": 67304,
+        "type": "css"
+      },
+      {
+        "url": "/assets/fonts/bureau-font-24.woff2",
+        "encodedBytes": 16724,
+        "type": "css"
+      },
+      {
+        "url": "/assets/fonts/bureau-font-18.woff2",
+        "encodedBytes": 27348,
+        "type": "css"
+      }
+    ]
+  },
+  "setupInteraction": {
+    "samplesMs": [
+      65.7,
+      35.8,
+      35.4,
+      36.2,
+      36.5
+    ],
+    "medianMs": 36.2
+  },
+  "imageMemory": {
+    "activeScreenDecodedBytes": 13215096,
+    "activeImages": [
+      {
+        "url": "/assets/generated/candidate-1.jpg",
+        "width": 318,
+        "height": 497,
+        "decodedBytes": 632184
+      },
+      {
+        "url": "/assets/generated-v4/complaints-desk-analyser-v1.webp",
+        "width": 1536,
+        "height": 1024,
+        "decodedBytes": 6291456
+      },
+      {
+        "url": "/assets/generated-v4/complaints-desk-analyser-v1.webp",
+        "width": 1536,
+        "height": 1024,
+        "decodedBytes": 6291456
+      }
+    ],
+    "maximumApparatus": {
+      "url": "/assets/generated-v4/map-plotting-console-v4.webp",
+      "width": 1536,
+      "height": 1024,
+      "decodedBytes": 6291456
+    }
+  },
+  "budgets": {
+    "schemaVersion": 1,
+    "startupEncodedBytes": 1000000,
+    "startupRoundArtworkRequests": 0,
+    "setupInteractionMedianMs": 250,
+    "maximumSingleApparatusDecodedBytes": 6291456,
+    "maximumActiveImageDecodedBytes": 33554432
+  },
+  "checks": {
+    "startupTransfer": true,
+    "noEagerRoundArtwork": true,
+    "interactionLatency": true,
+    "apparatusMemory": true,
+    "activeImageMemory": true
+  },
+  "status": "PASS"
+}

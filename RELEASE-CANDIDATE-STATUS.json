@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "product": "The Bureau of Questionable Knowledge",
+  "version": "1.0.0-rc.1",
+  "generatedAt": "2026-08-31T22:59:55.117Z",
+  "automatedVerificationPassed": true,
+  "decision": "NO_GO",
+  "gates": [
+    {
+      "name": "LEGAL",
+      "passed": false,
+      "evidence": [
+        "Asset-rights and generated-art registers parsed.",
+        "Structured publisher, EULA, support and trade mark records inspected."
+      ],
+      "blockers": [
+        "Uncleared asset groups: generated-artwork (CONDITIONAL).",
+        "ARTWORK-PROVENANCE.md contains incomplete legal or publisher fields.",
+        "TRADEMARK-CLEARANCE.md contains incomplete legal or publisher fields.",
+        "EULA.md contains incomplete legal or publisher fields.",
+        "SUPPORT.md contains incomplete legal or publisher fields.",
+        "package.json does not name the legal publisher.",
+        "Structured commercial identity is INCOMPLETE and does not yet name an approved publisher.",
+        "Professional trade mark status is PROFESSIONAL_REVIEW_REQUIRED, not CLEARED.",
+        "Commercial-policy legal review status is PROFESSIONAL_REVIEW_REQUIRED, not APPROVED.",
+        "Generated-art provenance register is not fully cleared."
+      ]
+    },
+    {
+      "name": "CONTENT",
+      "passed": false,
+      "evidence": [
+        "Versioned editorial certification parsed."
+      ],
+      "blockers": [
+        "0/425 question records are independently approved; 425 pending and 0 changes required."
+      ]
+    },
+    {
+      "name": "ACCESSIBILITY",
+      "passed": false,
+      "evidence": [
+        "Accessibility statement present.",
+        "Automated suite includes keyboard, focus, reduced-motion and enlarged-text paths."
+      ],
+      "blockers": [
+        "Missing passing KEYBOARD_ONLY acceptance row.",
+        "Missing passing REDUCED_MOTION acceptance row.",
+        "Missing passing TEXT_200_PERCENT acceptance row.",
+        "Missing passing SCREEN_READER acceptance row."
+      ]
+    },
+    {
+      "name": "PERFORMANCE",
+      "passed": true,
+      "evidence": [
+        "Opening encoded transfer: 641639 bytes; eager round-art requests: 0.",
+        "Median setup response: 36.2 ms; active decoded-image estimate: 13215096 bytes."
+      ],
+      "blockers": []
+    },
+    {
+      "name": "INSTALLATION",
+      "passed": false,
+      "evidence": [
+        "Latest installer: Bureau-of-Questionable-Knowledge-1.0.0-rc.1-setup-x64.exe.",
+        "Clean-machine records: 0.",
+        "Update channel enabled: false."
+      ],
+      "blockers": [
+        "Latest installer signature status is NotSigned, not Valid.",
+        "Need three clean-machine passing records; found 0.",
+        "The production HTTPS update channel is not enabled."
+      ]
+    },
+    {
+      "name": "FULL_MATCH",
+      "passed": false,
+      "evidence": [
+        "Consented reports: 0.",
+        "Independent passing groups: 0.",
+        "Passing sessions: 0."
+      ],
+      "blockers": [
+        "No consented closed-beta reports were found in playtest-results.",
+        "Need three independent passing groups; found 0.",
+        "Need a passing Solo · First Assessment · Politics off session.",
+        "Need a passing Two candidates · Quick · Light Politics session.",
+        "Need a passing Four candidates · Standard · Standard Politics session."
+      ]
+    },
+    {
+      "name": "DEFECTS",
+      "passed": false,
+      "evidence": [
+        "5 known issues registered.",
+        "Open critical/high/release blockers: 5."
+      ],
+      "blockers": [
+        "RC-LEGAL-001: Legal publisher, support contact, professional trade mark decision, commercial-policy review and generated-art clearance are not yet recorded as approved.",
+        "RC-CONTENT-001: Independent editorial approval is pending for all question records.",
+        "RC-SIGN-001: The local release-candidate installer is not signed with a trusted Windows certificate.",
+        "RC-EVIDENCE-001: Three independent consented beta groups and three clean-machine acceptance rows have not yet been filed.",
+        "RC-UPDATE-001: The production HTTPS update channel is disabled until signed artefacts and a publisher-controlled endpoint exist."
+      ]
+    }
+  ],
+  "nextReviewRule": "Repeat after every candidate rebuild or evidence change. GO requires every gate to pass with no open critical, high or release-blocking issue."
+}

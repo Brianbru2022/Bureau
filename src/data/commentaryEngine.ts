@@ -182,6 +182,64 @@ const topTenAssessment = (input: ScoreCommentaryInput): string | null => {
   return null;
 };
 
+const misfiledAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'MISFILED_RECORDS') return null;
+  if (input.isCorrect) return `${input.score} points. The intruding record has been ejected and the surviving files agree with one another, which is more than can be said for most committees.`;
+  if (input.score > 0) return `${input.score} points. One part of the classification survived inspection; the other has disappeared down the rejection chute with unusual enthusiasm.`;
+  return 'The rejected record and its proposed connection were both declined. The machine has recommended beginning with a less ambitious filing cabinet.';
+};
+
+const redactedAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'REDACTED_RECORDS') return null;
+  if (input.isCorrect && input.score >= 750) return `${input.score} points. The subject was identified while most of the file remained black ink, which the secrecy office considers both impressive and professionally irritating.`;
+  if (input.isCorrect) return `${input.score} points. Identification accepted, although the document had disclosed enough information to brief a moderately attentive pigeon.`;
+  return 'The identification seal was applied to the wrong subject. The remaining text has now been declassified chiefly to demonstrate what went wrong.';
+};
+
+const commonDossierAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'COMMON_DOSSIER') return null;
+  if (input.isCorrect && input.score >= 800) return `${input.score} points. The connection was filed before the evidence became embarrassingly generous. The Correlation Office is reluctantly impressed.`;
+  if (input.isCorrect) return `${input.score} points. The common thread was eventually located, after the apparatus had practically tied it into a bow.`;
+  return 'The exhibits remain officially unrelated. The Correlation Office has opened a file on the candidate’s alarming confidence.';
+};
+
+const missingMinutesAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'MISSING_MINUTES') return null;
+  if (input.isCorrect && input.score >= 800) return `${input.score} points. The missing minute was recalled before the ink had time to reconsider its position.`;
+  if (input.isCorrect) return `${input.score} points. The minute was recovered, although the committee has noted the unusually lengthy inspection period.`;
+  return 'The wrong minute has been restored to the official record. History is now inaccurate in a very tidy folder.';
+};
+
+const publicEnquiryAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'PUBLIC_ENQUIRY') return null;
+  if (input.score >= 800) return `${input.score} points. The enquiry recorded a level of confidence normally reserved for fire exits and properly labelled biscuits.`;
+  if (input.score > 0) return `${input.score} points. A measurable quantity of public confidence has been located and placed under observation.`;
+  return 'The enquiry reached no useful confidence whatsoever. A larger microphone has been requisitioned.';
+};
+
+const chainOfCommandAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'CHAIN_OF_COMMAND') return null;
+  if (input.score >= 800) return `${input.score} points. The chain was assembled before the relay lamps could submit an overtime claim.`;
+  return `${input.score} points. The chronology was eventually certified, albeit by the scenic administrative route.`;
+};
+
+const complaintsDeskAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'COMPLAINTS_DESK') return null;
+  if (input.isCorrect) return `${input.score} points. The objection was upheld and the defective statement has been referred to a committee that specialises in denying it was ever filed.`;
+  return 'Complaint dismissed. The selected statement survived fact-checking while the actual inaccuracy left through the staff entrance.';
+};
+
+const seatingCommitteeAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'SEATING_COMMITTEE') return null;
+  if (input.isCorrect) return `${input.score} points. Every historical record reached its proper place in the chronology, leaving the committee with nothing substantive to argue about.`;
+  return `${input.score} points. Several records landed within plausible administrative distance of their certified dates.`;
+};
+
+const dispatchBoxAssessment = (input: ScoreCommentaryInput): string | null => {
+  if (input.roundType !== 'DISPATCH_BOX') return null;
+  return `${input.score} points. The rapid briefs have been answered, stamped and dispatched before anyone could request a longer consultation period.`;
+};
+
 const contextualAssessment = (input: ScoreCommentaryInput): string | null =>
   subjectAwareAssessment(input) ??
   mapAssessment(input) ??
@@ -191,7 +249,16 @@ const contextualAssessment = (input: ScoreCommentaryInput): string | null =>
   listAssessment(input) ??
   bidAssessment(input) ??
   rankAssessment(input) ??
-  topTenAssessment(input);
+  topTenAssessment(input) ??
+  misfiledAssessment(input) ??
+  redactedAssessment(input) ??
+  commonDossierAssessment(input) ??
+  missingMinutesAssessment(input) ??
+  publicEnquiryAssessment(input) ??
+  chainOfCommandAssessment(input) ??
+  complaintsDeskAssessment(input) ??
+  seatingCommitteeAssessment(input) ??
+  dispatchBoxAssessment(input);
 
 const scoreFallback = (input: ScoreCommentaryInput): string => {
   const { score, isCorrect } = input;

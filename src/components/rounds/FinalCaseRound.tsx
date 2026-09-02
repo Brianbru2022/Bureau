@@ -3,17 +3,20 @@ import { FinalCase, Player } from '../../types';
 import { sound } from '../../sound/audioEngine';
 import { Shield, MapPin, Calendar, FileSearch, CheckCircle, ArrowRight, Award } from 'lucide-react';
 import { CommentaryPlaque } from '../common/CommentaryPlaque';
+import { motionDuration, PRESENTATION_TIMING } from '../../game/presentation';
 
 interface FinalCaseRoundProps {
   finalCase: FinalCase;
   players: Player[];
   onCompleteCase: (playerBonuses: Record<string, number>) => void;
+  influenceContributor?: Player;
+  onSpendInfluence?: (playerId:string)=>void;
 }
 
 export const FinalCaseRound: React.FC<FinalCaseRoundProps> = ({
   finalCase,
   players,
-  onCompleteCase
+  onCompleteCase, influenceContributor, onSpendInfluence
 }) => {
   // Step: 0 = Briefing, 1 = Stage 1 (Image), 2 = Stage 2 (Map), 3 = Stage 3 (Year), 4 = Final Verdict, 5 = Resolved
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -29,6 +32,32 @@ export const FinalCaseRound: React.FC<FinalCaseRoundProps> = ({
 
   // Stage 2 State
   const [mapPin, setMapPin] = useState<{ x: number; y: number } | null>(null);
+  const placeMapPin = (x: number, y: number) => {
+    sound.playClick();
+    setMapPin({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) });
+  };
+  const handleMapKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const step = event.shiftKey ? 10 : 3;
+    const current = mapPin ?? { x: 50, y: 50 };
+    if (event.key === 'Enter' && mapPin) {
+      event.preventDefault();
+      handleStage2Submit();
+      return;
+    }
+    if (event.key === ' ') {
+      event.preventDefault();
+      placeMapPin(current.x, current.y);
+      return;
+    }
+    const movement: Record<string, { x: number; y: number }> = {
+      ArrowLeft: { x: -step, y: 0 }, ArrowRight: { x: step, y: 0 },
+      ArrowUp: { x: 0, y: -step }, ArrowDown: { x: 0, y: step }
+    };
+    const delta = movement[event.key];
+    if (!delta) return;
+    event.preventDefault();
+    placeMapPin(current.x + delta.x, current.y + delta.y);
+  };
 
   // Stage 3 State
   const [inputYear, setInputYear] = useState('');
@@ -36,6 +65,8 @@ export const FinalCaseRound: React.FC<FinalCaseRoundProps> = ({
   // Final Verdict State
   const [verdictChoice, setVerdictChoice] = useState<number | null>(null);
   const [isResolved, setIsResolved] = useState(false);
+  const [purchasedClue,setPurchasedClue]=useState(false);
+  const majorStepDelay=()=>motionDuration(PRESENTATION_TIMING.majorStepMs,window.matchMedia?.('(prefers-reduced-motion: reduce)').matches??false);
 
   // Advance Stage 1
   const handleStage1Submit = (idx: number) => {
@@ -54,7 +85,7 @@ export const FinalCaseRound: React.FC<FinalCaseRoundProps> = ({
     } else {
       sound.playDisapproval();
     }
-    setTimeout(() => setCurrentStep(2), 1000);
+    window.setTimeout(() => setCurrentStep(2), majorStepDelay());
   };
 
   // Advance Stage 2
@@ -76,7 +107,7 @@ export const FinalCaseRound: React.FC<FinalCaseRoundProps> = ({
     } else {
       sound.playDisapproval();
     }
-    setTimeout(() => setCurrentStep(3), 1000);
+    window.setTimeout(() => setCurrentStep(3), majorStepDelay());
   };
 
   // Advance Stage 3
@@ -100,7 +131,7 @@ export const FinalCaseRound: React.FC<FinalCaseRoundProps> = ({
     } else {
       sound.playDisapproval();
     }
-    setTimeout(() => setCurrentStep(4), 1000);
+    window.setTimeout(() => setCurrentStep(4), majorStepDelay());
   };
 
   // Final Verdict
@@ -125,19 +156,21 @@ export const FinalCaseRound: React.FC<FinalCaseRoundProps> = ({
   };
 
   return (
-    <div className="w-full flex flex-col items-center max-w-5xl mx-auto font-['Plus_Jakarta_Sans']">
+    <div className="relative w-full flex flex-col items-center max-w-5xl mx-auto overflow-hidden rounded-[30px] border-[4px] border-[#765139] bg-[#f3e5c4]/95 p-4 font-['Plus_Jakarta_Sans'] shadow-[0_16px_0_#5a3925,0_28px_55px_rgba(57,35,20,.3)]">
+      <img src="/assets/generated-v2/final-adjudication-engine.webp" alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.16] mix-blend-multiply"/>
       {/* Grand Chamber Header */}
-      <div className="w-full bg-[#181124] border-2 border-purple-400 rounded-lg p-5 mb-4 shadow-2xl text-center">
+      <div className="relative w-full overflow-hidden bg-[#244b55] border-[3px] border-[#d4af57] rounded-2xl p-5 mb-4 shadow-[0_6px_0_#765139] text-center">
+        <img src="/assets/generated-v2/final-adjudication-engine.webp" alt="" aria-hidden="true" className="bureau-apparatus-idle pointer-events-none absolute -right-8 -top-16 h-48 opacity-20 mix-blend-screen"/>
         <div className="flex items-center justify-center gap-2 mb-1">
-          <Shield className="text-purple-300" size={22} />
-          <span className="font-['Courier_Prime'] text-xs font-bold text-purple-200 tracking-widest uppercase">
+          <Shield className="text-[#f0cf68]" size={22} />
+          <span className="font-['Courier_Prime'] text-xs font-bold text-[#f5dfad] tracking-widest uppercase">
             The Assessment Chamber • The Final Case
           </span>
         </div>
-        <h1 className="font-['Cinzel'] font-black text-2xl sm:text-3xl text-purple-100 tracking-wide">
+        <h1 className="font-['Cinzel'] font-black text-2xl sm:text-3xl text-[#fff7df] tracking-wide">
           {finalCase.title}
         </h1>
-        <p className="font-['Courier_Prime'] text-xs text-purple-300/80 mt-1 font-bold">
+        <p className="font-['Courier_Prime'] text-xs text-[#f0cf68] mt-1 font-bold">
           {finalCase.subtitle}
         </p>
       </div>
@@ -166,8 +199,9 @@ export const FinalCaseRound: React.FC<FinalCaseRoundProps> = ({
             {finalCase.introduction}
           </p>
           <div className="p-3.5 bg-purple-950/40 rounded border border-purple-500/30 text-xs font-['Courier_Prime'] text-purple-200">
-            You will complete three intelligence stages to uncover crucial clues before rendering your final verdict to the Crown.
+            You will complete three intelligence stages to uncover crucial clues before filing your final verdict with the Bureau.
           </div>
+          {influenceContributor&&!purchasedClue&&<button onClick={()=>{onSpendInfluence?.(influenceContributor.id);setPurchasedClue(true);setUnlockedClues(current=>[...current,`Preliminary intelligence: ${finalCase.stages[0].clueUnlocked}`]);sound.playStamp();}} className="rounded border border-amber-300 bg-amber-200/15 px-5 py-3 font-['Courier_Prime'] text-xs font-bold text-amber-200">Spend 1 of {influenceContributor.name}'s Influence for a shared clue</button>}
           <button
             onClick={() => {
               sound.playClick();
@@ -224,14 +258,18 @@ export const FinalCaseRound: React.FC<FinalCaseRoundProps> = ({
 
           {/* Mini Map Click Target */}
           <div
-            onClick={(e) => {
+            role="application"
+            tabIndex={0}
+            aria-label="Final Case coordinate map. Use arrow keys to position the pin, Shift and an arrow for a larger movement, Space to place the first pin and Enter to confirm."
+            aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Enter Space"
+            onKeyDown={handleMapKeyDown}
+            onPointerDown={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
               const x = ((e.clientX - rect.left) / rect.width) * 100;
               const y = ((e.clientY - rect.top) / rect.height) * 100;
-              sound.playClick();
-              setMapPin({ x, y });
+              placeMapPin(x, y);
             }}
-            className="relative w-full max-w-md h-64 bg-[#0a0712] border-2 border-purple-400 rounded-lg cursor-crosshair overflow-hidden"
+            className="relative w-full max-w-md h-64 bg-[#0a0712] border-2 border-purple-400 rounded-lg cursor-crosshair overflow-hidden touch-none"
           >
             <svg className="w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
               <path d="M38 12 C42 9, 52 8, 56 14 C58 18, 52 22, 54 26 C56 29, 62 30, 60 36 C58 40, 52 42, 48 40 C42 38, 36 42, 34 38 C32 34, 30 26, 34 20 C36 15, 36 14, 38 12 Z" fill="#1b122c" stroke="#805ad5" strokeWidth="0.6" />
@@ -243,6 +281,9 @@ export const FinalCaseRound: React.FC<FinalCaseRoundProps> = ({
               </div>
             )}
           </div>
+          <p className="sr-only" aria-live="polite">
+            {mapPin ? `Pin positioned at ${Math.round(mapPin.x)} percent across and ${Math.round(mapPin.y)} percent down.` : 'No coordinate has been selected.'}
+          </p>
 
           <button
             disabled={!mapPin}

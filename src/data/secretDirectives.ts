@@ -67,8 +67,8 @@ export const secretDirectivesPool: Omit<SecretDirective, 'isCompleted' | 'progre
   }
 ];
 
-export function assignSecretDirectives(playerCount: number): SecretDirective[] {
-  const shuffled = [...secretDirectivesPool].sort(() => Math.random() - 0.5);
+export function assignSecretDirectives(playerCount: number, random: () => number = Math.random): SecretDirective[] {
+  const shuffled = [...secretDirectivesPool].sort(() => random() - 0.5);
   return shuffled.slice(0, playerCount).map(d => ({
     ...d,
     isCompleted: false,

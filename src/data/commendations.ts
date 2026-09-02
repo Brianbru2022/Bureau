@@ -1,9 +1,5 @@
-import { HiddenCommendation, Player } from '../types';
-
-export interface ScoreSnapshot {
-  roundNumber: number;
-  scores: Record<string, number>;
-}
+import { HiddenCommendation, Player, type ScoreSnapshot } from '../types';
+export type { ScoreSnapshot } from '../types';
 
 type EvaluationContext = {
   players: Player[];
@@ -150,8 +146,8 @@ export const allPossibleCommendations: CommendationDefinition[] = [
   }
 ];
 
-export function selectSecretCommendations(count = 2): HiddenCommendation[] {
-  const shuffled = [...allPossibleCommendations].sort(() => Math.random() - 0.5).slice(0, count);
+export function selectSecretCommendations(count = 2, random: () => number = Math.random): HiddenCommendation[] {
+  const shuffled = [...allPossibleCommendations].sort(() => random() - 0.5).slice(0, count);
   return shuffled.map(c => ({
     id: c.id,
     title: c.title,

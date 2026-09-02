@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "reviewedOn": "2026-09-02",
+  "scope": "Internal visual inspection of the responsive apparatus system after the Step 6 department-mechanic differentiation pass",
+  "limitations": "This records an internal production check and does not replace independent human play-testing.",
+  "checks": {
+    "requiredGameplayTextAbsent": true,
+    "checkerboardArtefactsAbsent": true,
+    "obviousGenerationArtefactsAbsent": true,
+    "controlAperturesRemainUsable": true,
+    "decorativeCompetitionReduced": true,
+    "stateTreatmentsAreTextBacked": true,
+    "activeControlLabelsPresent": true,
+    "crownLikeInsigniaAbsent": true,
+    "preciseApertureRectanglesValidated": true,
+    "departmentMechanicalOutcomeProfilesPresent": true,
+    "acceptedRejectedAndResultMechanismsDistinct": true,
+    "topTenEliminationTreatmentVerified": true,
+    "orderingDepartmentsHaveDistinctOperatingDoctrines": true,
+    "revealDepartmentsHaveDistinctOperatingDoctrines": true,
+    "openRegisterDepartmentsHaveDistinctOperatingDoctrines": true
+  },
+  "approved": [
+    "WHERE_IN_BRITAIN",
+    "TOP_10",
+    "PUT_UP_OR_SHUT_UP",
+    "THE_LIST",
+    "CLOSEST_WINS",
+    "RANK_IT",
+    "IMAGE_REVEAL",
+    "STOP_THE_SCORE",
+    "MISFILED_RECORDS",
+    "REDACTED_RECORDS",
+    "COMMON_DOSSIER",
+    "MISSING_MINUTES",
+    "PUBLIC_ENQUIRY",
+    "CHAIN_OF_COMMAND",
+    "COMPLAINTS_DESK",
+    "SEATING_COMMITTEE",
+    "DISPATCH_BOX"
+  ]
+}

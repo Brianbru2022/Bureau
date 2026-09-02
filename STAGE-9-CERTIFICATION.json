@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-31T22:59:57.305Z",
+  "status": "AWAITING_HUMAN_EVIDENCE",
+  "performance": {
+    "status": "PASS",
+    "measuredAt": "2026-08-31T22:58:31.722Z",
+    "checks": {
+      "startupTransfer": true,
+      "noEagerRoundArtwork": true,
+      "interactionLatency": true,
+      "apparatusMemory": true,
+      "activeImageMemory": true
+    }
+  },
+  "accessibility": {
+    "required": [
+      "KEYBOARD_ONLY",
+      "REDUCED_MOTION",
+      "TEXT_200_PERCENT",
+      "SCREEN_READER"
+    ],
+    "passing": [],
+    "pending": [
+      "KEYBOARD_ONLY",
+      "REDUCED_MOTION",
+      "TEXT_200_PERCENT",
+      "SCREEN_READER"
+    ]
+  },
+  "windows": {
+    "passingMachines": [],
+    "requiredMachines": 3
+  },
+  "technicalBlockers": [],
+  "humanBlockers": [
+    "Missing independently witnessed KEYBOARD_ONLY pass.",
+    "Missing independently witnessed REDUCED_MOTION pass.",
+    "Missing independently witnessed TEXT_200_PERCENT pass.",
+    "Missing independently witnessed SCREEN_READER pass.",
+    "Need three unique clean-Windows passing records; found 0."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "reviewAttestationVersion": 1,
+  "packId": "questionable-knowledge-core-2026.3",
+  "preparedOn": "2026-08-31",
+  "challengeCount": 425,
+  "approved": 0,
+  "changesRequired": 0,
+  "pending": 425,
+  "timeSensitive": 78,
+  "challengesWithAuthorityUrl": 424,
+  "bibliographicOnly": 1
+}

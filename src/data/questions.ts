@@ -9,6 +9,9 @@ import {
   StopTheScoreChallenge,
   Challenge
 } from '../types';
+import { supplementalChallenges } from './supplementalQuestions';
+import { expansionChallenges } from './expansionQuestions';
+import { chainOfCommandChallenges, commonDossierChallenges, complaintsDeskChallenges, dispatchBoxChallenges, misfiledRecordsChallenges, missingMinutesChallenges, publicEnquiryChallenges, redactedRecordsChallenges, seatingCommitteeChallenges } from './prototypeQuestions';
 
 /* ==========================================================================
    1. TOP 10 CHALLENGES (Physical Records Board)
@@ -645,7 +648,7 @@ export const imageRevealChallenges: ImageRevealChallenge[] = [
     subjectName: 'The Rosetta Stone',
     aliases: ['rosetta stone', 'rosetta', 'the rosetta stone'],
     options: ['The Rosetta Stone', 'The Elgin Marbles', 'The Cyrus Cylinder', 'The Sutton Hoo Helmet'],
-    imageUrl: 'https://images.unsplash.com/photo-1599839575945-a9e5af0c3fa5?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/assets/reconnaissance/rosetta-stone.webp',
     svgGraphicType: 'artifact',
     visualHint: 'Carved in 196 BC with three scripts: Ancient Egyptian hieroglyphs, Demotic script, and Ancient Greek.',
     explanation: 'Discovered near Memphis in 1799 and held at the British Museum since 1802. Thomas Young and Jean-François Champollion deciphered it, revealing thousands of years of lost dynastic Egyptian literature.',
@@ -659,7 +662,7 @@ export const imageRevealChallenges: ImageRevealChallenge[] = [
     subjectName: 'The Angel of the North',
     aliases: ['angel of the north', 'the angel of the north', 'angel of north'],
     options: ['The Angel of the North', 'The Kelpies', 'ArcelorMittal Orbit', 'Another Place'],
-    imageUrl: 'https://images.unsplash.com/photo-1548625361-195fe2942468?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/assets/reconnaissance/angel-of-the-north.webp',
     svgGraphicType: 'landmark',
     visualHint: 'Constructed from weathering steel with a 54-metre wingspan, designed to withstand 100 mph gales.',
     explanation: 'Erected in 1998 on the site of the former Teams Colliery. Gormley angled the wings 3.5 degrees forward to evoke a sense of embrace, overlooking 90,000 drivers daily on the A1.',
@@ -673,7 +676,7 @@ export const imageRevealChallenges: ImageRevealChallenge[] = [
     subjectName: 'Glenfinnan Viaduct',
     aliases: ['glenfinnan viaduct', 'glenfinnan', 'harry potter bridge'],
     options: ['Glenfinnan Viaduct', 'Forth Bridge', 'Ribblehead Viaduct', 'Tay Bridge'],
-    imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/assets/reconnaissance/glenfinnan-viaduct.webp',
     svgGraphicType: 'structure',
     visualHint: 'Built between 1897 and 1901 by Robert McAlpine, carrying the West Highland Line across the River Finnan.',
     explanation: 'Built entirely of mass concrete without metal reinforcement by "Concrete Bob" McAlpine. It entered global pop-culture lore as the Hogwarts Express crossing route in the Harry Potter films.',
@@ -687,7 +690,7 @@ export const imageRevealChallenges: ImageRevealChallenge[] = [
     subjectName: 'Tower Bridge',
     aliases: ['tower bridge', 'london tower bridge'],
     options: ['Tower Bridge', 'London Bridge', 'Blackfriars Bridge', 'Westminster Bridge'],
-    imageUrl: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/assets/reconnaissance/tower-bridge.webp',
     svgGraphicType: 'landmark',
     visualHint: 'Often confused by American tourists with its downstream neighbour London Bridge.',
     explanation: 'Completed in 1894, Tower Bridge used hydraulic steam power to raise its massive bascules in just one minute. American entrepreneur Robert P. McCulloch famously bought London Bridge in 1968, though urban legend insists he thought he bought this one.',
@@ -748,7 +751,7 @@ export const stopTheScoreChallenges: StopTheScoreChallenge[] = [
     id: 'sts-biscuit-tax',
     roundType: 'STOP_THE_SCORE',
     category: 'British Legal Peculiarities',
-    prompt: 'In a famous 1991 UK VAT tribunal, United Biscuits successfully proved that Jaffa Cakes are legally CAKES (and thus 0% VAT rated) by demonstrating what physical property?',
+    prompt: 'Which change when stale was one factor in the 1991 VAT tribunal deciding that Jaffa Cakes had enough characteristics of cakes to be zero-rated?',
     options: [
       'They go hard when stale (biscuits go soft)',
       'They contain more than 15% fresh liquid egg',
@@ -756,14 +759,14 @@ export const stopTheScoreChallenges: StopTheScoreChallenge[] = [
       'Their batter rises via yeast fermentation'
     ],
     correctIndex: 0,
-    explanation: 'Cakes go hard when stale; biscuits go soft. United Biscuits baked a giant 12-inch Jaffa Cake for the courtroom to prove it hardened over time, successfully dodging hundreds of millions in standard VAT.',
-    source: 'United Biscuits (UK) Ltd v Customs and Excise Commissioners [1991]'
+    explanation: 'Jaffa Cakes become hard when stale, whereas biscuits generally become soft. The tribunal considered this alongside their ingredients, texture, size, packaging and other characteristics before accepting them as cakes.',
+    source: 'HMRC internal manual VFOOD6260; United Biscuits (UK) Ltd (No. 2) v Commissioners of Customs and Excise [1991] BVC 818 (LON/91/0160)'
   },
   {
     id: 'sts-sandwich-earl',
     roundType: 'STOP_THE_SCORE',
     category: 'British Culinary Folklore',
-    prompt: 'John Montagu, the 4th Earl of Sandwich, popularized the sandwich in 1762 primarily so he could eat without doing what?',
+    prompt: 'According to the traditional account of the sandwich’s name, John Montagu ate meat between bread so that he could continue what activity?',
     options: [
       'Leaving his 24-hour gambling card table',
       'Dropping ink onto naval admiralty maps',
@@ -771,8 +774,8 @@ export const stopTheScoreChallenges: StopTheScoreChallenge[] = [
       'Interrupting his parliamentary speech'
     ],
     correctIndex: 0,
-    explanation: 'The 4th Earl was so consumed by cribbage and card games that he ordered salt beef between two pieces of toasted bread so his fingers wouldn\'t grease the cards.',
-    source: 'Oxford Companion to Food'
+    explanation: 'A widely repeated account says the 4th Earl of Sandwich ate this way without leaving the gaming table. Contemporary evidence confirms the name was in use by 1762, but the gambling origin remains a traditional attribution rather than a settled fact.',
+    source: 'Davidson, Alan, The Oxford Companion to Food, 3rd ed., edited by Tom Jaine, Oxford University Press, 2014, entry “sandwich”'
   }
 ];
 
@@ -784,5 +787,16 @@ export const allChallenges: Challenge[] = [
   ...closestWinsChallenges,
   ...rankItChallenges,
   ...imageRevealChallenges,
-  ...stopTheScoreChallenges
+  ...stopTheScoreChallenges,
+  ...supplementalChallenges,
+  ...expansionChallenges,
+  ...misfiledRecordsChallenges,
+  ...redactedRecordsChallenges,
+  ...commonDossierChallenges,
+  ...missingMinutesChallenges,
+  ...publicEnquiryChallenges,
+  ...chainOfCommandChallenges,
+  ...complaintsDeskChallenges,
+  ...seatingCommitteeChallenges,
+  ...dispatchBoxChallenges
 ];

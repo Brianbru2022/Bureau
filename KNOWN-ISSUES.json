@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "productVersion": "1.0.0-rc.1",
+  "reviewedOn": "2026-08-31",
+  "issues": [
+    {
+      "id": "RC-LEGAL-001",
+      "category": "LEGAL",
+      "severity": "RELEASE_BLOCKER",
+      "status": "OPEN",
+      "summary": "Legal publisher, support contact, professional trade mark decision, commercial-policy review and generated-art clearance are not yet recorded as approved.",
+      "workaround": "Closed internal testing only; do not distribute commercially."
+    },
+    {
+      "id": "RC-CONTENT-001",
+      "category": "CONTENT",
+      "severity": "RELEASE_BLOCKER",
+      "status": "OPEN",
+      "summary": "Independent editorial approval is pending for all question records.",
+      "workaround": "Use the build for controlled beta testing only."
+    },
+    {
+      "id": "RC-SIGN-001",
+      "category": "INSTALLATION",
+      "severity": "RELEASE_BLOCKER",
+      "status": "OPEN",
+      "summary": "The local release-candidate installer is not signed with a trusted Windows certificate.",
+      "workaround": "Do not publish the unsigned installer."
+    },
+    {
+      "id": "RC-EVIDENCE-001",
+      "category": "FULL_MATCH",
+      "severity": "RELEASE_BLOCKER",
+      "status": "OPEN",
+      "summary": "The independent complete-match matrix, six-group human balance coverage and three clean-machine acceptance rows have not yet been filed.",
+      "workaround": "Complete the closed-beta, balance-play-test and clean-machine protocols."
+    },
+    {
+      "id": "RC-UPDATE-001",
+      "category": "INSTALLATION",
+      "severity": "RELEASE_BLOCKER",
+      "status": "OPEN",
+      "summary": "The production HTTPS update channel is disabled until signed artefacts and a publisher-controlled endpoint exist.",
+      "workaround": "Distribute no public update feed from this candidate."
+    }
+  ]
+}

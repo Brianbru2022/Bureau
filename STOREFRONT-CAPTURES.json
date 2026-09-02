@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "product": "The Bureau of Questionable Knowledge",
+  "buildVersion": "1.0.0-rc.1",
+  "capturedAt": "2026-08-31T22:56:22.440Z",
+  "capturePolicy": "Genuine production gameplay only; no development gallery, composited controls or invented testimonials.",
+  "captures": [
+    {
+      "id": "01-opening-screen",
+      "file": "storefront/captures/01-opening-screen.png",
+      "buildVersion": "1.0.0-rc.1",
+      "seed": "617",
+      "viewport": "1600x900",
+      "state": "Opening screen and assessment choices",
+      "source": "ACTUAL_GAMEPLAY",
+      "anonymised": true,
+      "sha256": "0BA3322070EDEB6A7EDB5ADD572166D898D318238EDC9A5D6C85F8518711BB5C"
+    },
+    {
+      "id": "02-four-candidate-apparatus",
+      "file": "storefront/captures/02-four-candidate-apparatus.png",
+      "buildVersion": "1.0.0-rc.1",
+      "seed": "617",
+      "viewport": "1600x900",
+      "state": "Four-candidate live cartography apparatus",
+      "source": "ACTUAL_GAMEPLAY",
+      "anonymised": true,
+      "sha256": "1CD6678B5CB2E16C796B3256EFA2D949613E99C274683F9686AEEAFE65C1E6C3"
+    },
+    {
+      "id": "03-cartography-route",
+      "file": "storefront/captures/03-cartography-route.png",
+      "buildVersion": "1.0.0-rc.1",
+      "seed": "617",
+      "viewport": "1600x900",
+      "state": "Live cartography route between guessed and certified points",
+      "source": "ACTUAL_GAMEPLAY",
+      "anonymised": true,
+      "sha256": "DBF3606CE6CA10AE3B8642DB714F266632C831EC5DB5DF26A6ACF0C506DEFEA5"
+    },
+    {
+      "id": "04-top-ten-elimination",
+      "file": "storefront/captures/04-top-ten-elimination.png",
+      "buildVersion": "1.0.0-rc.1",
+      "seed": "617",
+      "viewport": "1600x900",
+      "state": "Top Ten cabinet with persistent eliminated-candidate plate",
+      "source": "ACTUAL_GAMEPLAY",
+      "anonymised": true,
+      "sha256": "743FEBDE8EB8421218B34235CED6A6C1D2ADF84E7E157CE6A719C63F628CF5EE"
+    },
+    {
+      "id": "05-result-dossier",
+      "file": "storefront/captures/05-result-dossier.png",
+      "buildVersion": "1.0.0-rc.1",
+      "seed": "617",
+      "viewport": "1600x900",
+      "state": "Live result dossier with answer and proportional score",
+      "source": "ACTUAL_GAMEPLAY",
+      "anonymised": true,
+      "sha256": "F323E0797BCDA3D55EB37D3A848A8EF0361FD3C66C3CF7D7EBCFE7DFD4339D68"
+    },
+    {
+      "id": "06-post-assessment-dossiers",
+      "file": "storefront/captures/06-post-assessment-dossiers.png",
+      "buildVersion": "1.0.0-rc.1",
+      "seed": "617",
+      "viewport": "1600x900",
+      "state": "Completed four-candidate assessment and post-assessment dossiers",
+      "source": "ACTUAL_GAMEPLAY",
+      "anonymised": true,
+      "sha256": "B7AE2D1CDEC95825C8BEBE01E4954DD8E0453ED4A51E038782B445CBA230ECF4"
+    }
+  ]
+}

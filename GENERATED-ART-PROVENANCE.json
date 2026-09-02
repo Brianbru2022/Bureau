@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "status": "INCOMPLETE",
+  "releaseRule": "CLEARED requires an approved rights-holder declaration, complete records for every shipped generated asset and documented commercial-use terms.",
+  "declaration": {
+    "rightsHolder": null,
+    "generationProvider": null,
+    "accountOwner": null,
+    "commercialTermsUrl": null,
+    "termsEffectiveOn": null,
+    "commercialUseConfirmed": false,
+    "unlicensedReferencesExcluded": false,
+    "humanReviewer": null,
+    "signedOn": null
+  },
+  "legacyAssets": {
+    "status": "INCOMPLETE",
+    "reason": "Exact model versions, generation account, prompts, dates and edit histories were not retained for every legacy generated asset.",
+    "requiredDecision": "Complete and sign the declaration with sufficient supporting records, replace the affected assets, or commission a documented rights review."
+  },
+  "records": [
+    {
+      "assetId": "bidding-claim-console-v5",
+      "status": "CONDITIONAL",
+      "provider": "OpenAI built-in image generation tool",
+      "modelVersion": "Service-selected image-generation model; exact version not exposed by the tool",
+      "accountOwner": null,
+      "generatedOn": "2026-08-31",
+      "prompt": "Edit this existing vintage British-bureaucratic mechanical bidding console illustration. Preserve the entire apparatus, composition, colours, lighting, texture, controls, apertures, gauges and background exactly. Change only the small heraldic crest centred near the top of the left teal arch: completely remove the crown, lion, unicorn, shield and all royal/heraldic imagery. Replace them with a clearly fictional, neutral brass archival filing emblem made from three simple stacked index-card drawers inside a circular cog-like medallion. It must not resemble a coat of arms, crown, government seal, police badge, military insignia or any real institution. No words, letters, numbers, flags, buttons, watermarks or new gameplay information. Keep the new emblem small and decorative in the same location.",
+      "sourceReferences": [
+        {
+          "file": "assets/source-art/retired-identity-art/bidding-claim-console-v4.png",
+          "rightsBasis": "Project working file; underlying legacy generation metadata remains incomplete, so this derivative remains conditional."
+        }
+      ],
+      "sourceFile": "assets/source-art/apparatus-v4/bidding-claim-console-v5.png",
+      "shippedFiles": [
+        "public/assets/generated-v4/bidding-claim-console-v5.webp",
+        "public/assets/generated-v4/bidding-claim-console-v5-small.webp"
+      ],
+      "materialEdits": "Replaced a royal-style heraldic crest with a neutral three-drawer filing emblem; resized and encoded WebP delivery variants. Retired v4 source and delivery copies were moved outside public into assets/source-art/retired-identity-art so they cannot ship accidentally.",
+      "commercialTermsUrl": null,
+      "humanReviewer": null,
+      "reviewedOn": null
+    },
+    {
+      "assetId": "map-plotting-console-v6",
+      "status": "CONDITIONAL",
+      "provider": "OpenAI built-in image generation tool",
+      "modelVersion": "Service-selected image-generation model; exact version not exposed by the tool",
+      "accountOwner": null,
+      "generatedOn": "2026-09-02",
+      "prompt": "Precise object edit of this existing British mid-century bureaucratic cartography apparatus artwork. Preserve the exact 3:2 composition, camera, palette, lighting, timber and brass machinery, and every large blank functional aperture and panel. Remove every crown, crowned crest, heraldic lion, coat of arms, royal monogram, shield, national emblem, and governmental insignia. Replace those symbols only with small, clearly fictional non-heraldic geometric motifs based on an abstract compass rose combined with stacked filing tabs; no crown, no shield, no animals, no letters. Keep all blank apertures empty and uncluttered so accessible HTML map and controls can be placed precisely over them. No words, no labels, no numbers, no buttons, no UI text. Production game background, photoreal painted machinery, clean edges.",
+      "sourceReferences": [
+        {
+          "file": "assets/archive/step4-pre-insignia/map-plotting-console-v4.png",
+          "rightsBasis": "Project working file; underlying legacy generation metadata remains incomplete, so this derivative remains conditional."
+        }
+      ],
+      "sourceFile": "assets/source-art/apparatus-v4/map-plotting-console-v6.png",
+      "shippedFiles": [
+        "public/assets/generated-v4/map-plotting-console-v6.webp",
+        "public/assets/generated-v4/map-plotting-console-v6-small.webp"
+      ],
+      "materialEdits": "Removed crown and heraldic supporters, introduced a fictional compass-and-filing motif, preserved the blank map and navigation apertures, and encoded responsive WebP variants. Retired files were archived outside public.",
+      "commercialTermsUrl": null,
+      "humanReviewer": null,
+      "reviewedOn": null
+    },
+    {
+      "assetId": "redacted-records-desk-v2",
+      "status": "CONDITIONAL",
+      "provider": "OpenAI built-in image generation tool",
+      "modelVersion": "Service-selected image-generation model; exact version not exposed by the tool",
+      "accountOwner": null,
+      "generatedOn": "2026-09-02",
+      "prompt": "Precise object edit of this existing British mid-century bureaucratic redaction-desk apparatus artwork. Preserve the exact 3:2 composition, straight-on camera, dark teal enamel, timber, brass, lighting, and all large blank document and control apertures. Remove every crown, crowned crest, heraldic lion, coat of arms, royal monogram, shield, national emblem, and governmental insignia. Replace symbols only with a modest, clearly fictional non-heraldic geometric medallion: abstract stacked file tabs crossed by a simple diagonal redaction bar, no crown, no shield, no animals, no letters. Keep the central document platen and control zones blank and uncluttered for accessible HTML controls. No words, no labels, no numbers, no baked-in buttons, no UI text. Production game machinery background, clean photoreal painted finish.",
+      "sourceReferences": [
+        {
+          "file": "assets/archive/step4-pre-insignia/redacted-records-desk-v1.png",
+          "rightsBasis": "Project working file; underlying legacy generation metadata remains incomplete, so this derivative remains conditional."
+        }
+      ],
+      "sourceFile": "assets/source-art/promoted-apparatus/redacted-records-desk-v2.png",
+      "shippedFiles": [
+        "public/assets/generated-v4/redacted-records-desk-v2.webp",
+        "public/assets/generated-v4/redacted-records-desk-v2-small.webp"
+      ],
+      "materialEdits": "Removed the crowned heraldic crest, introduced a fictional redaction-and-filing medallion, preserved the document platen, and encoded responsive WebP variants. Retired files were archived outside public.",
+      "commercialTermsUrl": null,
+      "humanReviewer": null,
+      "reviewedOn": null
+    },
+    {
+      "assetId": "complaints-desk-analyser-v2",
+      "status": "CONDITIONAL",
+      "provider": "OpenAI built-in image generation tool",
+      "modelVersion": "Service-selected image-generation model; exact version not exposed by the tool",
+      "accountOwner": null,
+      "generatedOn": "2026-09-02",
+      "prompt": "Precise object edit of this existing British mid-century bureaucratic complaints-analysis apparatus artwork. Preserve the exact 3:2 straight-on composition, dark teal enamel, timber, brass, paper statement bays, lamps, balance mechanism, gauge, lever and press, with all blank functional apertures intact. Remove the crowned royal coat of arms and every crown, heraldic lion, royal monogram, shield, national emblem, and governmental insignia. Replace the top-centre emblem only with a simple fictional non-heraldic geometric mark: five small filing tabs arranged around an abstract balance pointer, no crown, no shield, no animals, no letters. Keep all five paper bays and lower control zones blank and uncluttered for accessible HTML controls. No words, no labels, no numbers, no baked-in buttons, no UI text. Production game machinery background, clean photoreal painted finish.",
+      "sourceReferences": [
+        {
+          "file": "assets/archive/step4-pre-insignia/complaints-desk-analyser-v1.png",
+          "rightsBasis": "Project working file; underlying legacy generation metadata remains incomplete, so this derivative remains conditional."
+        }
+      ],
+      "sourceFile": "assets/source-art/promoted-apparatus/complaints-desk-analyser-v2.png",
+      "shippedFiles": [
+        "public/assets/generated-v4/complaints-desk-analyser-v2.webp",
+        "public/assets/generated-v4/complaints-desk-analyser-v2-small.webp"
+      ],
+      "materialEdits": "Removed the crowned coat of arms, introduced a fictional filing-tab balance motif, preserved the five statement bays and lower controls, and encoded responsive WebP variants. Retired files were archived outside public.",
+      "commercialTermsUrl": null,
+      "humanReviewer": null,
+      "reviewedOn": null
+    }
+  ]
+}
